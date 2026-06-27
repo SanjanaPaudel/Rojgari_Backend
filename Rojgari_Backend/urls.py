@@ -17,9 +17,9 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from rojgari.views import status_view
 
 from accounts.api import api
-from rojgari.views import status_view
 
 urlpatterns = [
     path("admin/", admin.site.urls),
