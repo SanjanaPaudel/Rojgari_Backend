@@ -69,7 +69,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "rojgari.urls"
+ROOT_URLCONF = "rojgari_backend.urls"
 
 TEMPLATES = [
     {
@@ -86,7 +86,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "rojgari.wsgi.application"
+WSGI_APPLICATION = "rojgari_backend.wsgi.application"
 
 
 # Database

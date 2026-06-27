@@ -17,7 +17,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from rojgari.views import status_view
+from rojgari_backend.views import status_view
 
 from accounts.api import api
 
