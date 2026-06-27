@@ -1,0 +1,20 @@
+# Pre-commit Hook Configuration
+# To use:
+# 1. Install pre-commit: uv add --dev pre-commit (or pip install pre-commit)
+# 2. Setup git hooks: uv run pre-commit install
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.10
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
