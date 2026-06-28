@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
 from accounts.managers import UserManager
+
 
 class User(AbstractUser):
     objects = UserManager()
@@ -63,20 +65,13 @@ class WorkerProfile(models.Model):
 
     permanent_address = models.TextField()
 
-    profile_photo = models.ImageField(
-        upload_to="workers/profile/"
-    )
+    profile_photo = models.ImageField(upload_to="workers/profile/")
 
-    citizenship_front = models.ImageField(
-        upload_to="workers/citizenship/"
-    )
+    citizenship_front = models.ImageField(upload_to="workers/citizenship/")
 
-    citizenship_back = models.ImageField(
-        upload_to="workers/citizenship/"
-    )
+    citizenship_back = models.ImageField(upload_to="workers/citizenship/")
 
     is_verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.full_name
-    

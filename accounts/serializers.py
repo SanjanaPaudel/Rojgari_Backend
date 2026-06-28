@@ -27,9 +27,7 @@ class CustomerSignupSerializer(serializers.Serializer):
     def validate(self, attrs):
         if attrs["password"] != attrs["confirm_password"]:
             raise serializers.ValidationError(
-                {
-                    "confirm_password": "Passwords do not match."
-                }
+                {"confirm_password": "Passwords do not match."}
             )
 
         return attrs
@@ -62,9 +60,7 @@ class WorkerSignupSerializer(serializers.Serializer):
     def validate(self, attrs):
         if attrs["password"] != attrs["confirm_password"]:
             raise serializers.ValidationError(
-                {
-                    "confirm_password": "Passwords do not match."
-                }
+                {"confirm_password": "Passwords do not match."}
             )
 
         return attrs

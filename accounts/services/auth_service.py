@@ -1,8 +1,7 @@
-from accounts.models import User, CustomerProfile, WorkerProfile
+from accounts.models import CustomerProfile, User, WorkerProfile
 
 
 class AuthService:
-
     @staticmethod
     def create_customer(validated_data):
         validated_data.pop("confirm_password")
