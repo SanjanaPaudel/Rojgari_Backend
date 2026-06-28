@@ -1,0 +1,36 @@
+[project]
+name = "rojgari"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=6.0.6",
+    "django-environ>=0.14.0",
+    "django-ninja>=1.6.2",
+    "factory-boy>=3.3.3",
+    "faker>=40.23.0",
+    "psycopg[binary]>=3.3.4",
+    "redis>=8.0.1",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+extend-exclude = ["**/migrations/*"]
+
+[tool.ruff.lint]
+# Enable Pyflakes (F), Pycodestyle (E, W), isort (I), and pep8-naming (N)
+select = ["F", "E", "W", "I", "N", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.6.0",
+    "ruff>=0.15.20",
+]
