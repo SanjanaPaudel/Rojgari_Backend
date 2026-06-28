@@ -1,19 +1,16 @@
 from django.urls import path
 
-from accounts.views import (
-    customer_signup,
-    worker_signup,
-)
+from . import views
 
 urlpatterns = [
     path(
-        "signup/customer/",
-        customer_signup,
+        "customer/signup/",
+        views.customer_signup,
         name="customer-signup",
     ),
     path(
-        "signup/worker/",
-        worker_signup,
+        "worker/signup/",
+        views.worker_signup,
         name="worker-signup",
     ),
 ]

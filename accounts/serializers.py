@@ -1,56 +1,70 @@
 from rest_framework import serializers
 
-from .models import User
 
+class CustomerSignupSerializer(serializers.Serializer):
+    full_name = serializers.CharField(max_length=255)
+    phone_number = serializers.CharField(max_length=15)
 
-class CustomerSignupSerializer(serializers.ModelSerializer):
-    confirm_password = serializers.CharField(write_only=True)
+    email = serializers.EmailField(
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+    )
 
-    class Meta:
-        model = User
+    password = serializers.CharField(
+        write_only=True,
+        min_length=8,
+    )
 
-        fields = [
-            "phone_number",
-            "password",
-            "confirm_password",
-            "full_name",
-            "email",
-            "profile_photo",
-        ]
+    confirm_password = serializers.CharField(
+        write_only=True,
+    )
 
-        extra_kwargs = {"password": {"write_only": True}}
+    profile_photo = serializers.ImageField(
+        required=False,
+    )
 
     def validate(self, attrs):
-
         if attrs["password"] != attrs["confirm_password"]:
-            raise serializers.ValidationError({"password": "Passwords do not match."})
+            raise serializers.ValidationError(
+                {
+                    "confirm_password": "Passwords do not match."
+                }
+            )
 
         return attrs
 
 
-class WorkerSignupSerializer(serializers.ModelSerializer):
-    confirm_password = serializers.CharField(write_only=True)
+class WorkerSignupSerializer(serializers.Serializer):
+    full_name = serializers.CharField(max_length=255)
 
-    citizenship = serializers.ImageField()
+    phone_number = serializers.CharField(max_length=15)
 
-    class Meta:
-        model = User
+    email = serializers.EmailField()
 
-        fields = [
-            "phone_number",
-            "password",
-            "confirm_password",
-            "full_name",
-            "email",
-            "profile_photo",
-            "citizenship",
-        ]
+    permanent_address = serializers.CharField()
 
-        extra_kwargs = {"password": {"write_only": True}}
+    password = serializers.CharField(
+        write_only=True,
+        min_length=8,
+    )
+
+    confirm_password = serializers.CharField(
+        write_only=True,
+    )
+
+    profile_photo = serializers.ImageField()
+
+    citizenship_front = serializers.ImageField()
+
+    citizenship_back = serializers.ImageField()
 
     def validate(self, attrs):
-
         if attrs["password"] != attrs["confirm_password"]:
-            raise serializers.ValidationError({"password": "Passwords do not match."})
+            raise serializers.ValidationError(
+                {
+                    "confirm_password": "Passwords do not match."
+                }
+            )
 
         return attrs

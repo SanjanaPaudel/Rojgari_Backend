@@ -1,11 +1,13 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from accounts.managers import UserManager
 
 class User(AbstractUser):
-    class Role(models.TextChoices):
-        CUSTOMER = "customer", "Customer"
-        WORKER = "worker", "Worker"
+    objects = UserManager()
+    ROLE_CHOICES = (
+        ("customer", "Customer"),
+        ("worker", "Worker"),
+    )
 
     username = None
 
@@ -14,38 +16,25 @@ class User(AbstractUser):
         unique=True,
     )
 
-    role = models.CharField(
-        max_length=20,
-        choices=Role.choices,
-    )
-
-    full_name = models.CharField(
-        max_length=150,
-    )
-
     email = models.EmailField(
         unique=True,
-    )
-
-    profile_photo = models.ImageField(
-        upload_to="profile_photos/",
         blank=True,
         null=True,
     )
 
-    is_phone_verified = models.BooleanField(
-        default=False,
+    full_name = models.CharField(max_length=255)
+
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
     )
 
     USERNAME_FIELD = "phone_number"
 
-    REQUIRED_FIELDS = [
-        "email",
-        "full_name",
-    ]
+    REQUIRED_FIELDS = ["full_name"]
 
     def __str__(self):
-        return f"{self.full_name} ({self.phone_number})"
+        return f"{self.full_name} ({self.role})"
 
 
 class CustomerProfile(models.Model):
@@ -55,31 +44,39 @@ class CustomerProfile(models.Model):
         related_name="customer_profile",
     )
 
+    profile_photo = models.ImageField(
+        upload_to="customers/profile/",
+        blank=True,
+        null=True,
+    )
+
     def __str__(self):
         return self.user.full_name
 
 
 class WorkerProfile(models.Model):
-    class VerificationStatus(models.TextChoices):
-        PENDING = "pending", "Pending"
-        VERIFIED = "verified", "Verified"
-        REJECTED = "rejected", "Rejected"
-
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
         related_name="worker_profile",
     )
 
-    citizenship_image = models.ImageField(
-        upload_to="citizenship/",
+    permanent_address = models.TextField()
+
+    profile_photo = models.ImageField(
+        upload_to="workers/profile/"
     )
 
-    verification_status = models.CharField(
-        max_length=20,
-        choices=VerificationStatus.choices,
-        default=VerificationStatus.PENDING,
+    citizenship_front = models.ImageField(
+        upload_to="workers/citizenship/"
     )
+
+    citizenship_back = models.ImageField(
+        upload_to="workers/citizenship/"
+    )
+
+    is_verified = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.full_name
+    

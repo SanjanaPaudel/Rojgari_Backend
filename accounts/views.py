@@ -2,22 +2,12 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.serializers import (
     CustomerSignupSerializer,
     WorkerSignupSerializer,
 )
 from accounts.services.auth_service import AuthService
-
-
-def get_tokens(user):
-    refresh = RefreshToken.for_user(user)
-
-    return {
-        "refresh": str(refresh),
-        "access": str(refresh.access_token),
-    }
 
 
 @api_view(["POST"])
@@ -29,8 +19,6 @@ def customer_signup(request):
     if serializer.is_valid():
         user = AuthService.create_customer(serializer.validated_data)
 
-        tokens = get_tokens(user)
-
         return Response(
             {
                 "message": "Customer account created successfully.",
@@ -41,7 +29,6 @@ def customer_signup(request):
                     "email": user.email,
                     "role": user.role,
                 },
-                "tokens": tokens,
             },
             status=status.HTTP_201_CREATED,
         )
@@ -61,8 +48,6 @@ def worker_signup(request):
     if serializer.is_valid():
         user = AuthService.create_worker(serializer.validated_data)
 
-        tokens = get_tokens(user)
-
         return Response(
             {
                 "message": "Worker account created successfully.",
@@ -73,7 +58,6 @@ def worker_signup(request):
                     "email": user.email,
                     "role": user.role,
                 },
-                "tokens": tokens,
             },
             status=status.HTTP_201_CREATED,
         )
