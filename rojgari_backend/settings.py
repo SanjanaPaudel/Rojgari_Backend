@@ -11,8 +11,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
-from pathlib import Path
 from datetime import timedelta
+from pathlib import Path
 
 import environ
 
@@ -52,10 +52,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "rest_framework",
     "rest_framework_simplejwt",
-
     "accounts",
 ]
 
@@ -145,31 +143,17 @@ STATIC_URL = "static/"
 AUTH_USER_MODEL = "accounts.User"
 
 REST_FRAMEWORK = {
-
     "DEFAULT_AUTHENTICATION_CLASSES": (
-
         "rest_framework_simplejwt.authentication.JWTAuthentication",
-
     ),
-
-    "DEFAULT_PERMISSION_CLASSES": (
-
-        "rest_framework.permissions.IsAuthenticated",
-
-    ),
-
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
 
 SIMPLE_JWT = {
-
     "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
-
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
-
     "ROTATE_REFRESH_TOKENS": False,
-
     "BLACKLIST_AFTER_ROTATION": False,
-
 }
 
 # Media Files (User Uploaded Files)

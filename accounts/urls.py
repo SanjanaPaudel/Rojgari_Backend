@@ -6,17 +6,14 @@ from accounts.views import (
 )
 
 urlpatterns = [
-
     path(
         "signup/customer/",
         customer_signup,
         name="customer-signup",
     ),
-
     path(
         "signup/worker/",
         worker_signup,
         name="worker-signup",
     ),
-
 ]

@@ -2,14 +2,12 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.serializers import (
     CustomerSignupSerializer,
     WorkerSignupSerializer,
 )
-
 from accounts.services.auth_service import AuthService
 
 
@@ -29,10 +27,7 @@ def customer_signup(request):
     serializer = CustomerSignupSerializer(data=request.data)
 
     if serializer.is_valid():
-
-        user = AuthService.create_customer(
-            serializer.validated_data
-        )
+        user = AuthService.create_customer(serializer.validated_data)
 
         tokens = get_tokens(user)
 
@@ -64,10 +59,7 @@ def worker_signup(request):
     serializer = WorkerSignupSerializer(data=request.data)
 
     if serializer.is_valid():
-
-        user = AuthService.create_worker(
-            serializer.validated_data
-        )
+        user = AuthService.create_worker(serializer.validated_data)
 
         tokens = get_tokens(user)
 

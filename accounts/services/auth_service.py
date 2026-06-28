@@ -1,14 +1,13 @@
 from django.db import transaction
 
 from accounts.models import (
-    User,
     CustomerProfile,
+    User,
     WorkerProfile,
 )
 
 
 class AuthService:
-
     @staticmethod
     @transaction.atomic
     def create_customer(validated_data):
@@ -25,12 +24,9 @@ class AuthService:
         user.set_password(password)
         user.save()
 
-        CustomerProfile.objects.create(
-            user=user
-        )
+        CustomerProfile.objects.create(user=user)
 
         return user
-
 
     @staticmethod
     @transaction.atomic
