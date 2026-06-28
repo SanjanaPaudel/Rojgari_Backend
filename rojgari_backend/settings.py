@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
+from datetime import timedelta
 
 import environ
 
@@ -51,12 +52,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Local apps
+
+    "rest_framework",
+    "rest_framework_simplejwt",
+
     "accounts",
-    "services",
-    "bookings",
-    "payments",
-    "notifications",
 ]
 
 MIDDLEWARE = [
@@ -142,4 +142,39 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 # Custom user model
+AUTH_USER_MODEL = "accounts.User"
+
+REST_FRAMEWORK = {
+
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+
+    ),
+
+    "DEFAULT_PERMISSION_CLASSES": (
+
+        "rest_framework.permissions.IsAuthenticated",
+
+    ),
+
+}
+
+SIMPLE_JWT = {
+
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+
+    "ROTATE_REFRESH_TOKENS": False,
+
+    "BLACKLIST_AFTER_ROTATION": False,
+
+}
+
+# Media Files (User Uploaded Files)
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
 AUTH_USER_MODEL = "accounts.User"

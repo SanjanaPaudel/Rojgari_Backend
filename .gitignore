@@ -25,3 +25,13 @@ env/
 # OS files
 .DS_Store
 Thumbs.db
+
+env/
+
+media/
+
+__pycache__/
+
+*.pyc
+
+.env
