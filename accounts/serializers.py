@@ -3,8 +3,8 @@ from rest_framework import serializers
 from .validators import (
     validate_nepal_phone,
     validate_strong_password,
-    validate_unique_phone,
     validate_unique_email,
+    validate_unique_phone,
 )
 
 
@@ -44,7 +44,7 @@ class BaseSignupSerializer(serializers.Serializer):
         return attrs
 
 class CustomerSignupSerializer(BaseSignupSerializer):
-   
+
     email = serializers.EmailField(
     required=False,
     allow_null=True,

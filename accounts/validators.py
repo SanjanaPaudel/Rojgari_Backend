@@ -2,7 +2,7 @@ import re
 
 from rest_framework import serializers
 
-from .models import User, PendingRegistration
+from .models import PendingRegistration, User
 
 
 def validate_nepal_phone(phone_number):
