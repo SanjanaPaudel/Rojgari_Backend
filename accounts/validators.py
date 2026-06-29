@@ -22,9 +22,7 @@ def validate_nepal_phone(phone_number):
     pattern = r"^(?:\+977)?9[78]\d{8}$"
 
     if not re.match(pattern, phone_number):
-        raise serializers.ValidationError(
-            "Enter a valid Nepal phone number."
-        )
+        raise serializers.ValidationError("Enter a valid Nepal phone number.")
 
     if phone_number.startswith("98") or phone_number.startswith("97"):
         phone_number = "+977" + phone_number
@@ -43,9 +41,7 @@ def validate_strong_password(password):
     """
 
     if len(password) < 8:
-        raise serializers.ValidationError(
-            "Password must be at least 8 characters."
-        )
+        raise serializers.ValidationError("Password must be at least 8 characters.")
 
     if not re.search(r"[A-Z]", password):
         raise serializers.ValidationError(
@@ -58,9 +54,7 @@ def validate_strong_password(password):
         )
 
     if not re.search(r"\d", password):
-        raise serializers.ValidationError(
-            "Password must contain at least one number."
-        )
+        raise serializers.ValidationError("Password must contain at least one number.")
 
     if not re.search(r"[!@#$%^&*(),.?\":{}|<>]", password):
         raise serializers.ValidationError(
@@ -69,24 +63,22 @@ def validate_strong_password(password):
 
     return password
 
+
 def validate_unique_phone(phone_number):
     """
     Check if phone number already exists.
     """
 
     if User.objects.filter(phone_number=phone_number).exists():
-        raise serializers.ValidationError(
-            "Phone number is already registered."
-        )
+        raise serializers.ValidationError("Phone number is already registered.")
 
-    if PendingRegistration.objects.filter(
-        phone_number=phone_number
-    ).exists():
+    if PendingRegistration.objects.filter(phone_number=phone_number).exists():
         raise serializers.ValidationError(
             "OTP verification is pending for this phone number."
         )
 
     return phone_number
+
 
 def validate_unique_email(email):
     """
@@ -94,8 +86,6 @@ def validate_unique_email(email):
     """
 
     if email and User.objects.filter(email=email).exists():
-        raise serializers.ValidationError(
-            "Email is already registered."
-        )
+        raise serializers.ValidationError("Email is already registered.")
 
     return email

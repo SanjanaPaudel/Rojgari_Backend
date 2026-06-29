@@ -77,6 +77,7 @@ class WorkerProfile(models.Model):
     def __str__(self):
         return self.user.full_name
 
+
 class PendingRegistration(models.Model):
     ROLE_CHOICES = (
         ("customer", "Customer"),

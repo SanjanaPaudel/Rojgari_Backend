@@ -9,7 +9,6 @@ from .validators import (
 
 
 class BaseSignupSerializer(serializers.Serializer):
-
     full_name = serializers.CharField(
         max_length=255,
     )
@@ -36,37 +35,35 @@ class BaseSignupSerializer(serializers.Serializer):
     def validate(self, attrs):
         if attrs["password"] != attrs["confirm_password"]:
             raise serializers.ValidationError(
-                {
-                    "confirm_password": "Passwords do not match."
-                }
+                {"confirm_password": "Passwords do not match."}
             )
 
         return attrs
 
-class CustomerSignupSerializer(BaseSignupSerializer):
 
+class CustomerSignupSerializer(BaseSignupSerializer):
     email = serializers.EmailField(
-    required=False,
-    allow_null=True,
-    allow_blank=True,
-    validators=[
-        validate_unique_email,
-    ],
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+        validators=[
+            validate_unique_email,
+        ],
     )
 
     profile_photo = serializers.ImageField(
         required=False,
     )
 
-class WorkerSignupSerializer(BaseSignupSerializer):
 
+class WorkerSignupSerializer(BaseSignupSerializer):
     email = serializers.EmailField(
-    required=False,
-    allow_null=True,
-    allow_blank=True,
-    validators=[
-        validate_unique_email,
-    ],
+        required=False,
+        allow_null=True,
+        allow_blank=True,
+        validators=[
+            validate_unique_email,
+        ],
     )
 
     permanent_address = serializers.CharField()
@@ -76,4 +73,3 @@ class WorkerSignupSerializer(BaseSignupSerializer):
     citizenship_front = serializers.ImageField()
 
     citizenship_back = serializers.ImageField()
-
