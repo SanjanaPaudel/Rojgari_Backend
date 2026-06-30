@@ -50,14 +50,14 @@ class AuthService:
 
         return user
 
-@staticmethod
-def login(validated_data):
-    phone_number = validated_data["phone_number"]
-    password = validated_data["password"]
+    @staticmethod
+    def login(validated_data):
+        phone_number = validated_data["phone_number"]
+        password = validated_data["password"]
 
-    user = authenticate(phone_number=phone_number, password=password)
+        user = authenticate(phone_number=phone_number, password=password)
 
-    if user is None:
-        raise AuthenticationFailed("Invalid phone number or password.")
+        if user is None:
+            raise AuthenticationFailed("Invalid phone number or password.")
 
-    return user
+        return user
