@@ -1,5 +1,6 @@
 from accounts.models import CustomerProfile, User, WorkerProfile
-
+from django.contrib.auth import authenticate
+from rest_framework.exceptions import AuthenticationFailed
 
 class AuthService:
     @staticmethod
@@ -49,5 +50,14 @@ class AuthService:
 
         return user
 
-    def login():
-        return "This is login module"
+@staticmethod
+def login(validated_data):
+    phone_number = validated_data["phone_number"]
+    password = validated_data["password"]
+
+    user = authenticate(phone_number=phone_number, password=password)
+
+    if user is None:
+        raise AuthenticationFailed("Invalid phone number or password.")
+
+    return user

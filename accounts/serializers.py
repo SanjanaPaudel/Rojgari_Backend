@@ -66,6 +66,16 @@ class WorkerSignupSerializer(BaseSignupSerializer):
         ],
     )
 
+# Validate the Credentials for Login 
+class UserLoginSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(
+        max_length = 14,
+        validators=[validate_nepal_phone]
+        )
+    
+    password = serializers.CharField(write_only = True)
+
+
     permanent_address = serializers.CharField()
 
     profile_photo = serializers.ImageField()

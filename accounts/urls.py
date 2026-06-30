@@ -13,19 +13,7 @@ urlpatterns = [
         views.worker_signup,
         name="worker-signup",
     ),
-    path(
-        "customer/login",
-        views.customer_login,
-        name="customer-login"
-    ),
-    path(
-        "customer/refresh",
-        views.customer_refresh,
-        name="customer-refresh"
-    )
-    path(
-        "customer/logout",
-        views.customer_logout,
-        name="customer-logout"
-    )
+    path("login/", views.user_login, name="user-login"),
+    path("refresh/", views.user_refresh, name="user-refresh"),
+    path("logout/", views.user_logout, name="user-logout"),
 ]
