@@ -48,3 +48,6 @@ class AuthService:
         )
 
         return user
+
+    def login():
+        return "This is login module"

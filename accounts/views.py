@@ -66,3 +66,12 @@ def worker_signup(request):
         serializer.errors,
         status=status.HTTP_400_BAD_REQUEST,
     )
+
+def login():
+    return "User logged-In"
+
+def refresh():
+    return "Refreshed "
+
+def logout():
+    return "logout"
