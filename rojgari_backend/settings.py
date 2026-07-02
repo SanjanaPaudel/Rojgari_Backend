@@ -158,9 +158,9 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": False,
 }
 
-# Media Files (User Uploaded Files)
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+# Twilio Configuration
+TWILIO_ACCOUNT_SID = env("TWILIO_ACCOUNT_SID", default="")
+TWILIO_AUTH_TOKEN = env("TWILIO_AUTH_TOKEN", default="")
+TWILIO_PHONE_NUMBER = env("TWILIO_PHONE_NUMBER", default="")
 
-AUTH_USER_MODEL = "accounts.User"
