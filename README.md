@@ -1,5 +1,3 @@
-
-````markdown
 # 🚀 Rojgari Backend
 
 Rojgari is a service marketplace platform that connects customers with skilled workers. This repository contains the backend implementation built with **Django** and **Django REST Framework (DRF)**, providing secure REST APIs for authentication, user management, and future service-related functionalities.
@@ -9,55 +7,46 @@ Rojgari is a service marketplace platform that connects customers with skilled w
 ## ✨ Features
 
 - 🔐 User Registration (Customer & Worker)
-- 📱 OTP Verification (Development Mode - Terminal OTP)
+- 📱 OTP Verification
 - 🔄 OTP Resend
 - 🔑 JWT Authentication
 - 👤 Customer & Worker Profiles
-- 🛡️ Password Hashing
-- 📂 Image Upload Support
+- 🛡️ Secure Password Hashing
+- 📂 Profile Image Upload
 - 📡 RESTful API Architecture
 - 🏗️ Service Layer Architecture
 - 🗄️ PostgreSQL Ready
-- 📖 Clean and Scalable Codebase
 
 ---
 
 ## 🛠️ Tech Stack
 
-- Python 3.12+
+- Python 3.12
 - Django 6
 - Django REST Framework
 - PostgreSQL
-- JWT Authentication (Simple JWT)
+- Simple JWT
 - Pillow
 - Django Environ
-- Twilio (Future Production OTP Support)
+- Twilio (Production OTP Support)
 
 ---
 
 ## 📁 Project Structure
 
-```
+```text
 Rojgari_Backend/
 │
 ├── accounts/
 │   ├── migrations/
 │   ├── services/
-│   │   ├── auth_service.py
-│   │   ├── otp_service.py
-│   │   └── sms_service.py
 │   ├── models.py
 │   ├── serializers.py
 │   ├── validators.py
 │   ├── views.py
-│   ├── urls.py
-│   └── admin.py
+│   └── urls.py
 │
 ├── rojgari_backend/
-│   ├── settings.py
-│   ├── urls.py
-│   └── wsgi.py
-│
 ├── media/
 ├── requirements.txt
 ├── manage.py
@@ -66,81 +55,49 @@ Rojgari_Backend/
 
 ---
 
-# 🚀 Getting Started
+## 🚀 Getting Started
 
-## Clone Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/SanjanaPaudel/Rojgari_Backend.git
-
 cd Rojgari_Backend
 ```
 
----
-
-## Create Virtual Environment
-
-Windows
+### Create Virtual Environment
 
 ```bash
 python -m venv .venv
 ```
 
-Activate
+### Activate Virtual Environment
+
+**Windows**
 
 ```bash
 .venv\Scripts\activate
 ```
 
----
-
-## Install Dependencies
+### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
----
-
-## Configure Environment Variables
-
-Create a `.env` file in the project root.
-
-Example:
-
-```env
-SECRET_KEY=your_secret_key
-
-DEBUG=True
-
-DATABASE_URL=postgres://username:password@localhost:5432/rojgari
-
-TWILIO_ACCOUNT_SID=your_account_sid
-TWILIO_AUTH_TOKEN=your_auth_token
-TWILIO_PHONE_NUMBER=your_twilio_phone
-
-CACHE_URL=redis://127.0.0.1:6379/1
-```
-
----
-
-## Apply Migrations
+### Run Migrations
 
 ```bash
 python manage.py makemigrations
-
 python manage.py migrate
 ```
 
----
-
-## Run Server
+### Run Development Server
 
 ```bash
 python manage.py runserver
 ```
 
-Backend will be available at
+The backend will run at:
 
 ```
 http://127.0.0.1:8000/
@@ -148,101 +105,45 @@ http://127.0.0.1:8000/
 
 ---
 
-# 📡 Available APIs
+## 📡 Available APIs
 
-## User Registration
-
-```
-POST /api/auth/signup/
-```
-
-Registers both Customer and Worker accounts.
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/signup/` | User Registration |
+| POST | `/api/auth/verify-otp/` | Verify OTP |
+| POST | `/api/auth/resend-otp/` | Resend OTP |
 
 ---
 
-## Verify OTP
+## 📋 Registration Flow
 
-```
-POST /api/auth/verify-otp/
-```
-
-Verifies the OTP and completes account registration.
-
----
-
-## Resend OTP
-
-```
-POST /api/auth/resend-otp/
-```
-
-Generates and sends a new OTP.
-
----
-
-# 📋 Registration Flow
-
-```
-User
- │
- ▼
-Click Sign Up
- │
- ▼
+```text
+Sign Up
+   │
+   ▼
 Choose Role
 (Customer / Worker)
- │
- ▼
+   │
+   ▼
 Registration Form
- │
- ▼
+   │
+   ▼
 Generate OTP
- │
- ▼
+   │
+   ▼
 Verify OTP
- │
- ▼
+   │
+   ▼
 Account Created
- │
- ▼
-Login
 ```
 
 ---
 
-# 🏗️ Architecture
+## 🔐 Authentication
 
-The backend follows a layered architecture.
+JWT Authentication is implemented using **Simple JWT**.
 
-```
-Flutter App
-      │
-      ▼
-REST API
-      │
-      ▼
-Views
-      │
-      ▼
-Serializers
-      │
-      ▼
-Services
-      │
-      ▼
-Models
-      │
-      ▼
-Database
-```
-
----
-
-# 🔐 Authentication
-
-JWT Authentication is implemented using Simple JWT.
-
-Protected APIs require
+Protected APIs require:
 
 ```
 Authorization: Bearer <access_token>
@@ -250,84 +151,41 @@ Authorization: Bearer <access_token>
 
 ---
 
-# 📂 Media Files
+## 🚧 Current Progress
 
-Uploaded images are stored inside
-
-```
-media/
-```
-
----
-
-# 📌 Current Progress
-
-- ✅ Registration
+- ✅ User Registration
 - ✅ OTP Verification
-- ✅ Resend OTP
+- ✅ OTP Resend
 - ✅ Customer Registration
 - ✅ Worker Registration
 - ✅ Profile Creation
 - ✅ Password Encryption
-- ✅ Image Upload
 - ✅ JWT Configuration
 
 ---
 
-# 🚧 Upcoming Features
+## 📌 Upcoming Features
 
-- User Login
+- Login
 - Forgot Password
-- Refresh Tokens
 - Customer Dashboard
 - Worker Dashboard
-- Profile Update
+- Profile Management
 - Service Categories
-- Service Requests
-- Worker Search
-- Booking System
+- Service Booking
 - Reviews & Ratings
 - Notifications
 - Payment Integration
-- Admin Dashboard
 
 ---
 
-# 👨‍💻 Development
-
-Run system checks
-
-```bash
-python manage.py check
-```
-
-Create migrations
-
-```bash
-python manage.py makemigrations
-```
-
-Apply migrations
-
-```bash
-python manage.py migrate
-```
-
----
-
-# 🤝 Contributors
+## 👨‍💻 Contributors
 
 - **Sanjana Paudel**
-- Rojgari Development Team
+- **Rojgari Development Team**
 
 ---
 
-# 📄 License
+## 📄 License
 
-This project is developed for educational and research purposes.
-
----
-
-## ⭐ If you found this project helpful, don't forget to star the repository!
-````
-
+This project is developed for educational and academic purposes.
