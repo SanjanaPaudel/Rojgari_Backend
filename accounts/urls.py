@@ -13,13 +13,11 @@ urlpatterns = [
     #     views.worker_signup,
     #     name="worker-signup",
     # ),
-
     path(
         "verify-otp/",
         views.verify_otp,
         name="verify-otp",
     ),
-
     path(
         "resend-otp/",
         views.resend_otp,

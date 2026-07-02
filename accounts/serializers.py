@@ -42,12 +42,11 @@ class BaseSignupSerializer(serializers.Serializer):
 
 
 class SignupSerializer(BaseSignupSerializer):
-
     role = serializers.ChoiceField(
-    choices=[
-        ("customer", "Customer"),
-        ("worker", "Worker"),
-    ]
+        choices=[
+            ("customer", "Customer"),
+            ("worker", "Worker"),
+        ]
     )
 
     email = serializers.EmailField(
@@ -61,9 +60,7 @@ class SignupSerializer(BaseSignupSerializer):
     )
 
 
-
 class VerifyOTPSerializer(serializers.Serializer):
-
     phone_number = serializers.CharField(
         max_length=14,
     )

@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import make_password
 from accounts.models import PendingRegistration
 from accounts.services.otp_service import OTPService
 
+
 class AuthService:
     @staticmethod
     def create_user_registration(validated_data):
@@ -23,9 +24,7 @@ class AuthService:
             full_name=validated_data["full_name"],
             phone_number=validated_data["phone_number"],
             email=validated_data.get("email"),
-            password=make_password(
-                validated_data["password"]
-            ),
+            password=make_password(validated_data["password"]),
             profile_photo=validated_data.get("profile_photo"),
             otp=otp,
             expires_at=expires_at,
@@ -40,4 +39,3 @@ class AuthService:
             "message": "OTP sent successfully.",
             "expires_in": 180,
         }
-

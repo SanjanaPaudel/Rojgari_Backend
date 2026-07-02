@@ -64,12 +64,6 @@ def validate_strong_password(password):
     return password
 
 
-from django.utils import timezone
-from rest_framework import serializers
-
-from accounts.models import PendingRegistration, User
-
-
 def validate_unique_phone(phone_number):
     """
     Validate that the phone number is not already registered.
@@ -78,17 +72,12 @@ def validate_unique_phone(phone_number):
 
     # User already registered
     if User.objects.filter(phone_number=phone_number).exists():
-        raise serializers.ValidationError(
-            "Phone number is already registered."
-        )
+        raise serializers.ValidationError("Phone number is already registered.")
 
     # Check pending registration
-    pending = PendingRegistration.objects.filter(
-        phone_number=phone_number
-    ).first()
+    pending = PendingRegistration.objects.filter(phone_number=phone_number).first()
 
     if pending:
-
         # Delete expired pending registration automatically
         if pending.is_expired():
             pending.delete()

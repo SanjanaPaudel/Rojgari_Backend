@@ -2,15 +2,14 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from accounts.services.auth_service import AuthService
-from accounts.services.otp_service import OTPService
-from accounts.serializers import SignupSerializer
 
 from accounts.serializers import (
-    VerifyOTPSerializer,
     ResendOTPSerializer,
+    SignupSerializer,
+    VerifyOTPSerializer,
 )
 from accounts.services.auth_service import AuthService
+from accounts.services.otp_service import OTPService
 
 
 @api_view(["POST"])
@@ -20,10 +19,7 @@ def signup(request):
     serializer = SignupSerializer(data=request.data)
 
     if serializer.is_valid():
-
-        result = AuthService.create_user_registration(
-            serializer.validated_data
-        )
+        result = AuthService.create_user_registration(serializer.validated_data)
 
         return Response(
             result,
@@ -120,9 +116,7 @@ def resend_otp(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    result = OTPService.resend_otp(
-        serializer.validated_data["phone_number"]
-    )
+    result = OTPService.resend_otp(serializer.validated_data["phone_number"])
 
     if result["success"]:
         return Response(

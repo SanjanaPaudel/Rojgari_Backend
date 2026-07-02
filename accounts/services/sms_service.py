@@ -3,7 +3,6 @@ from twilio.rest import Client
 
 
 class SMSService:
-
     client = Client(
         settings.TWILIO_ACCOUNT_SID,
         settings.TWILIO_AUTH_TOKEN,
