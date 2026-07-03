@@ -1,7 +1,7 @@
 from accounts.models import CustomerProfile, User, WorkerProfile
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
-# from accounts.models import CustomerProfile, User, WorkerProfile
+
 from django.contrib.auth.hashers import make_password
 from accounts.models import PendingRegistration
 from accounts.services.otp_service import OTPService
@@ -40,33 +40,6 @@ class AuthService:
             "message": "OTP sent successfully.",
             "expires_in": 180,
         }
-    
-    @staticmethod
-    def create_worker(validated_data):
-        validated_data.pop("confirm_password")
-
-        profile_photo = validated_data.pop("profile_photo")
-        citizenship_front = validated_data.pop("citizenship_front")
-        citizenship_back = validated_data.pop("citizenship_back")
-        permanent_address = validated_data.pop("permanent_address")
-
-        user = User.objects.create_user(
-            full_name=validated_data["full_name"],
-            phone_number=validated_data["phone_number"],
-            email=validated_data["email"],
-            password=validated_data["password"],
-            role="worker",
-        )
-
-        WorkerProfile.objects.create(
-            user=user,
-            permanent_address=permanent_address,
-            profile_photo=profile_photo,
-            citizenship_front=citizenship_front,
-            citizenship_back=citizenship_back,
-        )
-
-        return user
 
     @staticmethod
     def login(validated_data):

@@ -8,11 +8,6 @@ urlpatterns = [
         views.signup,
         name="signup",
     ),
-    # path(
-    #     "worker/signup/",
-    #     views.worker_signup,
-    #     name="worker-signup",
-    # ),
     path(
         "verify-otp/",
         views.verify_otp,
