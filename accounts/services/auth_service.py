@@ -1,6 +1,8 @@
-# from accounts.models import CustomerProfile, User, WorkerProfile
-from django.contrib.auth.hashers import make_password
+from accounts.models import CustomerProfile, User, WorkerProfile
+from django.contrib.auth import authenticate
+from rest_framework.exceptions import AuthenticationFailed
 
+from django.contrib.auth.hashers import make_password
 from accounts.models import PendingRegistration
 from accounts.services.otp_service import OTPService
 
@@ -34,8 +36,19 @@ class AuthService:
             validated_data["phone_number"],
             otp,
         )
-
         return {
             "message": "OTP sent successfully.",
             "expires_in": 180,
         }
+
+    @staticmethod
+    def login(validated_data):
+        phone_number = validated_data["phone_number"]
+        password = validated_data["password"]
+
+        user = authenticate(phone_number=phone_number, password=password)
+
+        if user is None:
+            raise AuthenticationFailed("Invalid phone number or password.")
+
+        return user
