@@ -4,14 +4,24 @@ from . import views
 
 urlpatterns = [
     path(
-        "customer/signup/",
-        views.customer_signup,
-        name="customer-signup",
+        "signup/",
+        views.signup,
+        name="signup",
+    ),
+    # path(
+    #     "worker/signup/",
+    #     views.worker_signup,
+    #     name="worker-signup",
+    # ),
+    path(
+        "verify-otp/",
+        views.verify_otp,
+        name="verify-otp",
     ),
     path(
-        "worker/signup/",
-        views.worker_signup,
-        name="worker-signup",
+        "resend-otp/",
+        views.resend_otp,
+        name="resend-otp",
     ),
     path("login/", views.user_login, name="user-login"),
     path("refresh/", views.user_refresh, name="user-refresh"),

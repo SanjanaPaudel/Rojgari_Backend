@@ -66,16 +66,26 @@ def validate_strong_password(password):
 
 def validate_unique_phone(phone_number):
     """
-    Check if phone number already exists.
+    Validate that the phone number is not already registered.
+    Automatically remove expired pending registrations.
     """
 
+    # User already registered
     if User.objects.filter(phone_number=phone_number).exists():
         raise serializers.ValidationError("Phone number is already registered.")
 
-    if PendingRegistration.objects.filter(phone_number=phone_number).exists():
-        raise serializers.ValidationError(
-            "OTP verification is pending for this phone number."
-        )
+    # Check pending registration
+    pending = PendingRegistration.objects.filter(phone_number=phone_number).first()
+
+    if pending:
+        # Delete expired pending registration automatically
+        if pending.is_expired():
+            pending.delete()
+
+        else:
+            raise serializers.ValidationError(
+                "OTP verification is pending for this phone number."
+            )
 
     return phone_number
 

@@ -41,11 +41,15 @@ class BaseSignupSerializer(serializers.Serializer):
         return attrs
 
 
-class CustomerSignupSerializer(BaseSignupSerializer):
+class SignupSerializer(BaseSignupSerializer):
+    role = serializers.ChoiceField(
+        choices=[
+            ("customer", "Customer"),
+            ("worker", "Worker"),
+        ]
+    )
+
     email = serializers.EmailField(
-        required=False,
-        allow_null=True,
-        allow_blank=True,
         validators=[
             validate_unique_email,
         ],
@@ -56,14 +60,20 @@ class CustomerSignupSerializer(BaseSignupSerializer):
     )
 
 
-class WorkerSignupSerializer(BaseSignupSerializer):
-    email = serializers.EmailField(
-        required=False,
-        allow_null=True,
-        allow_blank=True,
+class VerifyOTPSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(
+        max_length=14,
+    )
+    otp = serializers.CharField(
+        max_length=6,
+        min_length=6,
+    )
+
+class ResendOTPSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(
         validators=[
-            validate_unique_email,
-        ],
+            validate_nepal_phone,
+        ]
     )
 
 # Validate the Credentials for Login 

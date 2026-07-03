@@ -1,107 +1,191 @@
-# Rojgari 💼
+# 🚀 Rojgari Backend
 
-Rojgari (meaning "Employment") is a Django-based web application configured with a modern Python environment, containerized development support, a PostgreSQL database, and a Valkey caching layer.
-
----
-
-## Technical Stack
-* **Python Package Manager**: `uv` (Astral's high-performance resolver and installer)
-* **Web Framework**: Django 6.0+
-* **Database**: PostgreSQL 16
-* **Cache**: Valkey 8.0 (wire-compatible with Redis protocol)
-* **Containerization**: Docker & Docker Compose
-* **Testing & Factories**: `factory-boy` & `faker`
+Rojgari is a service marketplace platform that connects customers with skilled workers. This repository contains the backend implementation built with **Django** and **Django REST Framework (DRF)**, providing secure REST APIs for authentication, user management, and future service-related functionalities.
 
 ---
 
-## 🛠️ CLI Commands Log
+## ✨ Features
 
-Here is the log of CLI commands used to set up the project:
+- 🔐 User Registration (Customer & Worker)
+- 📱 OTP Verification
+- 🔄 OTP Resend
+- 🔑 JWT Authentication
+- 👤 Customer & Worker Profiles
+- 🛡️ Secure Password Hashing
+- 📂 Profile Image Upload
+- 📡 RESTful API Architecture
+- 🏗️ Service Layer Architecture
+- 🗄️ PostgreSQL Ready
 
-### 1. Project Initialization & Dependencies
-```bash
-# Initialize a new Python project via uv
-uv init
+---
 
-# Lower Python requirements to >=3.12 (in pyproject.toml) to match slim container images
-# Then regenerate the lockfile
-uv lock
+## 🛠️ Tech Stack
 
-# Add core web and utility dependencies
-uv add django psycopg "psycopg[binary]" redis django-environ
+- Python 3.12
+- Django 6
+- Django REST Framework
+- PostgreSQL
+- Simple JWT
+- Pillow
+- Django Environ
+- Twilio (Production OTP Support)
 
-# Add development and seeding dependencies
-uv add factory-boy faker
-```
+---
 
-### 2. Django Scaffolding
-```bash
-# Start Django project configuration
-uv run django-admin startproject rojgari .
+## 📁 Project Structure
 
-# Create the accounts application (User, UserDetail, and Work models)
-uv run python manage.py startapp accounts
-```
-
-### 3. Database & Seeding Operations
-```bash
-# Detect database changes and generate migrations files
-uv run python manage.py makemigrations
-
-# Apply migrations to the configured database (e.g., PostgreSQL or SQLite)
-uv run python manage.py migrate
-
-# Seed the database with mock profiles and work history (defaults to 10 users)
-uv run python manage.py seed
-
-# Seed a custom number of users (e.g., 50 users)
-uv run python manage.py seed --users 50
+```text
+Rojgari_Backend/
+│
+├── accounts/
+│   ├── migrations/
+│   ├── services/
+│   ├── models.py
+│   ├── serializers.py
+│   ├── validators.py
+│   ├── views.py
+│   └── urls.py
+│
+├── rojgari_backend/
+├── media/
+├── requirements.txt
+├── manage.py
+└── README.md
 ```
 
 ---
 
-## 🐋 Dockerized Dev Environment
+## 🚀 Getting Started
 
-The project is pre-configured with a dockerized stack defining three isolated services in `docker-compose.yml`:
-1. **`web`**: Django dev server running on port `8000`.
-2. **`db`**: PostgreSQL 16 database utilizing a healthcheck verify script.
-3. **`valkey`**: Valkey 8.0 caching layer.
+### Clone the Repository
 
-### How to Run it
-
-To boot the whole environment:
 ```bash
-# Build and run containers in the foreground
-docker compose up --build
-
-# Run containers in detached mode (background)
-docker compose up -d
+git clone https://github.com/SanjanaPaudel/Rojgari_Backend.git
+cd Rojgari_Backend
 ```
 
-### Testing Connectivity
-A built-in status verification page is exposed to confirm database and Valkey health:
-* **URL**: `http://localhost:8000/status/`
-* **Response**:
-  ```json
-  {
-    "database": "healthy",
-    "cache": "healthy"
-  }
-  ```
+### Create Virtual Environment
+
+```bash
+python -m venv .venv
+```
+
+### Activate Virtual Environment
+
+**Windows**
+
+```bash
+.venv\Scripts\activate
+```
+
+### Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Run Migrations
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### Run Development Server
+
+```bash
+python manage.py runserver
+```
+
+The backend will run at:
+
+```
+http://127.0.0.1:8000/
+```
 
 ---
 
-## 📦 Git Repository Status
+## 📡 Available APIs
 
-A git repository has been initialized inside the workspace. To commit the current files, run:
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/signup/` | User Registration |
+| POST | `/api/auth/verify-otp/` | Verify OTP |
+| POST | `/api/auth/resend-otp/` | Resend OTP |
 
-```bash
-# Check status of untracked files
-git status
+---
 
-# Add files to stage
-git add .
+## 📋 Registration Flow
 
-# Make the initial commit
-git commit -m "Initial commit: Django scaffolding with uv, Docker, Postgres, Valkey, and accounts seeder"
+```text
+Sign Up
+   │
+   ▼
+Choose Role
+(Customer / Worker)
+   │
+   ▼
+Registration Form
+   │
+   ▼
+Generate OTP
+   │
+   ▼
+Verify OTP
+   │
+   ▼
+Account Created
 ```
+
+---
+
+## 🔐 Authentication
+
+JWT Authentication is implemented using **Simple JWT**.
+
+Protected APIs require:
+
+```
+Authorization: Bearer <access_token>
+```
+
+---
+
+## 🚧 Current Progress
+
+- ✅ User Registration
+- ✅ OTP Verification
+- ✅ OTP Resend
+- ✅ Customer Registration
+- ✅ Worker Registration
+- ✅ Profile Creation
+- ✅ Password Encryption
+- ✅ JWT Configuration
+
+---
+
+## 📌 Upcoming Features
+
+- Login
+- Forgot Password
+- Customer Dashboard
+- Worker Dashboard
+- Profile Management
+- Service Categories
+- Service Booking
+- Reviews & Ratings
+- Notifications
+- Payment Integration
+
+---
+
+## 👨‍💻 Contributors
+
+- **Sanjana Paudel**
+- **Rojgari Development Team**
+
+---
+
+## 📄 License
+
+This project is developed for educational and academic purposes.
