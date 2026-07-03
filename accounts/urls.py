@@ -23,4 +23,7 @@ urlpatterns = [
         views.resend_otp,
         name="resend-otp",
     ),
+    path("login/", views.user_login, name="user-login"),
+    path("refresh/", views.user_refresh, name="user-refresh"),
+    path("logout/", views.user_logout, name="user-logout"),
 ]
