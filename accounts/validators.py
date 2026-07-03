@@ -99,3 +99,5 @@ def validate_unique_email(email):
         raise serializers.ValidationError("Email is already registered.")
 
     return email
+
+

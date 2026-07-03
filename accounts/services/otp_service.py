@@ -1,8 +1,7 @@
 import random
 from datetime import timedelta
-
 from django.utils import timezone
-
+from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.models import (
     CustomerProfile,
     PendingRegistration,
@@ -86,17 +85,29 @@ class OTPService:
         else:
             WorkerProfile.objects.create(
                 user=user,
-                permanent_address=pending.permanent_address,
                 profile_photo=pending.profile_photo,
-                citizenship_front=pending.citizenship_front,
-                citizenship_back=pending.citizenship_back,
             )
 
         pending.delete()
 
+        refresh = RefreshToken.for_user(user)
+
         return {
             "success": True,
             "message": "Registration completed successfully.",
+
+            "user": {
+                "id": user.id,
+                "full_name": user.full_name,
+                "phone_number": user.phone_number,
+                "email": user.email,
+                "role": user.role,
+            },
+
+            "tokens": {
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+            }
         }
 
     @staticmethod

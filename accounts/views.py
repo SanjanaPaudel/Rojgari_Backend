@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 from accounts.serializers import (
     ResendOTPSerializer,
@@ -128,3 +129,56 @@ def resend_otp(request):
         result,
         status=status.HTTP_400_BAD_REQUEST,
     )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def worker_dashboard(request):
+
+    user = request.user
+
+    if user.role != "worker":
+        return Response(
+            {
+                "success": False,
+                "message": "Only workers can access this dashboard."
+            },
+            status=403,
+        )
+
+    profile = user.workerprofile
+
+    return Response({
+        "success": True,
+
+        "worker": {
+
+            "id": user.id,
+
+            "full_name": user.full_name,
+
+            "phone_number": user.phone_number,
+
+            "email": user.email,
+
+            "role": user.role,
+
+            "profile_photo": (
+                request.build_absolute_uri(profile.profile_photo.url)
+                if profile.profile_photo
+                else None
+            ),
+
+            "is_verified": profile.is_verified,
+
+            "is_online": profile.is_online,
+
+            "years_of_experience": profile.years_of_experience,
+
+            "completed_jobs": profile.completed_jobs,
+
+            "average_rating": float(profile.average_rating),
+
+            "total_reviews": profile.total_reviews,
+        }
+    })

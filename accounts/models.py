@@ -58,19 +58,49 @@ class CustomerProfile(models.Model):
 
 
 class WorkerProfile(models.Model):
+
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        related_name="worker_profile",
     )
 
-    permanent_address = models.TextField()
+    permanent_address = models.TextField(
+        blank=True,
+        default="",
+    )
 
-    profile_photo = models.ImageField(upload_to="workers/profile/")
+    profile_photo = models.ImageField(
+        upload_to="profile_photos/",
+        blank=True,
+        null=True,
+    )
 
-    citizenship_front = models.ImageField(upload_to="workers/citizenship/")
+    citizenship_front = models.ImageField(
+        upload_to="citizenship/front/",
+        blank=True,
+        null=True,
+    )
 
-    citizenship_back = models.ImageField(upload_to="workers/citizenship/")
+    citizenship_back = models.ImageField(
+        upload_to="citizenship/back/",
+        blank=True,
+        null=True,
+    )
+
+    # NEW
+    years_of_experience = models.PositiveIntegerField(default=0)
+
+    is_online = models.BooleanField(default=False)
+
+    completed_jobs = models.PositiveIntegerField(default=0)
+
+    average_rating = models.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        default=0.00,
+    )
+
+    total_reviews = models.PositiveIntegerField(default=0)
 
     is_verified = models.BooleanField(default=False)
 
