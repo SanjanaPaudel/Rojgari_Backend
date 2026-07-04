@@ -1,16 +1,14 @@
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
-
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.serializers import (
     ResendOTPSerializer,
     SignupSerializer,
-    VerifyOTPSerializer,
     UserLoginSerializer,
+    VerifyOTPSerializer,
 )
 from accounts.services.auth_service import AuthService
 from accounts.services.otp_service import OTPService
@@ -34,6 +32,7 @@ def signup(request):
         serializer.errors,
         status=status.HTTP_400_BAD_REQUEST,
     )
+
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -118,49 +117,37 @@ def worker_dashboard(request):
 
     if user.role != "worker":
         return Response(
-            {
-                "success": False,
-                "message": "Only workers can access this dashboard."
-            },
+            {"success": False, "message": "Only workers can access this dashboard."},
             status=403,
         )
 
     profile = user.workerprofile
 
-    return Response({
-        "success": True,
-
-        "worker": {
-
-            "id": user.id,
-
-            "full_name": user.full_name,
-
-            "phone_number": user.phone_number,
-
-            "email": user.email,
-
-            "role": user.role,
-
-            "profile_photo": (
-                request.build_absolute_uri(profile.profile_photo.url)
-                if profile.profile_photo
-                else None
-            ),
-
-            "is_verified": profile.is_verified,
-
-            "is_online": profile.is_online,
-
-            "years_of_experience": profile.years_of_experience,
-
-            "completed_jobs": profile.completed_jobs,
-
-            "average_rating": float(profile.average_rating),
-
-            "total_reviews": profile.total_reviews,
+    return Response(
+        {
+            "success": True,
+            "worker": {
+                "id": user.id,
+                "full_name": user.full_name,
+                "phone_number": user.phone_number,
+                "email": user.email,
+                "role": user.role,
+                "profile_photo": (
+                    request.build_absolute_uri(profile.profile_photo.url)
+                    if profile.profile_photo
+                    else None
+                ),
+                "is_verified": profile.is_verified,
+                "is_online": profile.is_online,
+                "years_of_experience": profile.years_of_experience,
+                "completed_jobs": profile.completed_jobs,
+                "average_rating": float(profile.average_rating),
+                "total_reviews": profile.total_reviews,
+            },
         }
-    })
+    )
+
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def user_login(request):
@@ -185,6 +172,7 @@ def user_login(request):
         status=status.HTTP_200_OK,
     )
 
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def user_refresh(request):
@@ -206,7 +194,6 @@ def user_refresh(request):
         )
 
     return Response({"access": new_access_token}, status=status.HTTP_200_OK)
-
 
 
 @api_view(["POST"])

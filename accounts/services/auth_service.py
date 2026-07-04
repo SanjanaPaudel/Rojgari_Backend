@@ -1,8 +1,7 @@
-from accounts.models import CustomerProfile, User, WorkerProfile
 from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import make_password
 from rest_framework.exceptions import AuthenticationFailed
 
-from django.contrib.auth.hashers import make_password
 from accounts.models import PendingRegistration
 from accounts.services.otp_service import OTPService
 

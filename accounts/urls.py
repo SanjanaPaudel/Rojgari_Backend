@@ -18,7 +18,6 @@ urlpatterns = [
         views.resend_otp,
         name="resend-otp",
     ),
-
     path(
         "worker/dashboard/",
         views.worker_dashboard,

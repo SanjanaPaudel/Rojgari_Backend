@@ -69,6 +69,7 @@ class VerifyOTPSerializer(serializers.Serializer):
         min_length=6,
     )
 
+
 class ResendOTPSerializer(serializers.Serializer):
     phone_number = serializers.CharField(
         validators=[
@@ -76,11 +77,12 @@ class ResendOTPSerializer(serializers.Serializer):
         ]
     )
 
-# Validate the Credentials for Login 
+
+# Validate the Credentials for Login
 class UserLoginSerializer(serializers.Serializer):
     phone_number = serializers.CharField(
-        max_length = 14,
+        max_length=14,
         validators=[validate_nepal_phone],
-        )
-    
-    password = serializers.CharField(write_only = True)
+    )
+
+    password = serializers.CharField(write_only=True)

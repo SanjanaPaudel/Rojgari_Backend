@@ -58,7 +58,6 @@ class CustomerProfile(models.Model):
 
 
 class WorkerProfile(models.Model):
-
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
