@@ -56,6 +56,7 @@ class CustomerProfile(models.Model):
     def __str__(self):
         return self.user.full_name
 
+
 class Skill(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField()
