@@ -2,6 +2,7 @@ import random
 from datetime import timedelta
 
 from django.utils import timezone
+
 from accounts.models import (
     CustomerProfile,
     PendingRegistration,
@@ -90,11 +91,9 @@ class OTPService:
 
         pending.delete()
 
-    
-
         return {
             "success": True,
-            "message": "Registration completed successfully. Please login to continue."
+            "message": "Registration completed successfully. Please login to continue.",
         }
 
     @staticmethod
