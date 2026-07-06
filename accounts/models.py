@@ -56,6 +56,15 @@ class CustomerProfile(models.Model):
     def __str__(self):
         return self.user.full_name
 
+class Skill(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField()
+    icon = models.CharField(max_length=100, blank=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.name
+
 
 class WorkerProfile(models.Model):
     user = models.OneToOneField(
@@ -84,6 +93,16 @@ class WorkerProfile(models.Model):
         upload_to="citizenship/back/",
         blank=True,
         null=True,
+    )
+
+    skills = models.ManyToManyField(
+        Skill,
+        blank=True,
+        related_name="workers",
+    )
+
+    has_selected_skills = models.BooleanField(
+        default=False,
     )
 
     # NEW
