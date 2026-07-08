@@ -14,8 +14,8 @@ from accounts.services.auth_service import AuthService
 from accounts.services.otp_service import OTPService
 
 from .models import Skill
-from .serializers import SkillSerializer, SelectSkillsSerializer
 from .permissions import IsWorker
+from .serializers import SelectSkillsSerializer, SkillSerializer
 
 
 @api_view(["POST"])
@@ -237,6 +237,7 @@ def user_logout(request):
         status=status.HTTP_205_RESET_CONTENT,
     )
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsWorker])
 def get_skills(request):
@@ -247,11 +248,8 @@ def get_skills(request):
         many=True,
     )
 
-    return Response(
-        {
-            "skills": serializer.data
-        }
-    )
+    return Response({"skills": serializer.data})
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsWorker])
@@ -275,9 +273,7 @@ def select_skills(request):
     return Response(
         {
             "message": "Skills selected successfully.",
-            "selected_skills": [
-                skill.name for skill in skills
-            ],
+            "selected_skills": [skill.name for skill in skills],
         },
         status=200,
     )

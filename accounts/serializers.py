@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import Skill
 
+from .models import Skill
 from .validators import (
     validate_nepal_phone,
     validate_strong_password,
@@ -98,6 +98,7 @@ class SkillSerializer(serializers.ModelSerializer):
             "description",
             "icon",
         ]
+
 
 class SelectSkillsSerializer(serializers.Serializer):
     skills = serializers.ListField(
