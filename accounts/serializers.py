@@ -98,3 +98,9 @@ class SkillSerializer(serializers.ModelSerializer):
             "description",
             "icon",
         ]
+
+class SelectSkillsSerializer(serializers.Serializer):
+    skills = serializers.ListField(
+        child=serializers.IntegerField(),
+        allow_empty=False,
+    )

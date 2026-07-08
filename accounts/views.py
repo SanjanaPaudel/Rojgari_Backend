@@ -14,7 +14,7 @@ from accounts.services.auth_service import AuthService
 from accounts.services.otp_service import OTPService
 
 from .models import Skill
-from .serializers import SkillSerializer
+from .serializers import SkillSerializer, SelectSkillsSerializer
 from .permissions import IsWorker
 
 
@@ -239,4 +239,33 @@ def get_skills(request):
         {
             "skills": serializer.data
         }
+    )
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsWorker])
+def select_skills(request):
+    serializer = SelectSkillsSerializer(data=request.data)
+
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=400)
+
+    worker = request.user.workerprofile
+
+    skill_ids = serializer.validated_data["skills"]
+
+    skills = Skill.objects.filter(id__in=skill_ids)
+
+    worker.skills.set(skills)
+
+    worker.has_selected_skills = True
+    worker.save()
+
+    return Response(
+        {
+            "message": "Skills selected successfully.",
+            "selected_skills": [
+                skill.name for skill in skills
+            ],
+        },
+        status=200,
     )
