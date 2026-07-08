@@ -32,9 +32,10 @@ class AuthService:
         )
 
         OTPService.send_otp(
-            validated_data["phone_number"],
+            validated_data["email"],
             otp,
         )
+        
         return {
             "message": "OTP sent successfully.",
             "expires_in": 180,

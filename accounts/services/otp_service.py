@@ -1,15 +1,14 @@
 import random
 from datetime import timedelta
-
 from django.utils import timezone
-
 from accounts.models import (
     CustomerProfile,
     PendingRegistration,
     User,
     WorkerProfile,
 )
-
+from django.conf import settings
+from django.core.mail import send_mail
 
 class OTPService:
     OTP_LENGTH = 6
@@ -26,20 +25,40 @@ class OTPService:
 
         return timezone.now() + timedelta(minutes=OTPService.OTP_EXPIRY_MINUTES)
 
+
     @staticmethod
-    def send_otp(phone_number, otp):
+    def send_otp(email, otp):
         """
-        Development OTP sender.
-        Prints OTP to terminal.
+        Send OTP to user's email.
         """
 
-        print("\n" + "=" * 50)
-        print("ROJGARI OTP")
-        print("=" * 50)
-        print(f"Phone Number : {phone_number}")
-        print(f"OTP          : {otp}")
-        print(f"Expires In   : {OTPService.OTP_EXPIRY_MINUTES} minutes")
-        print("=" * 50 + "\n")
+        subject = "Rojgari - Email Verification"
+
+        message = f"""
+    Hello,
+
+    Thank you for registering with Rojgari.
+
+    Your One-Time Password (OTP) is:
+
+    {otp}
+
+    This OTP is valid for 3 minutes.
+
+    If you did not request this verification, please ignore this email.
+
+    Regards,
+    Rojgari Team
+    """
+
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email],
+            fail_silently=False,
+        )
+
 
     @staticmethod
     def verify_otp(phone_number, otp):
@@ -123,7 +142,7 @@ class OTPService:
         pending.save()
 
         OTPService.send_otp(
-            pending.phone_number,
+            pending.email,
             otp,
         )
 
