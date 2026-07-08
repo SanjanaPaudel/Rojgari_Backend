@@ -162,6 +162,17 @@ def user_login(request):
 
     refresh = RefreshToken.for_user(user)
 
+    next_screen = ""
+
+    if user.role == "customer":
+        next_screen = "customer_dashboard"
+
+    elif user.role == "worker":
+        if user.workerprofile.has_selected_skills:
+            next_screen = "worker_dashboard"
+        else:
+            next_screen = "select_skills"
+
     return Response(
         {
             "access": str(refresh.access_token),
@@ -172,6 +183,7 @@ def user_login(request):
                 "phone_number": user.phone_number,
                 "role": user.role,
             },
+            "next_screen": next_screen,
         },
         status=status.HTTP_200_OK,
     )
