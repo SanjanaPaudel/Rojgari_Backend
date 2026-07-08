@@ -1,14 +1,17 @@
 import random
 from datetime import timedelta
+
+from django.conf import settings
+from django.core.mail import send_mail
 from django.utils import timezone
+
 from accounts.models import (
     CustomerProfile,
     PendingRegistration,
     User,
     WorkerProfile,
 )
-from django.conf import settings
-from django.core.mail import send_mail
+
 
 class OTPService:
     OTP_LENGTH = 6
@@ -24,7 +27,6 @@ class OTPService:
     def get_expiry_time():
 
         return timezone.now() + timedelta(minutes=OTPService.OTP_EXPIRY_MINUTES)
-
 
     @staticmethod
     def send_otp(email, otp):
@@ -58,7 +60,6 @@ class OTPService:
             recipient_list=[email],
             fail_silently=False,
         )
-
 
     @staticmethod
     def verify_otp(phone_number, otp):

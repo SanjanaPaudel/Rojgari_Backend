@@ -35,7 +35,7 @@ class AuthService:
             validated_data["email"],
             otp,
         )
-        
+
         return {
             "message": "OTP sent successfully.",
             "expires_in": 180,
