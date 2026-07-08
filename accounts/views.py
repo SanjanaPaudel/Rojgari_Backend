@@ -13,6 +13,10 @@ from accounts.serializers import (
 from accounts.services.auth_service import AuthService
 from accounts.services.otp_service import OTPService
 
+from .models import Skill
+from .serializers import SkillSerializer
+from .permissions import IsWorker
+
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -219,4 +223,20 @@ def user_logout(request):
     return Response(
         {"detail": "Successfully logged out."},
         status=status.HTTP_205_RESET_CONTENT,
+    )
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsWorker])
+def get_skills(request):
+    skills = Skill.objects.filter(is_active=True)
+
+    serializer = SkillSerializer(
+        skills,
+        many=True,
+    )
+
+    return Response(
+        {
+            "skills": serializer.data
+        }
     )

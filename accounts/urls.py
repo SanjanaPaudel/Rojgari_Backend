@@ -19,6 +19,11 @@ urlpatterns = [
         name="resend-otp",
     ),
     path(
+        "worker/skills/",
+        views.get_skills,
+        name="worker-skills",
+    ),
+    path(
         "worker/dashboard/",
         views.worker_dashboard,
         name="worker-dashboard",

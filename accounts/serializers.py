@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from .models import Skill
 
 from .validators import (
     validate_nepal_phone,
@@ -86,3 +87,14 @@ class UserLoginSerializer(serializers.Serializer):
     )
 
     password = serializers.CharField(write_only=True)
+
+
+class SkillSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Skill
+        fields = [
+            "id",
+            "name",
+            "description",
+            "icon",
+        ]
