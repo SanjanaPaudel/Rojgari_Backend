@@ -64,13 +64,19 @@ git clone https://github.com/SanjanaPaudel/Rojgari_Backend.git
 cd Rojgari_Backend
 ```
 
-### Create Virtual Environment
+### Check UV version
 
 ```bash
-python -m venv .venv
+uv --version
 ```
 
-### Activate Virtual Environment
+### Sync the Project
+
+```bash
+uv sync
+```
+
+### Activate Virtual Environment (Optional)
 
 **Windows**
 
@@ -78,10 +84,12 @@ python -m venv .venv
 .venv\Scripts\activate
 ```
 
-### Install Dependencies
+**You can always use UV command at the beginnning to avoid this step**
+
+### Create .env file
 
 ```bash
-pip install -r requirements.txt
+   copy .env.example .env
 ```
 
 ### Run Migrations
@@ -107,11 +115,11 @@ http://127.0.0.1:8000/
 
 ## 📡 Available APIs
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/signup/` | User Registration |
-| POST | `/api/auth/verify-otp/` | Verify OTP |
-| POST | `/api/auth/resend-otp/` | Resend OTP |
+| Method | Endpoint                | Description       |
+| ------ | ----------------------- | ----------------- |
+| POST   | `/api/auth/signup/`     | User Registration |
+| POST   | `/api/auth/verify-otp/` | Verify OTP        |
+| POST   | `/api/auth/resend-otp/` | Resend OTP        |
 
 ---
 
