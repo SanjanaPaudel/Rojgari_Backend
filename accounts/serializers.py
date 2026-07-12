@@ -136,3 +136,6 @@ class WorkerDashboardSerializer(serializers.ModelSerializer):
             return skill.name
 
         return None
+    
+class WorkerStatusSerializer(serializers.Serializer):
+    is_online = serializers.BooleanField()
