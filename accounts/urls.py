@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import worker_dashboard
+from .views import worker_dashboard, update_worker_status
 
 urlpatterns = [
     path(
@@ -32,6 +32,11 @@ urlpatterns = [
         "worker/select-skills/",
         views.select_skills,
         name="worker-select-skills",
+    ),
+    path(
+        "worker/status/",
+        update_worker_status,
+        name="worker-status",
     ),
     path("login/", views.user_login, name="user-login"),
     path("refresh/", views.user_refresh, name="user-refresh"),
