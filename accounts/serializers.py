@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Skill
+from .models import Skill, WorkerProfile
 from .validators import (
     validate_nepal_phone,
     validate_strong_password,
@@ -105,3 +105,34 @@ class SelectSkillsSerializer(serializers.Serializer):
         child=serializers.IntegerField(),
         allow_empty=False,
     )
+
+
+class WorkerDashboardSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(source="user.full_name")
+    phone_number = serializers.CharField(source="user.phone_number")
+
+    primary_skill = serializers.SerializerMethodField()
+
+    class Meta:
+        model = WorkerProfile
+
+        fields = [
+            "full_name",
+            "phone_number",
+            "profile_photo",
+            "years_of_experience",
+            "average_rating",
+            "completed_jobs",
+            "total_reviews",
+            "is_verified",
+            "is_online",
+            "primary_skill",
+        ]
+
+    def get_primary_skill(self, obj):
+        skill = obj.skills.first()
+
+        if skill:
+            return skill.name
+
+        return None
