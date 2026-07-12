@@ -1,11 +1,7 @@
 from accounts.models import WorkerProfile
 
 
-from accounts.models import WorkerProfile
-
-
 class WorkerDashboardService:
-
     @staticmethod
     def get_dashboard(user):
         worker = (
@@ -26,9 +22,7 @@ class WorkerDashboardService:
                 "full_name": worker.user.full_name,
                 "phone_number": worker.user.phone_number,
                 "profile_photo": (
-                    worker.profile_photo.url
-                    if worker.profile_photo
-                    else None
+                    worker.profile_photo.url if worker.profile_photo else None
                 ),
                 "skills": skills,
                 "years_of_experience": worker.years_of_experience,

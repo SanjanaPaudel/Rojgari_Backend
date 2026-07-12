@@ -1,6 +1,7 @@
 from django.urls import path
+
 from . import views
-from .views import worker_dashboard, update_worker_status
+from .views import update_worker_status
 
 urlpatterns = [
     path(

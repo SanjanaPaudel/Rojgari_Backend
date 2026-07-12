@@ -2,7 +2,6 @@ from accounts.models import WorkerProfile
 
 
 class WorkerService:
-
     @staticmethod
     def update_online_status(user, is_online):
         worker = WorkerProfile.objects.get(user=user)
@@ -11,10 +10,6 @@ class WorkerService:
         worker.save()
 
         return {
-            "message": (
-                "You are now online."
-                if is_online
-                else "You are now offline."
-            ),
+            "message": ("You are now online." if is_online else "You are now offline."),
             "is_online": worker.is_online,
         }

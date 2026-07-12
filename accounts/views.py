@@ -11,13 +11,14 @@ from accounts.serializers import (
     VerifyOTPSerializer,
 )
 from accounts.services.auth_service import AuthService
+from accounts.services.dashboard_service import WorkerDashboardService
 from accounts.services.otp_service import OTPService
+from accounts.services.worker_service import WorkerService
 
 from .models import Skill
 from .permissions import IsWorker
 from .serializers import SelectSkillsSerializer, SkillSerializer, WorkerStatusSerializer
-from accounts.services.dashboard_service import WorkerDashboardService
-from accounts.services.worker_service import WorkerService
+
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -119,9 +120,7 @@ def resend_otp(request):
 def worker_dashboard(request):
     if request.user.role != "worker":
         return Response(
-            {
-                "detail": "Only workers can access this dashboard."
-            },
+            {"detail": "Only workers can access this dashboard."},
             status=status.HTTP_403_FORBIDDEN,
         )
 
@@ -129,15 +128,14 @@ def worker_dashboard(request):
 
     return Response(data)
 
+
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])
 def update_worker_status(request):
 
     if request.user.role != "worker":
         return Response(
-            {
-                "detail": "Only workers can update their status."
-            },
+            {"detail": "Only workers can update their status."},
             status=status.HTTP_403_FORBIDDEN,
         )
 
