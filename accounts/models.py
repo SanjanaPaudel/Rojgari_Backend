@@ -60,7 +60,11 @@ class CustomerProfile(models.Model):
 class Skill(models.Model):
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField()
-    icon = models.CharField(max_length=100, blank=True)
+    icon = models.ImageField(
+        upload_to="skills/icons/",
+        blank=True,
+        null=True,
+    )
     is_active = models.BooleanField(default=True)
 
     def __str__(self):

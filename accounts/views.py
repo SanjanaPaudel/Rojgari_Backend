@@ -11,11 +11,13 @@ from accounts.serializers import (
     VerifyOTPSerializer,
 )
 from accounts.services.auth_service import AuthService
+from accounts.services.dashboard_service import WorkerDashboardService
 from accounts.services.otp_service import OTPService
+from accounts.services.worker_service import WorkerService
 
 from .models import Skill
 from .permissions import IsWorker
-from .serializers import SelectSkillsSerializer, SkillSerializer
+from .serializers import SelectSkillsSerializer, SkillSerializer, WorkerStatusSerializer
 
 
 @api_view(["POST"])
@@ -116,40 +118,36 @@ def resend_otp(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def worker_dashboard(request):
-
-    user = request.user
-
-    if user.role != "worker":
+    if request.user.role != "worker":
         return Response(
-            {"success": False, "message": "Only workers can access this dashboard."},
-            status=403,
+            {"detail": "Only workers can access this dashboard."},
+            status=status.HTTP_403_FORBIDDEN,
         )
 
-    profile = user.workerprofile
+    data = WorkerDashboardService.get_dashboard(request.user)
 
-    return Response(
-        {
-            "success": True,
-            "worker": {
-                "id": user.id,
-                "full_name": user.full_name,
-                "phone_number": user.phone_number,
-                "email": user.email,
-                "role": user.role,
-                "profile_photo": (
-                    request.build_absolute_uri(profile.profile_photo.url)
-                    if profile.profile_photo
-                    else None
-                ),
-                "is_verified": profile.is_verified,
-                "is_online": profile.is_online,
-                "years_of_experience": profile.years_of_experience,
-                "completed_jobs": profile.completed_jobs,
-                "average_rating": float(profile.average_rating),
-                "total_reviews": profile.total_reviews,
-            },
-        }
+    return Response(data)
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def update_worker_status(request):
+
+    if request.user.role != "worker":
+        return Response(
+            {"detail": "Only workers can update their status."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    serializer = WorkerStatusSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    result = WorkerService.update_online_status(
+        request.user,
+        serializer.validated_data["is_online"],
     )
+
+    return Response(result)
 
 
 @api_view(["POST"])
