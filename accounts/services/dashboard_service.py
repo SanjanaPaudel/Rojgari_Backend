@@ -1,20 +1,25 @@
 from accounts.models import WorkerProfile
 
 
+from accounts.models import WorkerProfile
+
+
 class WorkerDashboardService:
 
     @staticmethod
     def get_dashboard(user):
-        worker = WorkerProfile.objects.select_related(
-            "user"
-        ).prefetch_related(
-            "skills"
-        ).get(user=user)
+        worker = (
+            WorkerProfile.objects.select_related("user")
+            .prefetch_related("skills")
+            .get(user=user)
+        )
 
-        primary_skill = None
-
-        if worker.skills.exists():
-            primary_skill = worker.skills.first().name
+        skills = list(
+            worker.skills.values_list(
+                "name",
+                flat=True,
+            )
+        )
 
         return {
             "worker": {
@@ -25,13 +30,13 @@ class WorkerDashboardService:
                     if worker.profile_photo
                     else None
                 ),
-                "primary_skill": primary_skill,
+                "skills": skills,
                 "years_of_experience": worker.years_of_experience,
                 "verified": worker.is_verified,
                 "is_online": worker.is_online,
                 "stats": {
                     "jobs_done": 28,
-                    "skills": worker.skills.count(),
+                    "skills": len(skills),
                     "reviews": 12,
                     "rating": 4.8,
                 },

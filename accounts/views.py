@@ -16,6 +16,7 @@ from accounts.services.otp_service import OTPService
 from .models import Skill
 from .permissions import IsWorker
 from .serializers import SelectSkillsSerializer, SkillSerializer
+from accounts.services.dashboard_service import WorkerDashboardService
 
 
 @api_view(["POST"])
@@ -150,6 +151,21 @@ def worker_dashboard(request):
             },
         }
     )
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def worker_dashboard(request):
+    if request.user.role != "worker":
+        return Response(
+            {
+                "detail": "Only workers can access this dashboard."
+            },
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = WorkerDashboardService.get_dashboard(request.user)
+
+    return Response(data)
 
 
 @api_view(["POST"])
