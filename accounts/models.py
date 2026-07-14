@@ -62,7 +62,7 @@ class Skill(models.Model):
     description = models.TextField()
     icon = models.CharField(max_length=100, blank=True)
     is_active = models.BooleanField(default=True)
-
+    display_order = models.IntegerField(default=0)
     def __str__(self):
         return self.name
 
