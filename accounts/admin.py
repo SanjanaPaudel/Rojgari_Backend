@@ -2,8 +2,6 @@ from django.contrib import admin
 
 from .models import CustomerProfile, Skill, User, WorkerProfile
 
-admin.site.register(Skill)
-
 
 @admin.register(Skill)
 class SkillAdmin(admin.ModelAdmin):
