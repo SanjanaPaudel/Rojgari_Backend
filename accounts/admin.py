@@ -1,9 +1,8 @@
 from django.contrib import admin
-from .models import Skill
-
-admin.site.register(Skill)
 
 from .models import CustomerProfile, Skill, User, WorkerProfile
+
+admin.site.register(Skill)
 
 
 @admin.register(Skill)
