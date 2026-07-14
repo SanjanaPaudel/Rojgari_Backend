@@ -97,6 +97,7 @@ class SkillSerializer(serializers.ModelSerializer):
             "name",
             "description",
             "icon",
+            "display_order",
         ]
 
 

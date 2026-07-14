@@ -66,7 +66,7 @@ class Skill(models.Model):
         null=True,
     )
     is_active = models.BooleanField(default=True)
-
+    display_order = models.IntegerField(default=0)
     def __str__(self):
         return self.name
 
