@@ -1,11 +1,9 @@
-from django.test import TestCase
-
 # Create your tests here.
 # services/tests.py
 
 from django.contrib.auth import get_user_model
-from rest_framework.test import APITestCase
 from rest_framework import status
+from rest_framework.test import APITestCase
 
 from accounts.models import Skill
 
