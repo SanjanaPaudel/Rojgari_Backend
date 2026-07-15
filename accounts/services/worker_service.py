@@ -90,3 +90,22 @@ class WorkerService:
         worker.save()
 
         return worker
+    
+    @staticmethod
+    def add_skills(user, skill_ids):
+        worker = user.workerprofile
+
+        skills = Skill.objects.filter(
+            id__in=skill_ids,
+            is_active=True,
+        )
+
+        worker.skills.add(*skills)
+
+        return {
+            "message": "Skills added successfully.",
+            "skills": [
+                skill.name
+                for skill in worker.skills.all()
+            ],
+        }

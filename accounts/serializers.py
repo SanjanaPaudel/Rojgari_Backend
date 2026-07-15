@@ -182,3 +182,9 @@ class IdentityDocumentSerializer(serializers.Serializer):
         required=False,
         allow_null=True,
     )
+
+class AddSkillSerializer(serializers.Serializer):
+    skill_ids = serializers.ListField(
+        child=serializers.IntegerField(),
+        allow_empty=False,
+    )
