@@ -39,6 +39,11 @@ urlpatterns = [
         update_worker_status,
         name="worker-status",
     ),
+    path(
+        "worker/profile/",
+        views.worker_profile,
+        name="worker-profile",
+    ),
     path("login/", views.user_login, name="user-login"),
     path("refresh/", views.user_refresh, name="user-refresh"),
     path("logout/", views.user_logout, name="user-logout"),
