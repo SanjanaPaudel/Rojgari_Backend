@@ -165,3 +165,6 @@ class WorkerProfileSerializer(serializers.ModelSerializer):
             "service_areas",
             "profile_photo",
         ]
+
+class WorkerPhotoSerializer(serializers.Serializer):
+    profile_photo = serializers.ImageField()

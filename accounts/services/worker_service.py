@@ -59,3 +59,16 @@ class WorkerService:
         profile.save()
 
         return WorkerService.get_profile(user)
+    
+    @staticmethod
+    def upload_profile_photo(user, photo):
+        profile = user.workerprofile
+
+        profile.profile_photo = photo
+
+        profile.save()
+
+        return {
+            "message": "Profile photo updated successfully.",
+            "profile_photo": profile.profile_photo.url,
+        }

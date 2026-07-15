@@ -9,6 +9,7 @@ from accounts.serializers import (
     SignupSerializer,
     UserLoginSerializer,
     VerifyOTPSerializer,
+    WorkerPhotoSerializer,
 )
 from accounts.services.auth_service import AuthService
 from accounts.services.dashboard_service import WorkerDashboardService
@@ -297,5 +298,29 @@ def worker_profile(request):
         {
             "message": "Profile updated successfully.",
             "profile": data,
+        }
+    )
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsWorker])
+def upload_profile_photo(request):
+
+    serializer = WorkerPhotoSerializer(
+        data=request.data,
+    )
+
+    serializer.is_valid(raise_exception=True)
+
+    data = WorkerService.upload_profile_photo(
+        request.user,
+        serializer.validated_data["profile_photo"],
+    )
+
+    return Response(
+        {
+            "message": data["message"],
+            "profile_photo": request.build_absolute_uri(
+                data["profile_photo"]
+            ),
         }
     )
