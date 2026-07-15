@@ -11,6 +11,7 @@ from accounts.serializers import (
     VerifyOTPSerializer,
     WorkerPhotoSerializer,
     IdentityDocumentSerializer,
+    AddSkillSerializer,
 )
 from accounts.services.auth_service import AuthService
 from accounts.services.dashboard_service import WorkerDashboardService
@@ -376,5 +377,34 @@ def upload_identity_documents(request):
                 "is_verified": worker.is_verified,
             },
         },
+        status=status.HTTP_200_OK,
+    )
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def add_skills(request):
+    if request.user.role != "worker":
+        return Response(
+            {
+                "message": "Only workers can add skills."
+            },
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    serializer = AddSkillSerializer(
+        data=request.data
+    )
+
+    serializer.is_valid(
+        raise_exception=True
+    )
+
+    data = WorkerService.add_skills(
+        request.user,
+        serializer.validated_data["skill_ids"],
+    )
+
+    return Response(
+        data,
         status=status.HTTP_200_OK,
     )
