@@ -49,6 +49,11 @@ urlpatterns = [
         views.upload_profile_photo,
         name="worker-profile-photo",
     ),
+    path(
+        "worker/identity/",
+        views.upload_identity_documents,
+        name="worker-identity",
+    ),
     path("login/", views.user_login, name="user-login"),
     path("refresh/", views.user_refresh, name="user-refresh"),
     path("logout/", views.user_logout, name="user-logout"),]
