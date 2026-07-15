@@ -100,6 +100,12 @@ class WorkerProfile(models.Model):
         null=True,
     )
 
+    experience_document = models.ImageField(
+        upload_to="experience_documents/",
+        blank=True,
+        null=True,
+    )
+
     skills = models.ManyToManyField(
         Skill,
         blank=True,
@@ -205,3 +211,4 @@ class PendingRegistration(models.Model):
 
     def __str__(self):
         return self.phone_number
+
