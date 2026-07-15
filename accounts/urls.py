@@ -54,6 +54,11 @@ urlpatterns = [
         views.upload_identity_documents,
         name="worker-identity",
     ),
+    path(
+        "worker/add-skills/",
+        views.add_skills,
+        name="worker-add-skills",
+    ),
     path("login/", views.user_login, name="user-login"),
     path("refresh/", views.user_refresh, name="user-refresh"),
     path("logout/", views.user_logout, name="user-logout"),]

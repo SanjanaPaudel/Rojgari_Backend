@@ -1,4 +1,4 @@
-from accounts.models import WorkerProfile
+from accounts.models import WorkerProfile,Skill
 
 
 class WorkerService:
