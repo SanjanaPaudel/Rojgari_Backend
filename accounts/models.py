@@ -101,6 +101,12 @@ class WorkerProfile(models.Model):
         null=True,
     )
 
+    experience_document = models.ImageField(
+        upload_to="experience_documents/",
+        blank=True,
+        null=True,
+    )
+
     skills = models.ManyToManyField(
         Skill,
         blank=True,
@@ -109,6 +115,17 @@ class WorkerProfile(models.Model):
 
     has_selected_skills = models.BooleanField(
         default=False,
+    )
+
+    about_me = models.TextField(
+        blank=True,
+        default="",
+    )
+
+    service_areas = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
     )
 
     # NEW
