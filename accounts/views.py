@@ -17,7 +17,7 @@ from accounts.services.worker_service import WorkerService
 
 from .models import Skill
 from .permissions import IsWorker
-from .serializers import SelectSkillsSerializer, SkillSerializer, WorkerStatusSerializer
+from .serializers import SelectSkillsSerializer, SkillSerializer, WorkerStatusSerializer, WorkerProfileSerializer
 
 
 @api_view(["POST"])
@@ -274,4 +274,28 @@ def select_skills(request):
             "selected_skills": [skill.name for skill in skills],
         },
         status=200,
+    )
+
+@api_view(["GET", "PUT"])
+@permission_classes([IsAuthenticated, IsWorker])
+def worker_profile(request):
+
+    if request.method == "GET":
+        data = WorkerService.get_profile(request.user)
+        return Response(data)
+
+    serializer = WorkerProfileSerializer(data=request.data)
+
+    serializer.is_valid(raise_exception=True)
+
+    data = WorkerService.update_profile(
+        request.user,
+        serializer.validated_data,
+    )
+
+    return Response(
+        {
+            "message": "Profile updated successfully.",
+            "profile": data,
+        }
     )
