@@ -1,4 +1,4 @@
-from accounts.models import WorkerProfile,Skill
+from accounts.models import Skill, WorkerProfile
 
 
 class WorkerService:
@@ -25,9 +25,7 @@ class WorkerService:
             "about_me": profile.about_me,
             "service_areas": profile.service_areas,
             "profile_photo": (
-                profile.profile_photo.url
-                if profile.profile_photo
-                else None
+                profile.profile_photo.url if profile.profile_photo else None
             ),
         }
 
@@ -59,7 +57,7 @@ class WorkerService:
         profile.save()
 
         return WorkerService.get_profile(user)
-    
+
     @staticmethod
     def upload_profile_photo(user, photo):
         profile = user.workerprofile
@@ -90,7 +88,7 @@ class WorkerService:
         worker.save()
 
         return worker
-    
+
     @staticmethod
     def add_skills(user, skill_ids):
         worker = user.workerprofile
@@ -104,8 +102,5 @@ class WorkerService:
 
         return {
             "message": "Skills added successfully.",
-            "skills": [
-                skill.name
-                for skill in worker.skills.all()
-            ],
+            "skills": [skill.name for skill in worker.skills.all()],
         }

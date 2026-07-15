@@ -5,13 +5,13 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.serializers import (
+    AddSkillSerializer,
+    IdentityDocumentSerializer,
     ResendOTPSerializer,
     SignupSerializer,
     UserLoginSerializer,
     VerifyOTPSerializer,
     WorkerPhotoSerializer,
-    IdentityDocumentSerializer,
-    AddSkillSerializer,
 )
 from accounts.services.auth_service import AuthService
 from accounts.services.dashboard_service import WorkerDashboardService
@@ -20,7 +20,12 @@ from accounts.services.worker_service import WorkerService
 
 from .models import Skill
 from .permissions import IsWorker
-from .serializers import SelectSkillsSerializer, SkillSerializer, WorkerStatusSerializer, WorkerProfileSerializer
+from .serializers import (
+    SelectSkillsSerializer,
+    SkillSerializer,
+    WorkerProfileSerializer,
+    WorkerStatusSerializer,
+)
 
 
 @api_view(["POST"])
@@ -279,6 +284,7 @@ def select_skills(request):
         status=200,
     )
 
+
 @api_view(["GET", "PUT"])
 @permission_classes([IsAuthenticated, IsWorker])
 def worker_profile(request):
@@ -303,6 +309,7 @@ def worker_profile(request):
         }
     )
 
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsWorker])
 def upload_profile_photo(request):
@@ -321,26 +328,21 @@ def upload_profile_photo(request):
     return Response(
         {
             "message": data["message"],
-            "profile_photo": request.build_absolute_uri(
-                data["profile_photo"]
-            ),
+            "profile_photo": request.build_absolute_uri(data["profile_photo"]),
         }
     )
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def upload_identity_documents(request):
     if request.user.role != "worker":
         return Response(
-            {
-                "message": "Only workers can upload identity documents."
-            },
+            {"message": "Only workers can upload identity documents."},
             status=status.HTTP_403_FORBIDDEN,
         )
 
-    serializer = IdentityDocumentSerializer(
-        data=request.data
-    )
+    serializer = IdentityDocumentSerializer(data=request.data)
 
     serializer.is_valid(raise_exception=True)
 
@@ -354,23 +356,17 @@ def upload_identity_documents(request):
             "message": "Documents uploaded successfully.",
             "documents": {
                 "citizenship_front": (
-                    request.build_absolute_uri(
-                        worker.citizenship_front.url
-                    )
+                    request.build_absolute_uri(worker.citizenship_front.url)
                     if worker.citizenship_front
                     else None
                 ),
                 "citizenship_back": (
-                    request.build_absolute_uri(
-                        worker.citizenship_back.url
-                    )
+                    request.build_absolute_uri(worker.citizenship_back.url)
                     if worker.citizenship_back
                     else None
                 ),
                 "experience_document": (
-                    request.build_absolute_uri(
-                        worker.experience_document.url
-                    )
+                    request.build_absolute_uri(worker.experience_document.url)
                     if worker.experience_document
                     else None
                 ),
@@ -380,24 +376,19 @@ def upload_identity_documents(request):
         status=status.HTTP_200_OK,
     )
 
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def add_skills(request):
     if request.user.role != "worker":
         return Response(
-            {
-                "message": "Only workers can add skills."
-            },
+            {"message": "Only workers can add skills."},
             status=status.HTTP_403_FORBIDDEN,
         )
 
-    serializer = AddSkillSerializer(
-        data=request.data
-    )
+    serializer = AddSkillSerializer(data=request.data)
 
-    serializer.is_valid(
-        raise_exception=True
-    )
+    serializer.is_valid(raise_exception=True)
 
     data = WorkerService.add_skills(
         request.user,

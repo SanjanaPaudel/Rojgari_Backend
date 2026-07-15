@@ -167,22 +167,21 @@ class WorkerProfileSerializer(serializers.ModelSerializer):
             "profile_photo",
         ]
 
+
 class WorkerPhotoSerializer(serializers.Serializer):
     profile_photo = serializers.ImageField()
 
-class IdentityDocumentSerializer(serializers.Serializer):
-    citizenship_front = serializers.ImageField(
-        required=True
-    )
 
-    citizenship_back = serializers.ImageField(
-        required=True
-    )
+class IdentityDocumentSerializer(serializers.Serializer):
+    citizenship_front = serializers.ImageField(required=True)
+
+    citizenship_back = serializers.ImageField(required=True)
 
     experience_document = serializers.ImageField(
         required=False,
         allow_null=True,
     )
+
 
 class AddSkillSerializer(serializers.Serializer):
     skill_ids = serializers.ListField(
