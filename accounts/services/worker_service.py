@@ -72,3 +72,21 @@ class WorkerService:
             "message": "Profile photo updated successfully.",
             "profile_photo": profile.profile_photo.url,
         }
+
+    @staticmethod
+    def upload_identity_documents(user, data):
+        worker = user.workerprofile
+
+        worker.citizenship_front = data["citizenship_front"]
+        worker.citizenship_back = data["citizenship_back"]
+
+        if data.get("experience_document"):
+            worker.experience_document = data["experience_document"]
+
+        # Documents uploaded.
+        # Admin verification will happen later.
+        worker.is_verified = False
+
+        worker.save()
+
+        return worker
