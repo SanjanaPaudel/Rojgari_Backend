@@ -140,3 +140,28 @@ class WorkerDashboardSerializer(serializers.ModelSerializer):
 
 class WorkerStatusSerializer(serializers.Serializer):
     is_online = serializers.BooleanField()
+
+
+class WorkerProfileSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(source="user.full_name")
+    phone_number = serializers.CharField(
+        source="user.phone_number",
+        read_only=True,
+    )
+    email = serializers.EmailField(
+        source="user.email",
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
+
+    class Meta:
+        model = WorkerProfile
+        fields = [
+            "full_name",
+            "phone_number",
+            "email",
+            "about_me",
+            "service_areas",
+            "profile_photo",
+        ]

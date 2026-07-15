@@ -110,6 +110,17 @@ class WorkerProfile(models.Model):
         default=False,
     )
 
+    about_me = models.TextField(
+        blank=True,
+        default="",
+    )
+
+    service_areas = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+    )
+
     # NEW
     years_of_experience = models.PositiveIntegerField(default=0)
 
