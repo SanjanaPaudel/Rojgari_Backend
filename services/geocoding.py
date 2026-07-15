@@ -14,6 +14,7 @@ def reverse_geocode(latitude, longitude):
         "lat" : latitude,
         "lon" : longitude,
         "format" : "json",
+        "accept-language": "en",
     }
 
     headers = {
