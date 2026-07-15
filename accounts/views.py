@@ -10,6 +10,7 @@ from accounts.serializers import (
     UserLoginSerializer,
     VerifyOTPSerializer,
     WorkerPhotoSerializer,
+    IdentityDocumentSerializer,
 )
 from accounts.services.auth_service import AuthService
 from accounts.services.dashboard_service import WorkerDashboardService
@@ -323,4 +324,57 @@ def upload_profile_photo(request):
                 data["profile_photo"]
             ),
         }
+    )
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def upload_identity_documents(request):
+    if request.user.role != "worker":
+        return Response(
+            {
+                "message": "Only workers can upload identity documents."
+            },
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    serializer = IdentityDocumentSerializer(
+        data=request.data
+    )
+
+    serializer.is_valid(raise_exception=True)
+
+    worker = WorkerService.upload_identity_documents(
+        request.user,
+        serializer.validated_data,
+    )
+
+    return Response(
+        {
+            "message": "Documents uploaded successfully.",
+            "documents": {
+                "citizenship_front": (
+                    request.build_absolute_uri(
+                        worker.citizenship_front.url
+                    )
+                    if worker.citizenship_front
+                    else None
+                ),
+                "citizenship_back": (
+                    request.build_absolute_uri(
+                        worker.citizenship_back.url
+                    )
+                    if worker.citizenship_back
+                    else None
+                ),
+                "experience_document": (
+                    request.build_absolute_uri(
+                        worker.experience_document.url
+                    )
+                    if worker.experience_document
+                    else None
+                ),
+                "is_verified": worker.is_verified,
+            },
+        },
+        status=status.HTTP_200_OK,
     )
