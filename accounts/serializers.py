@@ -107,6 +107,13 @@ class SelectSkillsSerializer(serializers.Serializer):
         allow_empty=False,
     )
 
+    def validate_skills(self, value):
+        if len(value) > 3:
+            raise serializers.ValidationError(
+                "A worker can select a maximum of 3 skills."
+            )
+        return value
+
 
 class WorkerDashboardSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(source="user.full_name")
@@ -188,3 +195,10 @@ class AddSkillSerializer(serializers.Serializer):
         child=serializers.IntegerField(),
         allow_empty=False,
     )
+
+    def validate_skill_ids(self, value):
+        if len(value) > 3:
+            raise serializers.ValidationError(
+                "A worker can have a maximum of 3 skills."
+            )
+        return value
