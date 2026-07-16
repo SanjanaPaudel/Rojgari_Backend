@@ -2,7 +2,6 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.

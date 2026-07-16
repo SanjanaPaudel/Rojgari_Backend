@@ -5,10 +5,10 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.serializers import (
-    UpdateSkillSerializer,
     IdentityDocumentSerializer,
     ResendOTPSerializer,
     SignupSerializer,
+    UpdateSkillSerializer,
     UserLoginSerializer,
     VerifyOTPSerializer,
     WorkerPhotoSerializer,
@@ -383,20 +383,13 @@ def update_skills(request):
 
     if request.user.role != "worker":
         return Response(
-            {
-                "message":
-                "Only workers can update skills."
-            },
+            {"message": "Only workers can update skills."},
             status=status.HTTP_403_FORBIDDEN,
         )
 
-    serializer = UpdateSkillSerializer(
-        data=request.data
-    )
+    serializer = UpdateSkillSerializer(data=request.data)
 
-    serializer.is_valid(
-        raise_exception=True
-    )
+    serializer.is_valid(raise_exception=True)
 
     data = WorkerService.update_skills(
         request.user,
