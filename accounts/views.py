@@ -17,6 +17,7 @@ from accounts.serializers import (
     WorkerProfileSerializer,
     WorkerStatusSerializer,
 )
+from accounts.permissions import IsWorker
 from .services.auth_service import AuthService
 from .services.dashboard_service import WorkerDashboardService
 from .services.otp_service import OTPService
