@@ -4,6 +4,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from django.utils import timezone
+
+from accounts.permissions import IsWorker
+
 from accounts.serializers import (
     AddSkillSerializer,
     IdentityDocumentSerializer,
@@ -399,3 +403,25 @@ def add_skills(request):
         data,
         status=status.HTTP_200_OK,
     )
+
+# Worker side location
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated, IsWorker])
+def update_location(request):
+    latitude = request.data.get("latitude")
+    longitude = request.data.get("longitude")
+
+    if latitude is None or longitude is None:
+        return Response(
+            {"detail": "latitude and longitude are required."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    profile = request.user.workerprofile
+    profile.current_latitude = latitude
+    profile.current_longitude = longitude
+    profile.last_location_update = timezone.now()
+    profile.save()
+
+    return Response({"detail": "Location updated."})
