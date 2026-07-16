@@ -104,5 +104,8 @@ class WorkerService:
 
         return {
             "message": "Skills updated successfully.",
-            "skills": [skill.name for skill in worker.skills.all()],
+            "skills": [
+                skill.name
+                for skill in worker.skills.all()
+            ],
         }

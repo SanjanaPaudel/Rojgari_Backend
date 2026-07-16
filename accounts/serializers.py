@@ -110,7 +110,9 @@ class SelectSkillsSerializer(serializers.Serializer):
     def validate_skills(self, value):
 
         if len(value) > 3:
-            raise serializers.ValidationError("Maximum 3 skills can be selected.")
+            raise serializers.ValidationError(
+                "Maximum 3 skills can be selected."
+            )
 
         return value
 
@@ -198,6 +200,8 @@ class UpdateSkillSerializer(serializers.Serializer):
 
     def validate_skill_ids(self, value):
         if len(value) > 3:
-            raise serializers.ValidationError("Maximum 3 skills can be selected.")
+            raise serializers.ValidationError(
+                "Maximum 3 skills can be selected."
+            )
 
         return value
