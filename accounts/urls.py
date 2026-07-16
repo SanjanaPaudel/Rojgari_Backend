@@ -55,9 +55,9 @@ urlpatterns = [
         name="worker-identity",
     ),
     path(
-        "worker/add-skills/",
-        views.add_skills,
-        name="worker-add-skills",
+        "worker/update-skills/",
+        views.update_skills,
+        name="worker-update-skills",
     ),
     path("login/", views.user_login, name="user-login"),
     path("refresh/", views.user_refresh, name="user-refresh"),
