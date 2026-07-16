@@ -5,28 +5,25 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from accounts.serializers import (
+from .models import Skill
+from .permissions import IsWorker
+from .serializers import (
     IdentityDocumentSerializer,
     ResendOTPSerializer,
+    SelectSkillsSerializer,
     SignupSerializer,
+    SkillSerializer,
     UpdateSkillSerializer,
     UserLoginSerializer,
     VerifyOTPSerializer,
     WorkerPhotoSerializer,
-)
-from accounts.services.auth_service import AuthService
-from accounts.services.dashboard_service import WorkerDashboardService
-from accounts.services.otp_service import OTPService
-from accounts.services.worker_service import WorkerService
-
-from .models import Skill
-from .permissions import IsWorker
-from .serializers import (
-    SelectSkillsSerializer,
-    SkillSerializer,
     WorkerProfileSerializer,
     WorkerStatusSerializer,
 )
+from .services.auth_service import AuthService
+from .services.dashboard_service import WorkerDashboardService
+from .services.otp_service import OTPService
+from .services.worker_service import WorkerService
 
 
 @api_view(["POST"])
