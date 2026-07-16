@@ -9,7 +9,7 @@ from django.utils import timezone
 from accounts.permissions import IsWorker
 
 from accounts.serializers import (
-    AddSkillSerializer,
+    UpdateSkillSerializer,
     IdentityDocumentSerializer,
     ResendOTPSerializer,
     SignupSerializer,
@@ -381,20 +381,28 @@ def upload_identity_documents(request):
     )
 
 
-@api_view(["POST"])
+@api_view(["PUT"])
 @permission_classes([IsAuthenticated])
-def add_skills(request):
+def update_skills(request):
+
     if request.user.role != "worker":
         return Response(
-            {"message": "Only workers can add skills."},
+            {
+                "message":
+                "Only workers can update skills."
+            },
             status=status.HTTP_403_FORBIDDEN,
         )
 
-    serializer = AddSkillSerializer(data=request.data)
+    serializer = UpdateSkillSerializer(
+        data=request.data
+    )
 
-    serializer.is_valid(raise_exception=True)
+    serializer.is_valid(
+        raise_exception=True
+    )
 
-    data = WorkerService.add_skills(
+    data = WorkerService.update_skills(
         request.user,
         serializer.validated_data["skill_ids"],
     )

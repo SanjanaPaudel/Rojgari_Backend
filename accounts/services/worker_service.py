@@ -92,7 +92,7 @@ class WorkerService:
         return worker
 
     @staticmethod
-    def add_skills(user, skill_ids):
+    def update_skills(user, skill_ids):
         worker = user.workerprofile
 
         skills = Skill.objects.filter(
@@ -100,9 +100,12 @@ class WorkerService:
             is_active=True,
         )
 
-        worker.skills.add(*skills)
+        worker.skills.set(skills)
 
         return {
-            "message": "Skills added successfully.",
-            "skills": [skill.name for skill in worker.skills.all()],
+            "message": "Skills updated successfully.",
+            "skills": [
+                skill.name
+                for skill in worker.skills.all()
+            ],
         }
