@@ -55,11 +55,13 @@ urlpatterns = [
         name="worker-identity",
     ),
     path(
-        "worker/add-skills/",
-        views.add_skills,
-        name="worker-add-skills",
+        "worker/update-skills/",
+        views.update_skills,
+        name="worker-update-skills",
     ),
     path("login/", views.user_login, name="user-login"),
     path("refresh/", views.user_refresh, name="user-refresh"),
     path("logout/", views.user_logout, name="user-logout"),
+    # For worker side location
+    path("worker/location/", views.update_location, name="update-location"),
 ]

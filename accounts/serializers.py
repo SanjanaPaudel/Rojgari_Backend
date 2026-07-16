@@ -107,6 +107,13 @@ class SelectSkillsSerializer(serializers.Serializer):
         allow_empty=False,
     )
 
+    def validate_skills(self, value):
+
+        if len(value) > 3:
+            raise serializers.ValidationError("Maximum 3 skills can be selected.")
+
+        return value
+
 
 class WorkerDashboardSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(source="user.full_name")
@@ -183,8 +190,14 @@ class IdentityDocumentSerializer(serializers.Serializer):
     )
 
 
-class AddSkillSerializer(serializers.Serializer):
+class UpdateSkillSerializer(serializers.Serializer):
     skill_ids = serializers.ListField(
         child=serializers.IntegerField(),
         allow_empty=False,
     )
+
+    def validate_skill_ids(self, value):
+        if len(value) > 3:
+            raise serializers.ValidationError("Maximum 3 skills can be selected.")
+
+        return value

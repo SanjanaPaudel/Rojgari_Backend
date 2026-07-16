@@ -127,7 +127,14 @@ class WorkerProfile(models.Model):
         blank=True,
         default="",
     )
-
+    # For realted to worker location
+    current_latitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True
+    )
+    current_longitude = models.DecimalField(
+        max_digits=9, decimal_places=6, null=True, blank=True
+    )
+    last_location_update = models.DateTimeField(null=True, blank=True)
     # NEW
     years_of_experience = models.PositiveIntegerField(default=0)
 

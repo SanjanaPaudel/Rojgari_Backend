@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -5,27 +6,21 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.serializers import (
-    AddSkillSerializer,
     IdentityDocumentSerializer,
     ResendOTPSerializer,
+    SelectSkillsSerializer,
     SignupSerializer,
+    UpdateSkillSerializer,
     UserLoginSerializer,
     VerifyOTPSerializer,
     WorkerPhotoSerializer,
-)
-from accounts.services.auth_service import AuthService
-from accounts.services.dashboard_service import WorkerDashboardService
-from accounts.services.otp_service import OTPService
-from accounts.services.worker_service import WorkerService
-
-from .models import Skill
-from .permissions import IsWorker
-from .serializers import (
-    SelectSkillsSerializer,
-    SkillSerializer,
     WorkerProfileSerializer,
     WorkerStatusSerializer,
 )
+from .services.auth_service import AuthService
+from .services.dashboard_service import WorkerDashboardService
+from .services.otp_service import OTPService
+from .services.worker_service import WorkerService
 
 
 @api_view(["POST"])
@@ -377,20 +372,21 @@ def upload_identity_documents(request):
     )
 
 
-@api_view(["POST"])
+@api_view(["PUT"])
 @permission_classes([IsAuthenticated])
-def add_skills(request):
+def update_skills(request):
+
     if request.user.role != "worker":
         return Response(
-            {"message": "Only workers can add skills."},
+            {"message": "Only workers can update skills."},
             status=status.HTTP_403_FORBIDDEN,
         )
 
-    serializer = AddSkillSerializer(data=request.data)
+    serializer = UpdateSkillSerializer(data=request.data)
 
     serializer.is_valid(raise_exception=True)
 
-    data = WorkerService.add_skills(
+    data = WorkerService.update_skills(
         request.user,
         serializer.validated_data["skill_ids"],
     )
@@ -399,3 +395,27 @@ def add_skills(request):
         data,
         status=status.HTTP_200_OK,
     )
+
+
+# Worker side location
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated, IsWorker])
+def update_location(request):
+    latitude = request.data.get("latitude")
+    longitude = request.data.get("longitude")
+
+    if latitude is None or longitude is None:
+        return Response(
+            {"detail": "latitude and longitude are required."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    profile = request.user.workerprofile
+    profile.current_latitude = latitude
+    profile.current_longitude = longitude
+    profile.last_location_update = timezone.now()
+    profile.save()
+
+    return Response({"detail": "Location updated."})
