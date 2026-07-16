@@ -33,12 +33,14 @@ class WorkerService:
     def update_profile(user, data):
         profile = user.workerprofile
 
-        user.full_name = data.get(
+        user_data = data.get("user", {})
+
+        user.full_name = user_data.get(
             "full_name",
             user.full_name,
         )
 
-        user.email = data.get(
+        user.email = user_data.get(
             "email",
             user.email,
         )
