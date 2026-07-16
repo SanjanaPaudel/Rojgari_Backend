@@ -190,7 +190,7 @@ class IdentityDocumentSerializer(serializers.Serializer):
     )
 
 
-class AddSkillSerializer(serializers.Serializer):
+class UpdateSkillSerializer(serializers.Serializer):
     skill_ids = serializers.ListField(
         child=serializers.IntegerField(),
         allow_empty=False,
@@ -199,6 +199,7 @@ class AddSkillSerializer(serializers.Serializer):
     def validate_skill_ids(self, value):
         if len(value) > 3:
             raise serializers.ValidationError(
-                "A worker can have a maximum of 3 skills."
+                "Maximum 3 skills can be selected."
             )
+
         return value
