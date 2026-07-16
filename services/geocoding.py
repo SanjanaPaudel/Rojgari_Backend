@@ -36,5 +36,5 @@ def reverse_geocode(latitude, longitude):
 
         return data.get("display_name")
 
-    except requests.ReqeustException:
+    except requests.RequestException:
         return None
