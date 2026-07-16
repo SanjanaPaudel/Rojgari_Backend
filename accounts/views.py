@@ -1,18 +1,16 @@
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from django.utils import timezone
-
 from accounts.permissions import IsWorker
-
 from accounts.serializers import (
-    UpdateSkillSerializer,
     IdentityDocumentSerializer,
     ResendOTPSerializer,
     SignupSerializer,
+    UpdateSkillSerializer,
     UserLoginSerializer,
     VerifyOTPSerializer,
     WorkerPhotoSerializer,
@@ -387,20 +385,13 @@ def update_skills(request):
 
     if request.user.role != "worker":
         return Response(
-            {
-                "message":
-                "Only workers can update skills."
-            },
+            {"message": "Only workers can update skills."},
             status=status.HTTP_403_FORBIDDEN,
         )
 
-    serializer = UpdateSkillSerializer(
-        data=request.data
-    )
+    serializer = UpdateSkillSerializer(data=request.data)
 
-    serializer.is_valid(
-        raise_exception=True
-    )
+    serializer.is_valid(raise_exception=True)
 
     data = WorkerService.update_skills(
         request.user,
@@ -412,7 +403,9 @@ def update_skills(request):
         status=status.HTTP_200_OK,
     )
 
+
 # Worker side location
+
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated, IsWorker])
