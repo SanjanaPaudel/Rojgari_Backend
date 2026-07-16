@@ -1,8 +1,7 @@
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status
 
 from accounts.models import Skill
 from accounts.permissions import IsCustomer
@@ -11,6 +10,7 @@ from accounts.serializers import SkillSerializer
 from .geocoding import reverse_geocode
 from .models import Booking, BookingMedia
 from .serializers import BookingCreateSerializer
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])
@@ -29,16 +29,16 @@ def create_booking(request):
 
     if not serializer.is_valid():
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    photos =request.FILES.getlist("photos")
+
+    photos = request.FILES.getlist("photos")
     video = request.FILES.get("video")
-    
+
     if len(photos) > 3:
         return Response(
             {"photos": "You can upload a maximum of 3 photos."},
             status=status.HTTP_400_BAD_REQUEST,
         )
-    
+
     latitude = serializer.validated_data["latitude"]
     longitude = serializer.validated_data["longitude"]
 
@@ -60,14 +60,14 @@ def create_booking(request):
             file=photo,
             media_type="photo",
         )
-    
+
     if video:
         BookingMedia.objects.create(
             booking=booking,
             file=video,
             media_type="video",
         )
-    
+
     return Response(
         {
             "id": booking.id,
@@ -78,5 +78,3 @@ def create_booking(request):
         },
         status=status.HTTP_201_CREATED,
     )
-    
-    

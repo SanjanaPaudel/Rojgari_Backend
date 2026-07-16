@@ -1,6 +1,7 @@
 import requests
 
-NOMINATIM_REVERSE_URL =  "https://nominatim.openstreetmap.org/reverse"
+NOMINATIM_REVERSE_URL = "https://nominatim.openstreetmap.org/reverse"
+
 
 def reverse_geocode(latitude, longitude):
     """
@@ -11,14 +12,14 @@ def reverse_geocode(latitude, longitude):
     """
 
     params = {
-        "lat" : latitude,
-        "lon" : longitude,
-        "format" : "json",
+        "lat": latitude,
+        "lon": longitude,
+        "format": "json",
         "accept-language": "en",
     }
 
     headers = {
-        "User-Agent" : "RojgariApp/1.0 (adhikari.dinesh781@gmail.com)",
+        "User-Agent": "RojgariApp/1.0 (adhikari.dinesh781@gmail.com)",
     }
 
     try:
@@ -34,6 +35,6 @@ def reverse_geocode(latitude, longitude):
         data = response.json()
 
         return data.get("display_name")
-    
+
     except requests.ReqeustException:
         return None

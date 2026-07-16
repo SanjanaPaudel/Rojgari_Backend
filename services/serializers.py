@@ -4,6 +4,7 @@ from accounts.models import Skill
 
 from .models import Booking
 
+
 class BookingCreateSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(
         queryset=Skill.objects.filter(is_active=True),
@@ -21,5 +22,5 @@ class BookingCreateSerializer(serializers.ModelSerializer):
     def validate_description(self, value):
         if not value.strip():
             raise serializers.ValidationError("Description cannot be empty")
-        
+
         return value

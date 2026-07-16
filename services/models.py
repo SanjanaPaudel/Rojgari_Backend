@@ -1,5 +1,6 @@
 # Create your models here.
 from django.db import models
+
 from accounts.models import CustomerProfile, Skill, WorkerProfile
 
 # region Scheduled for later - Saved Address field from Profile
@@ -20,6 +21,7 @@ from accounts.models import CustomerProfile, Skill, WorkerProfile
 #         return f"{self.label} ({self.customer.user.full_name})"
 # endregion
 
+
 class Booking(models.Model):
     STATUS_CHOICES = [
         ("active", "Active"),
@@ -39,7 +41,7 @@ class Booking(models.Model):
         on_delete=models.SET_NULL,
         related_name="bookings",
         null=True,
-        blank=True
+        blank=True,
     )
 
     category = models.ForeignKey(
@@ -64,19 +66,16 @@ class Booking(models.Model):
 
     scheduled_time = models.DateTimeField(null=True, blank=True)
 
-    price = models.DecimalField(
-        max_digits=8, decimal_places=2, null=True, blank=True
-    )
+    price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
-    rating = models.DecimalField(
-        max_digits=2, decimal_places=2, null=True, blank=True
-    )
+    rating = models.DecimalField(max_digits=2, decimal_places=2, null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.category.name} booking by {self.customer.user.full_name}"
-    
+
+
 class BookingMedia(models.Model):
     MEDIA_TYPE_CHOICES = [
         ("photo", "Photo"),
@@ -98,4 +97,3 @@ class BookingMedia(models.Model):
 
     def __str__(self):
         return f"{self.media_type} for booking #{self.booking_id}"
-
