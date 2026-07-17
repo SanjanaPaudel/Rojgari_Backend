@@ -29,10 +29,10 @@ class WorkerDashboardService:
                 "verified": worker.is_verified,
                 "is_online": worker.is_online,
                 "stats": {
-                    "jobs_done": 28,
+                    "jobs_done": 40,
                     "skills": len(skills),
-                    "reviews": 12,
-                    "rating": 4.8,
+                    "reviews": 10,
+                    "rating": 4,
                 },
             },
             "notifications": 3,

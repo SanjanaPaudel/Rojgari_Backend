@@ -91,3 +91,45 @@ def create_booking(request):
         },
         status=status.HTTP_201_CREATED,
     )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsCustomer])
+def booking_status(request, booking_id):
+    try:
+        booking = Booking.objects.get(
+            id=booking_id, customer=request.user.customer_profile
+        )
+    except Booking.DoesNotExist:
+        return Response(
+            {"detail": "Booking not found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    worker_data = None
+
+    if booking.worker:
+        worker_profile = booking.worker
+
+        worker_data = {
+            "id": worker_profile.id,
+            "full_name": worker_profile.user.full_name,
+            "phone_number": worker_profile.user.phone_number,
+            "average_rating": worker_profile.average_rating,
+            "completed_jobs": worker_profile.completed_jobs,
+            "profile_photo": (
+                request.build_absolute_uri(worker_profile.profile_photo.url)
+                if worker_profile.profile_photo
+                else None
+            ),
+            "current_latitude": worker_profile.current_latitude,
+            "current_longitude": worker_profile.current_longitude,
+        }
+
+    return Response(
+        {
+            "id": booking.id,
+            "status": booking.status,
+            "worker": worker_data,
+        }
+    )
