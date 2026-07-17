@@ -429,15 +429,14 @@ def update_location(request):
 
     return Response({"detail": "Location updated."})
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def incoming_requests(request):
 
     if request.user.role != "worker":
         return Response(
-            {
-                "detail": "Only workers can access this endpoint."
-            },
+            {"detail": "Only workers can access this endpoint."},
             status=status.HTTP_403_FORBIDDEN,
         )
 
@@ -445,15 +444,14 @@ def incoming_requests(request):
 
     return Response(data)
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def request_detail(request, offer_id):
 
     if request.user.role != "worker":
         return Response(
-            {
-                "detail": "Only workers can access this endpoint."
-            },
+            {"detail": "Only workers can access this endpoint."},
             status=status.HTTP_403_FORBIDDEN,
         )
 

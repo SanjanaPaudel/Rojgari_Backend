@@ -202,6 +202,7 @@ class UpdateSkillSerializer(serializers.Serializer):
 
         return value
 
+
 class IncomingRequestSerializer(serializers.Serializer):
     offer_id = serializers.IntegerField()
 
