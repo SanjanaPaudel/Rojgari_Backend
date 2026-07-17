@@ -29,8 +29,6 @@ from .services.auth_service import AuthService
 from .services.dashboard_service import WorkerDashboardService
 from .services.otp_service import OTPService
 from .services.worker_service import WorkerService
-from accounts.models import Skill
-from accounts.serializers import SkillSerializer
 
 
 @api_view(["POST"])
@@ -416,8 +414,8 @@ def update_skills(request):
 def update_location(request):
     latitude = request.data.get("latitude")
     longitude = request.data.get("longitude")
-    
-    print(latitude,longitude),
+
+    (print(latitude, longitude),)
 
     if latitude is None or longitude is None:
         return Response(
