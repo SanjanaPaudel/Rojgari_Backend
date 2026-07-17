@@ -71,6 +71,11 @@ urlpatterns = [
         "worker/request/<int:offer_id>/accept/",
         views.accept_request,
     ),
+    path(
+        "worker/request/<int:offer_id>/reject/",
+        views.reject_request,
+        name="reject-request",
+    ),
     path("login/", views.user_login, name="user-login"),
     path("refresh/", views.user_refresh, name="user-refresh"),
     path("logout/", views.user_logout, name="user-logout"),

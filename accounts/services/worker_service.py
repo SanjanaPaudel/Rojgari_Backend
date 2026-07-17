@@ -234,3 +234,19 @@ class WorkerService:
             "booking_id": booking.id,
             "status": booking.status,
         }
+
+    @staticmethod
+    def reject_request(user, offer_id):
+
+        offer = BookingOffer.objects.get(
+            id=offer_id,
+            worker=user.workerprofile,
+            status="pending",
+        )
+
+        offer.status = "rejected"
+        offer.save()
+
+        return {
+            "message": "Request rejected successfully.",
+        }
