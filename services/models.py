@@ -97,3 +97,39 @@ class BookingMedia(models.Model):
 
     def __str__(self):
         return f"{self.media_type} for booking #{self.booking_id}"
+
+class BookingOffer(models.Model):
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("accepted", "Accepted"),
+        ("rejected", "Rejected"),
+        ("rxpired", "Expired"),
+        ("cancelled", "Cancelled"),
+    ]
+
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE,
+        related_name="offers",
+    )
+
+    worker = models.ForeignKey(
+        WorkerProfile,
+        on_delete=models.CASCADE,
+        related_name="booking_offers",
+    )
+
+    score = models.DecimalField(max_digits=4, decimal_places=2)
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="pending",
+    )
+
+    offered_at = models.DateTimeField(auto_now_add=True)
+
+    responded_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Offer for booking #{self.booking_id} to {self.worker.user.full_name}"
