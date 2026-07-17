@@ -444,3 +444,22 @@ def incoming_requests(request):
     data = WorkerService.get_incoming_requests(request.user)
 
     return Response(data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def request_detail(request, offer_id):
+
+    if request.user.role != "worker":
+        return Response(
+            {
+                "detail": "Only workers can access this endpoint."
+            },
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = WorkerService.get_request_detail(
+        request.user,
+        offer_id,
+    )
+
+    return Response(data)

@@ -1,5 +1,6 @@
 from accounts.models import Skill, WorkerProfile
-from services.models import BookingOffer
+from services.models import BookingOffer,BookingMedia
+from django.shortcuts import get_object_or_404
 
 class WorkerService:
     @staticmethod
@@ -146,4 +147,63 @@ class WorkerService:
         return {
             "count": len(requests),
             "requests": requests,
+        }
+    
+    @staticmethod
+    def get_request_detail(user, offer_id):
+
+        offer = get_object_or_404(
+            BookingOffer,
+            id=offer_id,
+            worker=user.workerprofile,
+        )
+
+        booking = offer.booking
+
+        photos = []
+
+        video = None
+
+        media = BookingMedia.objects.filter(
+            booking=booking,
+        )
+
+        for item in media:
+
+            if item.media_type == "photo":
+                photos.append(item.file.url)
+
+            elif item.media_type == "video":
+                video = item.file.url
+
+        return {
+            "offer_id": offer.id,
+
+            "customer_name": booking.customer.user.full_name,
+
+            "service": booking.category.name,
+
+            "service_icon": (
+                booking.category.icon.url
+                if booking.category.icon
+                else None
+            ),
+
+            "description": booking.description,
+
+            "address": booking.address_text,
+
+            "latitude": booking.latitude,
+
+            "longitude": booking.longitude,
+
+            "distance_km": 0,
+
+            "photos": photos,
+
+            "video": video,
+
+            "status": offer.status,
+
+            "created_at": booking.created_at,
         }

@@ -62,7 +62,11 @@ urlpatterns = [
     path(
         "worker/incoming-requests/",
         views.incoming_requests,
-    ),   
+    ),  
+    path(
+        "worker/request/<int:offer_id>/",
+        views.request_detail,
+    ), 
     path("login/", views.user_login, name="user-login"),
     path("refresh/", views.user_refresh, name="user-refresh"),
     path("logout/", views.user_logout, name="user-logout"),
