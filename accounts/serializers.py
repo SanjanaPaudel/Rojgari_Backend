@@ -262,6 +262,7 @@ class WorkerRequestDetailSerializer(serializers.Serializer):
 
     created_at = serializers.DateTimeField()
 
+
 class WorkerLocationSerializer(serializers.Serializer):
     latitude = serializers.DecimalField(
         max_digits=9,

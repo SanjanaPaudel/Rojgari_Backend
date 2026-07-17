@@ -23,7 +23,6 @@ from accounts.serializers import (
     WorkerPhotoSerializer,
     WorkerProfileSerializer,
     WorkerStatusSerializer,
-    WorkerLocationSerializer,
 )
 
 from .services.auth_service import AuthService
@@ -501,6 +500,7 @@ def reject_request(request, offer_id):
 
     return Response(data)
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def current_job(request):
@@ -508,31 +508,32 @@ def current_job(request):
 
     if not data:
         return Response(
-            {
-                "message": "No active job found."
-            },
+            {"message": "No active job found."},
             status=404,
         )
 
     return Response(data)
 
-@api_view(["PATCH"])
-@permission_classes([IsAuthenticated])
-def update_location(request):
-    serializer = WorkerLocationSerializer(
-        data=request.data,
-    )
 
-    serializer.is_valid(
-        raise_exception=True,
-    )
+# dinesh kai xa sanjana implement garni wal ho
+# @api_view(["PATCH"])
+# @permission_classes([IsAuthenticated])
+# def update_location(request):
+#     serializer = WorkerLocationSerializer(
+#         data=request.data,
+#     )
 
-    data = WorkerService.update_location(
-        request.user,
-        serializer.validated_data,
-    )
+#     serializer.is_valid(
+#         raise_exception=True,
+#     )
 
-    return Response(data)
+#     data = WorkerService.update_location(
+#         request.user,
+#         serializer.validated_data,
+#     )
+
+#     return Response(data)
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -543,6 +544,7 @@ def start_job(request, offer_id):
     )
 
     return Response(data)
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

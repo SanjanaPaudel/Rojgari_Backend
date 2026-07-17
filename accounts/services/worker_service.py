@@ -1,9 +1,9 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from accounts.models import Skill, WorkerProfile
 from services.models import BookingMedia, BookingOffer
-from django.utils import timezone
 
 
 class WorkerService:
@@ -278,9 +278,7 @@ class WorkerService:
         return {
             "booking_id": booking.id,
             "request_id": f"#REQ{booking.id:05d}",
-
             "category": booking.category.name,
-
             "customer": {
                 "name": customer.full_name,
                 "profile_photo": (
@@ -289,26 +287,19 @@ class WorkerService:
                     else None
                 ),
             },
-
             "description": booking.description,
-
             "address": booking.address_text,
-
             "latitude": booking.latitude,
-
             "longitude": booking.longitude,
-
             "requested_at": booking.created_at,
-
             "job_progress": getattr(
                 booking,
                 "job_progress",
                 "accepted",
             ),
-
             "distance_km": None,
         }
-    
+
     @staticmethod
     def update_location(user, data):
         worker = user.workerprofile
@@ -321,10 +312,8 @@ class WorkerService:
 
         worker.save()
 
-        return {
-            "message": "Location updated successfully."
-        }
-    
+        return {"message": "Location updated successfully."}
+
     @staticmethod
     def start_job(user, offer_id):
         offer = BookingOffer.objects.get(
@@ -343,7 +332,7 @@ class WorkerService:
             "message": "Job started successfully.",
             "job_progress": booking.job_progress,
         }
-    
+
     @staticmethod
     def complete_job(user, offer_id):
         offer = BookingOffer.objects.get(

@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from accounts.models import Skill
-from accounts.models import WorkerProfile
 
 from .models import Booking, BookingOffer
 
@@ -26,6 +25,7 @@ class BookingCreateSerializer(serializers.ModelSerializer):
 
         return value
 
+
 class WorkerSummarySerializer(serializers.Serializer):
     id = serializers.IntegerField()
     full_name = serializers.CharField(source="user.full_name")
@@ -41,8 +41,9 @@ class WorkerSummarySerializer(serializers.Serializer):
 
         if worker.profile_photo and request:
             return request.build_absolute_uri(worker.profile_photo.url)
-        
+
         return None
+
 
 class BookingDetailSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source="category.name")
@@ -63,14 +64,13 @@ class BookingDetailSerializer(serializers.ModelSerializer):
             "created_at",
             "worker",
         ]
-    
+
     def get_worker(self, booking):
         if not booking.worker:
             return None
-        
-        return WorkerSummarySerializer(
-            booking.worker, context=self.context
-        ).data
+
+        return WorkerSummarySerializer(booking.worker, context=self.context).data
+
 
 class BookingOfferSerializer(serializers.ModelSerializer):
     worker_name = serializers.CharField(source="worker.user.full_name")
@@ -86,6 +86,7 @@ class BookingOfferSerializer(serializers.ModelSerializer):
             "offered_at",
             "responded_at",
         ]
+
 
 class RateBookingSerializer(serializers.Serializer):
     rating = serializers.DecimalField(

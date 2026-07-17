@@ -1,11 +1,16 @@
 # Create your tests here.
 # services/tests.py
 
+from decimal import Decimal
+
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from accounts.models import Skill
+from services.matching import rank_candidates
+from services.models import Booking, BookingOffer
 
 User = get_user_model()
 
@@ -65,13 +70,6 @@ class CategoryListTests(APITestCase):
             response.status_code,
             [status.HTTP_401_UNAUTHORIZED, status.HTTP_403_FORBIDDEN],
         )
-
-from decimal import Decimal
-from django.utils import timezone
-
-from accounts.models import CustomerProfile, WorkerProfile
-from services.matching import rank_candidates
-from services.models import Booking, BookingOffer
 
 
 class BookingCreationTests(APITestCase):

@@ -8,7 +8,10 @@ urlpatterns = [
     path(
         "bookings/<int:booking_id>/status/", views.booking_status, name="booking-status"
     ),
-
-    path("bookings/<int:booking_id>/complete/", views.complete_booking, name="complete-booking"),
+    path(
+        "bookings/<int:booking_id>/complete/",
+        views.complete_booking,
+        name="complete-booking",
+    ),
     path("bookings/<int:booking_id>/rate/", views.rate_booking, name="rate-booking"),
 ]

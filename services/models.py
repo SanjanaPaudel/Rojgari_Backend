@@ -3,6 +3,7 @@ from django.db import models
 
 from accounts.models import CustomerProfile, Skill, WorkerProfile
 
+
 class Booking(models.Model):
     STATUS_CHOICES = [
         ("active", "Active"),

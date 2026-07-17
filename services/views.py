@@ -1,20 +1,22 @@
+from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.db import transaction
 
-from accounts.models import Skill
+from accounts.models import Skill, WorkerProfile
 from accounts.permissions import IsCustomer
 from accounts.serializers import SkillSerializer
-from accounts.models import WorkerProfile
 
 from .geocoding import reverse_geocode
 from .matching import rank_candidates
 from .models import Booking, BookingMedia, BookingOffer
-from .serializers import BookingCreateSerializer
-from .serializers import  BookingDetailSerializer
-from .serializers import  RateBookingSerializer
+from .serializers import (
+    BookingCreateSerializer,
+    BookingDetailSerializer,
+    RateBookingSerializer,
+)
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])
@@ -24,6 +26,7 @@ def get_categories(request):
     serializer = SkillSerializer(categories, many=True)
 
     return Response({"categories": serializer.data})
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsCustomer])
@@ -88,6 +91,7 @@ def create_booking(request):
         status=status.HTTP_201_CREATED,
     )
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])
 def booking_status(request, booking_id):
@@ -101,9 +105,8 @@ def booking_status(request, booking_id):
             status=status.HTTP_404_NOT_FOUND,
         )
 
-    return Response(
-        BookingDetailSerializer(booking, context={"request": request}).data
-    )
+    return Response(BookingDetailSerializer(booking, context={"request": request}).data)
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsCustomer])
@@ -133,9 +136,7 @@ def complete_booking(request, booking_id):
     booking.status = "completed"
     booking.save()
 
-    return Response(
-        BookingDetailSerializer(booking, context={"request": request}).data
-    )
+    return Response(BookingDetailSerializer(booking, context={"request": request}).data)
 
 
 @api_view(["POST"])
@@ -185,6 +186,4 @@ def rate_booking(request, booking_id):
         worker.total_reviews = total + 1
         worker.save()
 
-    return Response(
-        BookingDetailSerializer(booking, context={"request": request}).data
-    )
+    return Response(BookingDetailSerializer(booking, context={"request": request}).data)
