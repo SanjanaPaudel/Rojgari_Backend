@@ -104,7 +104,7 @@ class BookingOffer(models.Model):
         ("pending", "Pending"),
         ("accepted", "Accepted"),
         ("rejected", "Rejected"),
-        ("rxpired", "Expired"),
+        ("expired", "Expired"),
         ("cancelled", "Cancelled"),
     ]
 
