@@ -29,7 +29,6 @@ from .services.auth_service import AuthService
 from .services.dashboard_service import WorkerDashboardService
 from .services.otp_service import OTPService
 from .services.worker_service import WorkerService
-from services.models import BookingOffer
 
 
 @api_view(["POST"])
@@ -482,7 +481,6 @@ def accept_request(request, offer_id):
     )
 
     return Response(data)
-
 
 
 @api_view(["POST"])

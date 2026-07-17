@@ -2,7 +2,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 
 from accounts.models import Skill, WorkerProfile
-from services.models import BookingMedia, BookingOffer,Booking
+from services.models import BookingMedia, BookingOffer
 
 
 class WorkerService:
@@ -234,7 +234,7 @@ class WorkerService:
             "booking_id": booking.id,
             "status": booking.status,
         }
-    
+
     @staticmethod
     def reject_request(user, offer_id):
 
