@@ -416,6 +416,8 @@ def update_location(request):
     latitude = request.data.get("latitude")
     longitude = request.data.get("longitude")
 
+    (print(latitude, longitude),)
+
     if latitude is None or longitude is None:
         return Response(
             {"detail": "latitude and longitude are required."},
