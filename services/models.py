@@ -98,6 +98,7 @@ class BookingMedia(models.Model):
     def __str__(self):
         return f"{self.media_type} for booking #{self.booking_id}"
 
+
 class BookingOffer(models.Model):
     STATUS_CHOICES = [
         ("pending", "Pending"),

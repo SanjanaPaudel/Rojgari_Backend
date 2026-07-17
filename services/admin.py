@@ -15,6 +15,7 @@ class BookingAdmin(admin.ModelAdmin):
 class BookingMediaAdmin(admin.ModelAdmin):
     list_display = ("id", "booking", "media_type")
 
+
 @admin.register(BookingOffer)
 class BookingOfferAdmin(admin.ModelAdmin):
     list_display = ("id", "booking", "worker", "score", "status", "offered_at")

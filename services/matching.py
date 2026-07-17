@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from accounts.models import WorkerProfile
 
+
 def _distance_km(lat1, lon1, lat2, lon2):
     """
     Haversine formula - straight-line dsitance between two coordinates, in km.
@@ -13,7 +14,7 @@ def _distance_km(lat1, lon1, lat2, lon2):
 
     lat1, lon1, lat2, lon2 = map(float, [lat1, lon1, lat2, lon2])
 
-    r = 6371 # Earth's radius in KM
+    r = 6371  # Earth's radius in KM
 
     d_lat = math.radians(lat2 - lat1)
     d_lon = math.radians(lon2 - lon1)
@@ -29,6 +30,7 @@ def _distance_km(lat1, lon1, lat2, lon2):
 
     return r * c
 
+
 def _distance_score(distance_km):
     if distance_km < 2:
         return 4
@@ -36,11 +38,13 @@ def _distance_score(distance_km):
         return 3
     elif distance_km < 10:
         return 2
-    else: 
+    else:
         return 1
+
 
 def _rating_score(average_rating):
     return (Decimal(average_rating) / Decimal(5)) * Decimal(3)
+
 
 def _completed_jobs_score(completed_jobs):
     if completed_jobs == 0:
@@ -52,10 +56,10 @@ def _completed_jobs_score(completed_jobs):
     else:
         return 3
 
+
 def get_eligible_workers(booking):
     """
-    Return WorkerProfiles eligible to be offered this booking, 
-    filtered by Category, online status, and location freshness.
+    Return WorkerProfiles eligible to be offered this booking, filtered by Category, online status, and location freshness
     """
 
     stale_cutoff = timezone.now() - timedelta(minutes=3)
@@ -68,6 +72,7 @@ def get_eligible_workers(booking):
         current_latitude__isnull=False,
         current_longitude__isnull=False,
     )
+
 
 def score_worker(booking, worker):
     distance = _distance_km(
@@ -84,6 +89,7 @@ def score_worker(booking, worker):
     )
 
     return round(Decimal(total), 2)
+
 
 def rank_candidates(booking, exclude_worker_ids=None):
     """
