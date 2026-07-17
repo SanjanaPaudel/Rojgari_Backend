@@ -29,6 +29,7 @@ from .services.auth_service import AuthService
 from .services.dashboard_service import WorkerDashboardService
 from .services.otp_service import OTPService
 from .services.worker_service import WorkerService
+from services.models import BookingOffer
 
 
 @api_view(["POST"])
@@ -474,6 +475,25 @@ def accept_request(request, offer_id):
         )
 
     data = WorkerService.accept_request(
+        request.user,
+        offer_id,
+    )
+
+    return Response(data)
+
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def reject_request(request, offer_id):
+
+    if request.user.role != "worker":
+        return Response(
+            {"detail": "Only workers can access this endpoint."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = WorkerService.reject_request(
         request.user,
         offer_id,
     )
