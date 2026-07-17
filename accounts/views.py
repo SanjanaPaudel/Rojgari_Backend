@@ -9,11 +9,14 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from accounts.models import Skill
+from accounts.permissions import IsWorker
 from accounts.serializers import (
     IdentityDocumentSerializer,
     ResendOTPSerializer,
     SelectSkillsSerializer,
     SignupSerializer,
+    SkillSerializer,
     UpdateSkillSerializer,
     UserLoginSerializer,
     VerifyOTPSerializer,
@@ -21,7 +24,7 @@ from accounts.serializers import (
     WorkerProfileSerializer,
     WorkerStatusSerializer,
 )
-from accounts.permissions import IsWorker
+
 from .services.auth_service import AuthService
 from .services.dashboard_service import WorkerDashboardService
 from .services.otp_service import OTPService
