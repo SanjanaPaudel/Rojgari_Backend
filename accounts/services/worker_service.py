@@ -1,5 +1,5 @@
 from accounts.models import Skill, WorkerProfile
-
+from services.models import BookingOffer
 
 class WorkerService:
     @staticmethod
@@ -105,4 +105,45 @@ class WorkerService:
         return {
             "message": "Skills updated successfully.",
             "skills": [skill.name for skill in worker.skills.all()],
+        }
+    
+    @staticmethod
+    def get_incoming_requests(user):
+
+        worker_profile = user.workerprofile
+
+        offers = (
+            BookingOffer.objects
+            .filter(
+                worker=worker_profile,
+                status="pending",
+            )
+        )
+
+        requests = []
+
+        for offer in offers:
+
+            booking = offer.booking
+
+            requests.append(
+                {
+                    "offer_id": offer.id,
+                    "customer_name": booking.customer.user.full_name,
+                    "service": booking.category.name,
+                    "service_icon": (
+                        booking.category.icon.url
+                        if booking.category.icon
+                        else None
+                    ),
+                    "description": booking.description,
+                    "address": booking.address_text,
+                    "distance_km": 0,
+                    "created_at": offer.offered_at,
+                }
+            )
+
+        return {
+            "count": len(requests),
+            "requests": requests,
         }
