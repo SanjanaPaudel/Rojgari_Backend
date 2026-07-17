@@ -2,16 +2,19 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.db import transaction
 
 from accounts.models import Skill
 from accounts.permissions import IsCustomer
 from accounts.serializers import SkillSerializer
+from accounts.models import WorkerProfile
 
 from .geocoding import reverse_geocode
 from .matching import rank_candidates
 from .models import Booking, BookingMedia, BookingOffer
 from .serializers import BookingCreateSerializer
-
+from .serializers import  BookingDetailSerializer
+from .serializers import  RateBookingSerializer
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])
@@ -21,7 +24,6 @@ def get_categories(request):
     serializer = SkillSerializer(categories, many=True)
 
     return Response({"categories": serializer.data})
-
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsCustomer])
@@ -45,53 +47,46 @@ def create_booking(request):
 
     address_text = reverse_geocode(latitude, longitude)
 
-    booking = Booking.objects.create(
-        customer=request.user.customer_profile,
-        category=serializer.validated_data["category"],
-        description=serializer.validated_data["description"],
-        latitude=latitude,
-        longitude=longitude,
-        address_text=address_text,
-        status="active",
-    )
-
-    for photo in photos:
-        BookingMedia.objects.create(
-            booking=booking,
-            file=photo,
-            media_type="photo",
+    with transaction.atomic():
+        booking = Booking.objects.create(
+            customer=request.user.customer_profile,
+            category=serializer.validated_data["category"],
+            description=serializer.validated_data["description"],
+            latitude=latitude,
+            longitude=longitude,
+            address_text=address_text,
+            status="active",
         )
 
-    if video:
-        BookingMedia.objects.create(
-            booking=booking,
-            file=video,
-            media_type="video",
-        )
+        for photo in photos:
+            BookingMedia.objects.create(
+                booking=booking,
+                file=photo,
+                media_type="photo",
+            )
 
-    ranked = rank_candidates(booking)
-    top_candidates = ranked[:3]
+        if video:
+            BookingMedia.objects.create(
+                booking=booking,
+                file=video,
+                media_type="video",
+            )
 
-    for worker, score in top_candidates:
-        BookingOffer.objects.create(
-            booking=booking,
-            worker=worker,
-            score=score,
-            status="pending",
-        )
+        ranked = rank_candidates(booking)
+        top_candidates = ranked[:3]
+
+        for worker, score in top_candidates:
+            BookingOffer.objects.create(
+                booking=booking,
+                worker=worker,
+                score=score,
+                status="pending",
+            )
 
     return Response(
-        {
-            "id": booking.id,
-            "category": booking.category.name,
-            "description": booking.description,
-            "address_text": booking.address_text,
-            "status": booking.status,
-            "offers_sent": len(top_candidates),
-        },
+        BookingDetailSerializer(booking, context={"request": request}).data,
         status=status.HTTP_201_CREATED,
     )
-
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])
@@ -106,30 +101,90 @@ def booking_status(request, booking_id):
             status=status.HTTP_404_NOT_FOUND,
         )
 
-    worker_data = None
+    return Response(
+        BookingDetailSerializer(booking, context={"request": request}).data
+    )
 
-    if booking.worker:
-        worker_profile = booking.worker
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsCustomer])
+def complete_booking(request, booking_id):
+    try:
+        booking = Booking.objects.get(
+            id=booking_id, customer=request.user.customer_profile
+        )
+    except Booking.DoesNotExist:
+        return Response(
+            {"detail": "Booking not found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
-        worker_data = {
-            "id": worker_profile.id,
-            "full_name": worker_profile.user.full_name,
-            "phone_number": worker_profile.user.phone_number,
-            "average_rating": worker_profile.average_rating,
-            "completed_jobs": worker_profile.completed_jobs,
-            "profile_photo": (
-                request.build_absolute_uri(worker_profile.profile_photo.url)
-                if worker_profile.profile_photo
-                else None
-            ),
-            "current_latitude": worker_profile.current_latitude,
-            "current_longitude": worker_profile.current_longitude,
-        }
+    if booking.worker is None:
+        return Response(
+            {"detail": "This booking has no assigned worker yet."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if booking.status in ("completed", "cancelled"):
+        return Response(
+            {"detail": f"Booking is already {booking.status}."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    booking.status = "completed"
+    booking.save()
 
     return Response(
-        {
-            "id": booking.id,
-            "status": booking.status,
-            "worker": worker_data,
-        }
+        BookingDetailSerializer(booking, context={"request": request}).data
+    )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsCustomer])
+def rate_booking(request, booking_id):
+    try:
+        booking = Booking.objects.get(
+            id=booking_id, customer=request.user.customer_profile
+        )
+    except Booking.DoesNotExist:
+        return Response(
+            {"detail": "Booking not found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    if booking.status != "completed":
+        return Response(
+            {"detail": "Only completed bookings can be rated."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if booking.rating is not None:
+        return Response(
+            {"detail": "This booking has already been rated."},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    serializer = RateBookingSerializer(data=request.data)
+
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    new_rating = serializer.validated_data["rating"]
+
+    with transaction.atomic():
+        booking.rating = new_rating
+        booking.save()
+
+        worker = WorkerProfile.objects.select_for_update().get(id=booking.worker_id)
+
+        total = worker.total_reviews
+        current_average = worker.average_rating
+
+        new_average = ((current_average * total) + new_rating) / (total + 1)
+
+        worker.average_rating = round(new_average, 2)
+        worker.total_reviews = total + 1
+        worker.save()
+
+    return Response(
+        BookingDetailSerializer(booking, context={"request": request}).data
     )
