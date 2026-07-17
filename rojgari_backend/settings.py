@@ -11,7 +11,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(DEBUG=(bool, False))
 
 # Try reading from .env file
-environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
+environ.Env.read_env(
+    os.path.join(BASE_DIR, ".env"),
+    overwrite=True,
+)
 
 
 # Quick-start development settings - unsuitable for production
@@ -83,9 +86,7 @@ WSGI_APPLICATION = "rojgari_backend.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    "default": env.db("DATABASE_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}")
-}
+DATABASES = {"default": env.db("DATABASE_URL")}
 
 # Caching with Valkey (using Django's built-in Redis backend)
 CACHES = {

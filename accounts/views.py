@@ -1,15 +1,22 @@
 from django.utils import timezone
 from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import (
+    api_view,
+    authentication_classes,
+    permission_classes,
+)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from accounts.models import Skill
+from accounts.permissions import IsWorker
 from accounts.serializers import (
     IdentityDocumentSerializer,
     ResendOTPSerializer,
     SelectSkillsSerializer,
     SignupSerializer,
+    SkillSerializer,
     UpdateSkillSerializer,
     UserLoginSerializer,
     VerifyOTPSerializer,
@@ -17,7 +24,7 @@ from accounts.serializers import (
     WorkerProfileSerializer,
     WorkerStatusSerializer,
 )
-from accounts.permissions import IsWorker
+
 from .services.auth_service import AuthService
 from .services.dashboard_service import WorkerDashboardService
 from .services.otp_service import OTPService
@@ -157,6 +164,7 @@ def update_worker_status(request):
 
 
 @api_view(["POST"])
+@authentication_classes([])
 @permission_classes([AllowAny])
 def user_login(request):
     serializer = UserLoginSerializer(data=request.data)

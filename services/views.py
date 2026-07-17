@@ -8,7 +8,8 @@ from accounts.permissions import IsCustomer
 from accounts.serializers import SkillSerializer
 
 from .geocoding import reverse_geocode
-from .models import Booking, BookingMedia
+from .matching import rank_candidates
+from .models import Booking, BookingMedia, BookingOffer
 from .serializers import BookingCreateSerializer
 
 
@@ -68,6 +69,17 @@ def create_booking(request):
             media_type="video",
         )
 
+    ranked = rank_candidates(booking)
+    top_candidates = ranked[:3]
+
+    for worker, score in top_candidates:
+        BookingOffer.objects.create(
+            booking=booking,
+            worker=worker,
+            score=score,
+            status="pending",
+        )
+
     return Response(
         {
             "id": booking.id,
@@ -75,6 +87,7 @@ def create_booking(request):
             "description": booking.description,
             "address_text": booking.address_text,
             "status": booking.status,
+            "offers_sent": len(top_candidates),
         },
         status=status.HTTP_201_CREATED,
     )
