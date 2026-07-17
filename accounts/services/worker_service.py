@@ -343,3 +343,31 @@ class WorkerService:
             "message": "Job started successfully.",
             "job_progress": booking.job_progress,
         }
+    
+    @staticmethod
+    def complete_job(user, offer_id):
+        offer = BookingOffer.objects.get(
+            id=offer_id,
+            worker=user.workerprofile,
+            status="accepted",
+        )
+
+        booking = offer.booking
+
+        if booking.job_progress != "working":
+            raise ValueError("Job has not been started yet.")
+
+        booking.status = "completed"
+        booking.job_progress = "completed"
+        booking.save()
+
+        worker = user.workerprofile
+        worker.completed_jobs += 1
+        worker.save()
+
+        return {
+            "message": "Job completed successfully.",
+            "status": booking.status,
+            "job_progress": booking.job_progress,
+            "completed_jobs": worker.completed_jobs,
+        }

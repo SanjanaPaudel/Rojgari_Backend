@@ -543,3 +543,13 @@ def start_job(request, offer_id):
     )
 
     return Response(data)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def complete_job(request, offer_id):
+    data = WorkerService.complete_job(
+        request.user,
+        offer_id,
+    )
+
+    return Response(data)
