@@ -533,3 +533,13 @@ def update_location(request):
     )
 
     return Response(data)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def start_job(request, offer_id):
+    data = WorkerService.start_job(
+        request.user,
+        offer_id,
+    )
+
+    return Response(data)

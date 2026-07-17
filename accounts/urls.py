@@ -86,6 +86,11 @@ urlpatterns = [
         views.update_location,
         name="worker-location",
     ),
+    path(
+        "worker/request/<int:offer_id>/start/",
+        views.start_job,
+        name="start-job",
+    ),
     path("login/", views.user_login, name="user-login"),
     path("refresh/", views.user_refresh, name="user-refresh"),
     path("logout/", views.user_logout, name="user-logout"),

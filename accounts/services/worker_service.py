@@ -324,3 +324,22 @@ class WorkerService:
         return {
             "message": "Location updated successfully."
         }
+    
+    @staticmethod
+    def start_job(user, offer_id):
+        offer = BookingOffer.objects.get(
+            id=offer_id,
+            worker=user.workerprofile,
+            status="accepted",
+        )
+
+        booking = offer.booking
+
+        booking.job_progress = "working"
+
+        booking.save()
+
+        return {
+            "message": "Job started successfully.",
+            "job_progress": booking.job_progress,
+        }

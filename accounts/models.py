@@ -12,7 +12,7 @@ class User(AbstractUser):
         ("worker", "Worker"),
     )
 
-    username = None
+    username = None 
 
     phone_number = models.CharField(
         max_length=15,
