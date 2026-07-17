@@ -432,3 +432,54 @@ def update_location(request):
     profile.save()
 
     return Response({"detail": "Location updated."})
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def incoming_requests(request):
+
+    if request.user.role != "worker":
+        return Response(
+            {"detail": "Only workers can access this endpoint."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = WorkerService.get_incoming_requests(request.user)
+
+    return Response(data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def request_detail(request, offer_id):
+
+    if request.user.role != "worker":
+        return Response(
+            {"detail": "Only workers can access this endpoint."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = WorkerService.get_request_detail(
+        request.user,
+        offer_id,
+    )
+
+    return Response(data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def accept_request(request, offer_id):
+
+    if request.user.role != "worker":
+        return Response(
+            {"detail": "Only workers can access this endpoint."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = WorkerService.accept_request(
+        request.user,
+        offer_id,
+    )
+
+    return Response(data)

@@ -1,4 +1,8 @@
+from django.db import transaction
+from django.shortcuts import get_object_or_404
+
 from accounts.models import Skill, WorkerProfile
+from services.models import BookingMedia, BookingOffer
 
 
 class WorkerService:
@@ -118,4 +122,117 @@ class WorkerService:
         return {
             "message": "Skills updated successfully.",
             "skills": [skill.name for skill in worker.skills.all()],
+        }
+
+    @staticmethod
+    def get_incoming_requests(user):
+
+        worker_profile = user.workerprofile
+
+        offers = BookingOffer.objects.filter(
+            worker=worker_profile,
+            status="pending",
+        )
+
+        requests = []
+
+        for offer in offers:
+            booking = offer.booking
+
+            requests.append(
+                {
+                    "offer_id": offer.id,
+                    "customer_name": booking.customer.user.full_name,
+                    "service": booking.category.name,
+                    "service_icon": (
+                        booking.category.icon.url if booking.category.icon else None
+                    ),
+                    "description": booking.description,
+                    "address": booking.address_text,
+                    "distance_km": 0,
+                    "created_at": offer.offered_at,
+                }
+            )
+
+        return {
+            "count": len(requests),
+            "requests": requests,
+        }
+
+    @staticmethod
+    def get_request_detail(user, offer_id):
+
+        offer = get_object_or_404(
+            BookingOffer,
+            id=offer_id,
+            worker=user.workerprofile,
+        )
+
+        booking = offer.booking
+
+        photos = []
+
+        video = None
+
+        media = BookingMedia.objects.filter(
+            booking=booking,
+        )
+
+        for item in media:
+            if item.media_type == "photo":
+                photos.append(item.file.url)
+
+            elif item.media_type == "video":
+                video = item.file.url
+
+        return {
+            "offer_id": offer.id,
+            "customer_name": booking.customer.user.full_name,
+            "service": booking.category.name,
+            "service_icon": (
+                booking.category.icon.url if booking.category.icon else None
+            ),
+            "description": booking.description,
+            "address": booking.address_text,
+            "latitude": booking.latitude,
+            "longitude": booking.longitude,
+            "distance_km": 0,
+            "photos": photos,
+            "video": video,
+            "status": offer.status,
+            "created_at": booking.created_at,
+        }
+
+    @staticmethod
+    @transaction.atomic
+    def accept_request(user, offer_id):
+
+        offer = BookingOffer.objects.select_for_update().get(
+            id=offer_id,
+            worker=user.workerprofile,
+            status="pending",
+        )
+
+        booking = offer.booking
+
+        booking.worker = user.workerprofile
+        booking.status = "scheduled"
+        booking.save()
+
+        offer.status = "accepted"
+        offer.save()
+
+        BookingOffer.objects.filter(
+            booking=booking,
+            status="pending",
+        ).exclude(
+            id=offer.id,
+        ).update(
+            status="cancelled",
+        )
+
+        return {
+            "message": "Request accepted successfully.",
+            "booking_id": booking.id,
+            "status": booking.status,
         }

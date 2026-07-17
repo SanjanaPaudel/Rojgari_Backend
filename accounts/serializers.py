@@ -201,3 +201,63 @@ class UpdateSkillSerializer(serializers.Serializer):
             raise serializers.ValidationError("Maximum 3 skills can be selected.")
 
         return value
+
+
+class IncomingRequestSerializer(serializers.Serializer):
+    offer_id = serializers.IntegerField()
+
+    customer_name = serializers.CharField()
+
+    service = serializers.CharField()
+
+    service_icon = serializers.CharField()
+
+    description = serializers.CharField()
+
+    address = serializers.CharField()
+
+    distance_km = serializers.FloatField()
+
+    created_at = serializers.DateTimeField()
+
+
+class WorkerRequestDetailSerializer(serializers.Serializer):
+    offer_id = serializers.IntegerField()
+
+    customer_name = serializers.CharField()
+
+    service = serializers.CharField()
+
+    service_icon = serializers.CharField(
+        allow_null=True,
+    )
+
+    description = serializers.CharField()
+
+    address = serializers.CharField(
+        allow_null=True,
+    )
+
+    latitude = serializers.DecimalField(
+        max_digits=9,
+        decimal_places=6,
+    )
+
+    longitude = serializers.DecimalField(
+        max_digits=9,
+        decimal_places=6,
+    )
+
+    distance_km = serializers.FloatField()
+
+    photos = serializers.ListField(
+        child=serializers.CharField(),
+    )
+
+    video = serializers.CharField(
+        allow_null=True,
+    )
+
+    status = serializers.CharField()
+
+    created_at = serializers.DateTimeField()
