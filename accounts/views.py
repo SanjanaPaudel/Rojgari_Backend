@@ -461,3 +461,22 @@ def request_detail(request, offer_id):
     )
 
     return Response(data)
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def accept_request(request, offer_id):
+
+    if request.user.role != "worker":
+        return Response(
+            {
+                "detail": "Only workers can access this endpoint."
+            },
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = WorkerService.accept_request(
+        request.user,
+        offer_id,
+    )
+
+    return Response(data)
