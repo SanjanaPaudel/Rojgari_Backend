@@ -261,3 +261,14 @@ class WorkerRequestDetailSerializer(serializers.Serializer):
     status = serializers.CharField()
 
     created_at = serializers.DateTimeField()
+
+class WorkerLocationSerializer(serializers.Serializer):
+    latitude = serializers.DecimalField(
+        max_digits=9,
+        decimal_places=6,
+    )
+
+    longitude = serializers.DecimalField(
+        max_digits=9,
+        decimal_places=6,
+    )

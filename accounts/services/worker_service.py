@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 
 from accounts.models import Skill, WorkerProfile
 from services.models import BookingMedia, BookingOffer
+from django.utils import timezone
 
 
 class WorkerService:
@@ -306,4 +307,20 @@ class WorkerService:
             ),
 
             "distance_km": None,
+        }
+    
+    @staticmethod
+    def update_location(user, data):
+        worker = user.workerprofile
+
+        worker.current_latitude = data["latitude"]
+
+        worker.current_longitude = data["longitude"]
+
+        worker.last_location_update = timezone.now()
+
+        worker.save()
+
+        return {
+            "message": "Location updated successfully."
         }

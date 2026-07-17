@@ -23,6 +23,7 @@ from accounts.serializers import (
     WorkerPhotoSerializer,
     WorkerProfileSerializer,
     WorkerStatusSerializer,
+    WorkerLocationSerializer,
 )
 
 from .services.auth_service import AuthService
@@ -512,5 +513,23 @@ def current_job(request):
             },
             status=404,
         )
+
+    return Response(data)
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def update_location(request):
+    serializer = WorkerLocationSerializer(
+        data=request.data,
+    )
+
+    serializer.is_valid(
+        raise_exception=True,
+    )
+
+    data = WorkerService.update_location(
+        request.user,
+        serializer.validated_data,
+    )
 
     return Response(data)
