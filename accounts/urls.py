@@ -76,6 +76,11 @@ urlpatterns = [
         views.reject_request,
         name="reject-request",
     ),
+    path(
+        "worker/current-job/",
+        views.current_job,
+        name="current-job",
+    ),
     path("login/", views.user_login, name="user-login"),
     path("refresh/", views.user_refresh, name="user-refresh"),
     path("logout/", views.user_logout, name="user-logout"),

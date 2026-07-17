@@ -499,3 +499,18 @@ def reject_request(request, offer_id):
     )
 
     return Response(data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def current_job(request):
+    data = WorkerService.get_current_job(request.user)
+
+    if not data:
+        return Response(
+            {
+                "message": "No active job found."
+            },
+            status=404,
+        )
+
+    return Response(data)

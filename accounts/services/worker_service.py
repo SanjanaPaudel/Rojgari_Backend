@@ -250,3 +250,60 @@ class WorkerService:
         return {
             "message": "Request rejected successfully.",
         }
+
+    @staticmethod
+    def get_current_job(user):
+        offer = (
+            BookingOffer.objects.select_related(
+                "booking",
+                "booking__customer__user",
+                "booking__category",
+            )
+            .filter(
+                worker=user.workerprofile,
+                status="accepted",
+            )
+            .order_by("-offered_at")
+            .first()
+        )
+
+        if not offer:
+            return None
+
+        booking = offer.booking
+
+        customer = booking.customer.user
+
+        return {
+            "booking_id": booking.id,
+            "request_id": f"#REQ{booking.id:05d}",
+
+            "category": booking.category.name,
+
+            "customer": {
+                "name": customer.full_name,
+                "profile_photo": (
+                    customer.customer_profile.profile_photo.url
+                    if customer.customer_profile.profile_photo
+                    else None
+                ),
+            },
+
+            "description": booking.description,
+
+            "address": booking.address_text,
+
+            "latitude": booking.latitude,
+
+            "longitude": booking.longitude,
+
+            "requested_at": booking.created_at,
+
+            "job_progress": getattr(
+                booking,
+                "job_progress",
+                "accepted",
+            ),
+
+            "distance_km": None,
+        }
