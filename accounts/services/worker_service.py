@@ -149,9 +149,7 @@ class WorkerService:
                     "offer_id": offer.id,
                     "customer_name": booking.customer.user.full_name,
                     "service": booking.category.name,
-                    "service_icon": (
-                        booking.category.icon.url if booking.category.icon else None
-                    ),
+                    "service_icon": booking.category.icon or None,
                     "description": booking.description,
                     "address": booking.address_text,
                     "distance_km": 0,
@@ -196,9 +194,7 @@ class WorkerService:
             "offer_id": offer.id,
             "customer_name": booking.customer.user.full_name,
             "service": booking.category.name,
-            "service_icon": (
-                booking.category.icon.url if booking.category.icon else None
-            ),
+            "service_icon": booking.category.icon or None,
             "description": booking.description,
             "address": booking.address_text,
             "latitude": booking.latitude,
@@ -322,7 +318,7 @@ class WorkerService:
             "distance_km": None,
         }
 
-    OFFER_EXPIRY_SECONDS = 30
+    OFFER_EXPIRY_SECONDS = 120
 
     @staticmethod
     def _backfill(booking):
