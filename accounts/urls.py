@@ -96,6 +96,21 @@ urlpatterns = [
         views.complete_job,
         name="complete-job",
     ),
+    path(
+        "customer/profile/",
+        views.customer_profile,
+        name="customer-profile",
+    ),
+    path(
+        "customer/profile/update/",
+        views.update_customer_profile,
+        name="update-customer-profile",
+    ),
+    path(
+        "customer/profile-photo/",
+        views.update_customer_profile_photo,
+        name="customer-profile-photo",
+    ),
     path("login/", views.user_login, name="user-login"),
     path("refresh/", views.user_refresh, name="user-refresh"),
     path("logout/", views.user_logout, name="user-logout"),
