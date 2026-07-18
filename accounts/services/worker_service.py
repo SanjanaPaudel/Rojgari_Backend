@@ -34,9 +34,11 @@ class WorkerService:
                 profile.profile_photo.url if profile.profile_photo else None
             ),
             # Document URLs allow the frontend to distinguish:
-            #   is_verified=True                          → verified
-            #   is_verified=False + front/back present    → pending (awaiting admin review)
-            #   is_verified=False + front/back absent     → incomplete (no docs uploaded)
+            #   is_verified=True → verified
+            #   is_verified=False + front/back present →
+            #       pending (awaiting admin review)
+            #   is_verified=False + front/back absent →
+            #       incomplete (no docs uploaded)
             "citizenship_front": (
                 profile.citizenship_front.url if profile.citizenship_front else None
             ),
@@ -323,7 +325,8 @@ class WorkerService:
     @staticmethod
     def _backfill(booking):
         """
-        Find the next-best candidate not already offered this booking, and create a fresh pending offer for them.
+        Find the next-best candidate not already offered this booking,
+        and create a fresh pending offer for them.
         """
         already_offered_ids = list(
             BookingOffer.objects.filter(booking=booking).values_list(
@@ -349,7 +352,8 @@ class WorkerService:
     @transaction.atomic
     def _expire_if_stale(offer):
         """
-        If `offer` is still pending but past the 30s window, expire it and backfill a replacement. Returns the (possibly updated) offer.
+        If `offer` is still pending but past the 30s window, expire it
+        and backfill a replacement. Returns the (possibly updated) offer.
         """
         if offer.status != "pending":
             return offer

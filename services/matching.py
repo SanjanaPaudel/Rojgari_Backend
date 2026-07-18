@@ -59,7 +59,8 @@ def _completed_jobs_score(completed_jobs):
 
 def get_eligible_workers(booking):
     """
-    Return WorkerProfiles eligible to be offered this booking, filtered by Category, online status, and location freshness
+    Return WorkerProfiles eligible to be offered this booking.
+    Filter by category, online status, and location freshness.
     """
 
     stale_cutoff = timezone.now() - timedelta(minutes=3)
