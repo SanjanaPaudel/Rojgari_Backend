@@ -23,13 +23,13 @@ from accounts.serializers import (
     WorkerProfileSerializer,
     WorkerStatusSerializer,
 )
+from accounts.services.customer_service import CustomerService
 from services.models import BookingOffer
 
 from .services.auth_service import AuthService
 from .services.dashboard_service import WorkerDashboardService
 from .services.otp_service import OTPService
 from .services.worker_service import WorkerService
-from accounts.services.customer_service import CustomerService
 
 
 @api_view(["POST"])
@@ -541,11 +541,13 @@ def complete_job(request, offer_id):
 
     return Response(data)
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def customer_profile(request):
     data = CustomerService.get_profile(request.user)
     return Response(data)
+
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])
@@ -557,6 +559,7 @@ def update_customer_profile(request):
     )
 
     return Response(data)
+
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])

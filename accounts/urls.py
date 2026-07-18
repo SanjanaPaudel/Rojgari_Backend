@@ -101,13 +101,12 @@ urlpatterns = [
         views.customer_profile,
         name="customer-profile",
     ),
-
     path(
         "customer/profile/update/",
         views.update_customer_profile,
         name="update-customer-profile",
     ),
-        path(
+    path(
         "customer/profile-photo/",
         views.update_customer_profile_photo,
         name="customer-profile-photo",
