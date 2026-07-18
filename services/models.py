@@ -3,13 +3,14 @@ from django.db import models
 
 from accounts.models import CustomerProfile, Skill, WorkerProfile
 
+
 class Booking(models.Model):
     STATUS_CHOICES = [
         ("active", "Active"),
         ("scheduled", "Scheduled"),
         ("completed", "Completed"),
         ("cancelled", "Cancelled"),
-         ("assigned", "Assigned"),
+        ("assigned", "Assigned"),
     ]
 
     customer = models.ForeignKey(

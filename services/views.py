@@ -107,7 +107,9 @@ def booking_status(request, booking_id):
 
     return Response(BookingDetailSerializer(booking, context={"request": request}).data)
 
+
 # Removed Booking completed section from customer to worker side
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsCustomer])

@@ -228,7 +228,9 @@ class WorkerService:
         booking = Booking.objects.select_for_update().get(id=offer.booking_id)
 
         if booking.worker_id is not None:
-            raise ValueError("This booking has already been assigned to another worker.")
+            raise ValueError(
+                "This booking has already been assigned to another worker."
+            )
 
         booking.worker = user.workerprofile
         booking.status = "assigned"
@@ -319,7 +321,7 @@ class WorkerService:
             ),
             "distance_km": None,
         }
-    
+
     OFFER_EXPIRY_SECONDS = 30
 
     @staticmethod
@@ -328,17 +330,24 @@ class WorkerService:
         Find the next-best candidate not already offered this booking, and create a fresh pending offer for them.
         """
         already_offered_ids = list(
-            BookingOffer.objects.filter(booking=booking).values_list("worker_id", flat=True)
+            BookingOffer.objects.filter(booking=booking).values_list(
+                "worker_id", flat=True
+            )
         )
 
         ranked = rank_candidates(booking, exclude_worker_ids=already_offered_ids)
 
         if not ranked:
             return None
-        
+
         worker, score = ranked[0]
 
-        return BookingOffer.objects.create(booking=booking,worker=worker,score=score,status="pending",)
+        return BookingOffer.objects.create(
+            booking=booking,
+            worker=worker,
+            score=score,
+            status="pending",
+        )
 
     @staticmethod
     @transaction.atomic
@@ -348,12 +357,12 @@ class WorkerService:
         """
         if offer.status != "pending":
             return offer
-        
+
         age_seconds = (timezone.now() - offer.offered_at).total_seconds()
 
         if age_seconds <= WorkerService.OFFER_EXPIRY_SECONDS:
             return offer
-        
+
         offer.status = "expired"
         offer.responded_at = timezone.now()
         offer.save()

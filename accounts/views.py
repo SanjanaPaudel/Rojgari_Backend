@@ -488,6 +488,7 @@ def accept_request(request, offer_id):
 
     return Response(data)
 
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def reject_request(request, offer_id):
