@@ -29,6 +29,7 @@ from .services.auth_service import AuthService
 from .services.dashboard_service import WorkerDashboardService
 from .services.otp_service import OTPService
 from .services.worker_service import WorkerService
+from accounts.services.customer_service import CustomerService
 
 
 @api_view(["POST"])
@@ -552,6 +553,41 @@ def complete_job(request, offer_id):
     data = WorkerService.complete_job(
         request.user,
         offer_id,
+    )
+
+    return Response(data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def customer_profile(request):
+    data = CustomerService.get_profile(request.user)
+    return Response(data)
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def update_customer_profile(request):
+    data = CustomerService.update_profile(
+        user=request.user,
+        full_name=request.data.get("full_name"),
+        phone_number=request.data.get("phone_number"),
+    )
+
+    return Response(data)
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def update_customer_profile_photo(request):
+    profile_photo = request.FILES.get("profile_photo")
+
+    if not profile_photo:
+        return Response(
+            {"error": "Profile photo is required."},
+            status=400,
+        )
+
+    data = CustomerService.update_profile_photo(
+        request.user,
+        profile_photo,
     )
 
     return Response(data)
