@@ -3,26 +3,14 @@ from django.db import models
 
 from accounts.models import CustomerProfile, Skill, WorkerProfile
 
-
 class Booking(models.Model):
     STATUS_CHOICES = [
         ("active", "Active"),
         ("scheduled", "Scheduled"),
         ("completed", "Completed"),
         ("cancelled", "Cancelled"),
+         ("assigned", "Assigned"),
     ]
-
-    JOB_PROGRESS_CHOICES = [
-        ("accepted", "Accepted"),
-        ("working", "Working"),
-        ("completed", "Completed"),
-    ]
-
-    job_progress = models.CharField(
-        max_length=20,
-        choices=JOB_PROGRESS_CHOICES,
-        default="accepted",
-    )
 
     customer = models.ForeignKey(
         CustomerProfile,

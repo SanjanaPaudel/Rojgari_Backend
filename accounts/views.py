@@ -24,6 +24,7 @@ from accounts.serializers import (
     WorkerProfileSerializer,
     WorkerStatusSerializer,
 )
+from services.models import BookingOffer
 
 from .services.auth_service import AuthService
 from .services.dashboard_service import WorkerDashboardService
@@ -475,13 +476,17 @@ def accept_request(request, offer_id):
             status=status.HTTP_403_FORBIDDEN,
         )
 
-    data = WorkerService.accept_request(
-        request.user,
-        offer_id,
-    )
+    try:
+        data = WorkerService.accept_request(request.user, offer_id)
+    except ValueError as e:
+        return Response({"detail": str(e)}, status=status.HTTP_409_CONFLICT)
+    except BookingOffer.DoesNotExist:
+        return Response(
+            {"detail": "This request no longer exists or has already been handled."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
     return Response(data)
-
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
