@@ -1,4 +1,3 @@
-from django.utils import timezone
 from rest_framework import status
 from rest_framework.decorators import (
     api_view,
@@ -24,6 +23,7 @@ from accounts.serializers import (
     WorkerProfileSerializer,
     WorkerStatusSerializer,
 )
+from services.models import BookingOffer
 
 from .services.auth_service import AuthService
 from .services.dashboard_service import WorkerDashboardService
@@ -424,13 +424,12 @@ def update_location(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    profile = request.user.workerprofile
-    profile.current_latitude = latitude
-    profile.current_longitude = longitude
-    profile.last_location_update = timezone.now()
-    profile.save()
+    data = WorkerService.update_location(
+        request.user,
+        {"latitude": latitude, "longitude": longitude},
+    )
 
-    return Response({"detail": "Location updated."})
+    return Response(data)
 
 
 @api_view(["GET"])
@@ -476,10 +475,15 @@ def accept_request(request, offer_id):
             status=status.HTTP_403_FORBIDDEN,
         )
 
-    data = WorkerService.accept_request(
-        request.user,
-        offer_id,
-    )
+    try:
+        data = WorkerService.accept_request(request.user, offer_id)
+    except ValueError as e:
+        return Response({"detail": str(e)}, status=status.HTTP_409_CONFLICT)
+    except BookingOffer.DoesNotExist:
+        return Response(
+            {"detail": "This request no longer exists or has already been handled."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
 
     return Response(data)
 
@@ -514,26 +518,6 @@ def current_job(request):
         )
 
     return Response(data)
-
-
-# dinesh kai xa sanjana implement garni wal ho
-# @api_view(["PATCH"])
-# @permission_classes([IsAuthenticated])
-# def update_location(request):
-#     serializer = WorkerLocationSerializer(
-#         data=request.data,
-#     )
-
-#     serializer.is_valid(
-#         raise_exception=True,
-#     )
-
-#     data = WorkerService.update_location(
-#         request.user,
-#         serializer.validated_data,
-#     )
-
-#     return Response(data)
 
 
 @api_view(["POST"])

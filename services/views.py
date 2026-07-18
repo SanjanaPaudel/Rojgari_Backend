@@ -108,35 +108,7 @@ def booking_status(request, booking_id):
     return Response(BookingDetailSerializer(booking, context={"request": request}).data)
 
 
-@api_view(["POST"])
-@permission_classes([IsAuthenticated, IsCustomer])
-def complete_booking(request, booking_id):
-    try:
-        booking = Booking.objects.get(
-            id=booking_id, customer=request.user.customer_profile
-        )
-    except Booking.DoesNotExist:
-        return Response(
-            {"detail": "Booking not found."},
-            status=status.HTTP_404_NOT_FOUND,
-        )
-
-    if booking.worker is None:
-        return Response(
-            {"detail": "This booking has no assigned worker yet."},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
-    if booking.status in ("completed", "cancelled"):
-        return Response(
-            {"detail": f"Booking is already {booking.status}."},
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
-    booking.status = "completed"
-    booking.save()
-
-    return Response(BookingDetailSerializer(booking, context={"request": request}).data)
+# Removed Booking completed section from customer to worker side
 
 
 @api_view(["POST"])

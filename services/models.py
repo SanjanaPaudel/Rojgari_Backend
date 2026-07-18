@@ -10,6 +10,7 @@ class Booking(models.Model):
         ("scheduled", "Scheduled"),
         ("completed", "Completed"),
         ("cancelled", "Cancelled"),
+        ("assigned", "Assigned"),
     ]
 
     JOB_PROGRESS_CHOICES = [

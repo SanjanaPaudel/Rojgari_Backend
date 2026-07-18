@@ -81,11 +81,11 @@ urlpatterns = [
         views.current_job,
         name="current-job",
     ),
-    # path(
-    #     "worker/location/",
-    #     views.update_location,
-    #     name="worker-location",
-    # ),
+    path(
+        "worker/location/",
+        views.update_location,
+        name="worker-location",
+    ),
     path(
         "worker/request/<int:offer_id>/start/",
         views.start_job,

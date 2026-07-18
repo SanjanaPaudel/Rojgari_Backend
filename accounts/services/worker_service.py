@@ -1,9 +1,10 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-
 from django.utils import timezone
+
 from accounts.models import Skill, WorkerProfile
-from services.models import BookingMedia, BookingOffer
+from services.matching import rank_candidates
+from services.models import Booking, BookingMedia, BookingOffer
 
 
 class WorkerService:
@@ -136,6 +137,11 @@ class WorkerService:
         requests = []
 
         for offer in offers:
+            offer = WorkerService._expire_if_stale(offer)
+
+            if offer.status != "pending":
+                continue
+
             booking = offer.booking
 
             requests.append(
@@ -166,6 +172,8 @@ class WorkerService:
             id=offer_id,
             worker=user.workerprofile,
         )
+
+        offer = WorkerService._expire_if_stale(offer)
 
         booking = offer.booking
 
@@ -212,10 +220,20 @@ class WorkerService:
             status="pending",
         )
 
-        booking = offer.booking
+        offer = WorkerService._expire_if_stale(offer)
+
+        if offer.status != "pending":
+            raise ValueError("This request has expired and is no longer available.")
+
+        booking = Booking.objects.select_for_update().get(id=offer.booking_id)
+
+        if booking.worker_id is not None:
+            raise ValueError(
+                "This booking has already been assigned to another worker."
+            )
 
         booking.worker = user.workerprofile
-        booking.status = "scheduled"
+        booking.status = "assigned"
         booking.save()
 
         offer.status = "accepted"
@@ -237,6 +255,7 @@ class WorkerService:
         }
 
     @staticmethod
+    @transaction.atomic
     def reject_request(user, offer_id):
 
         offer = BookingOffer.objects.get(
@@ -246,7 +265,10 @@ class WorkerService:
         )
 
         offer.status = "rejected"
+        offer.responded_at = timezone.now()
         offer.save()
+
+        WorkerService._backfill(offer.booking)
 
         return {
             "message": "Request rejected successfully.",
@@ -300,19 +322,68 @@ class WorkerService:
             "distance_km": None,
         }
 
-    # @staticmethod
-    # def update_location(user, data):
-    #     worker = user.workerprofile
+    OFFER_EXPIRY_SECONDS = 30
 
-    #     worker.current_latitude = data["latitude"]
+    @staticmethod
+    def _backfill(booking):
+        """
+        Find the next-best candidate not already offered this booking, and create a fresh pending offer for them.
+        """
+        already_offered_ids = list(
+            BookingOffer.objects.filter(booking=booking).values_list(
+                "worker_id", flat=True
+            )
+        )
 
-    #     worker.current_longitude = data["longitude"]
+        ranked = rank_candidates(booking, exclude_worker_ids=already_offered_ids)
 
-    #     worker.last_location_update = timezone.now()
+        if not ranked:
+            return None
 
-    #     worker.save()
+        worker, score = ranked[0]
 
-    #     return {"message": "Location updated successfully."}
+        return BookingOffer.objects.create(
+            booking=booking,
+            worker=worker,
+            score=score,
+            status="pending",
+        )
+
+    @staticmethod
+    @transaction.atomic
+    def _expire_if_stale(offer):
+        """
+        If `offer` is still pending but past the 30s window, expire it and backfill a replacement. Returns the (possibly updated) offer.
+        """
+        if offer.status != "pending":
+            return offer
+
+        age_seconds = (timezone.now() - offer.offered_at).total_seconds()
+
+        if age_seconds <= WorkerService.OFFER_EXPIRY_SECONDS:
+            return offer
+
+        offer.status = "expired"
+        offer.responded_at = timezone.now()
+        offer.save()
+
+        WorkerService._backfill(offer.booking)
+
+        return offer
+
+    @staticmethod
+    def update_location(user, data):
+        worker = user.workerprofile
+
+        worker.current_latitude = data["latitude"]
+
+        worker.current_longitude = data["longitude"]
+
+        worker.last_location_update = timezone.now()
+
+        worker.save()
+
+        return {"message": "Location updated successfully."}
 
     @staticmethod
     def start_job(user, offer_id):
