@@ -81,9 +81,7 @@ urlpatterns = [
         views.current_job,
         name="current-job",
     ),
-
     # Update worker location /worker/location/
-
     path(
         "worker/location/",
         views.update_location,
@@ -114,25 +112,10 @@ urlpatterns = [
         views.update_customer_profile_photo,
         name="customer-profile-photo",
     ),
-
-    #Login user (for both customer and worker) /api/auth/login/
-    path(
-        "login/", 
-        views.user_login, 
-        name="user-login"
-    ),
-
+    # Login user (for both customer and worker) /api/auth/login/
+    path("login/", views.user_login, name="user-login"),
     # Refresh JWT Access token /api/auth/refresh/
-    path(
-        "refresh/", 
-        views.user_refresh, 
-        name="user-refresh"
-    ),
-
+    path("refresh/", views.user_refresh, name="user-refresh"),
     # Logout the User /api/auth/logout/
-    path(
-        "logout/",
-        views.user_logout, 
-        name="user-logout"
-    ),
+    path("logout/", views.user_logout, name="user-logout"),
 ]
