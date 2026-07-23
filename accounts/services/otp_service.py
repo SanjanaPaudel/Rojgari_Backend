@@ -75,6 +75,7 @@ class OTPService:
 
             return {"success": False, "message": "OTP has expired."}
 
+        #Check if the otp is correct 
         if pending.otp != otp:
             pending.attempts += 1
             pending.save()
@@ -89,6 +90,7 @@ class OTPService:
                 "message": f"Invalid OTP. Remaining attempts: {3 - pending.attempts}",
             }
 
+        # The OTP is verified and then only this blocks runs; Create a row in User Table
         user = User.objects.create(
             full_name=pending.full_name,
             phone_number=pending.phone_number,
