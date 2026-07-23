@@ -75,7 +75,7 @@ class OTPService:
 
             return {"success": False, "message": "OTP has expired."}
 
-        #Check if the otp is correct 
+        # Check if the otp is correct
         if pending.otp != otp:
             pending.attempts += 1
             pending.save()

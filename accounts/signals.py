@@ -6,7 +6,7 @@ from .models import CustomerProfile, User, WorkerProfile
 
 @receiver(post_save, sender=User)
 
-#Automatically create the user profile in either Customer or Worker table
+# Automatically create the user profile in either Customer or Worker table
 def create_user_profile(sender, instance, created, **kwargs):
     """Create a CustomerProfile or WorkerProfile when a new User is created.
 
