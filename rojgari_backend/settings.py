@@ -173,3 +173,8 @@ DEFAULT_FROM_EMAIL = env(
     "DEFAULT_FROM_EMAIL",
     default="noreply@example.com",
 )
+
+#firebase for notification
+FIREBASE_CREDENTIALS = os.getenv(
+    "FIREBASE_CREDENTIALS"
+)
