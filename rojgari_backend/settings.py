@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     "accounts",
     "corsheaders",  # ADDED BY JESSICA
     "services",
-    "notifications", # for firebase notifaications
+    "notifications.apps.NotificationsConfig", # for firebase notifaications
 ]
 
 
