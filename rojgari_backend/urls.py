@@ -7,6 +7,11 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/auth/", include("accounts.urls")),
     path("api/services/", include("services.urls")),
+    #notification url
+    path(
+        "api/auth/",
+        include("notifications.urls"),
+    ),
 ]
 
 if settings.DEBUG:
