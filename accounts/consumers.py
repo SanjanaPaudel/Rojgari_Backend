@@ -1,17 +1,19 @@
 import json
 
+from channels.generic.websocket import AsyncWebSocketConsumer
+
 
 class WorkerOfferConsumer(AsyncWebSocketConsumer):
     """
     One consumer instance per connected worker.
     Joins a personal group keyed by user.id so crate_booking()
-    can push offers straight to this specific worker, without knowing or caring wheather they're currently connected.
+    can push offers straight to this specific worker, without knowing or caring wheather they're currently connected/online.
     """
 
     async def connect(self):
         user = self.scope["user"]
 
-        #AnonymousUser has is_authenticated=False; reject anyone who didn't come through valid JWT auth middleware
+        # AnonymousUser has is_authenticated=False; reject anyone who didn't come through valid JWT auth middleware
 
         if not user.is_authenticated:
             await self.close(code=4001)
@@ -23,7 +25,7 @@ class WorkerOfferConsumer(AsyncWebSocketConsumer):
         await self.accept()
 
     async def disconnect(self, close_code):
-        #group_name only exists if connect() got far enough to set it
+        # group_name only exists if connect() got far enough to set it
         if hasattr(self, "group_name"):
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
@@ -32,7 +34,6 @@ class WorkerOfferConsumer(AsyncWebSocketConsumer):
 
     async def booking_offer(self, event):
         """
-        Handler for {"type": "booking.offer", ...} messages sent via group_send(). 
-        Channel maps "booking.offer" -> this method nae automatically (dots become underscores).
+        Handler for {"type": "booking.offer", ...} messages sent via group_send() Channel maps "booking.offer" -> this method nae automatically (dots become underscores)
         """
         await self.send(text_data=json.dumps(event["data"]))
