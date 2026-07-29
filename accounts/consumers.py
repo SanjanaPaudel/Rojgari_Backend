@@ -1,9 +1,9 @@
 import json
 
-from channels.generic.websocket import AsyncWebSocketConsumer
+from channels.generic.websocket import AsyncWebsocketConsumer
 
 
-class WorkerOfferConsumer(AsyncWebSocketConsumer):
+class WorkerOfferConsumer(AsyncWebsocketConsumer):
     """
     One consumer instance per connected worker.
     Joins a personal group keyed by user.id so crate_booking()
