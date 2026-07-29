@@ -49,7 +49,11 @@ INSTALLED_APPS = [
     "accounts",
     "corsheaders",  # ADDED BY JESSICA
     "services",
+<<<<<<< HEAD
     "notifications.apps.NotificationsConfig", # for firebase notifaications
+=======
+    "channels",
+>>>>>>> d617d54f1e1248311b0ba9cbb0c2a223a1d3a694
 ]
 
 
@@ -83,6 +87,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "rojgari_backend.wsgi.application"
+ASGI_APPLICATION = "rojgari_backend.asgi.application"
 
 
 # Database
@@ -96,6 +101,17 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": env("CACHE_URL", default="redis://127.0.0.1:6379/1"),
     }
+}
+
+# Channel layer for Django Channels (WebSocket message broker)
+# Uses the same Redis/Valkey instance as CACHES, but configured separately
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [env("CHANNEL_LAYER_URL", default="redis://127.0.0.1:6379/2")],
+        },
+    },
 }
 
 

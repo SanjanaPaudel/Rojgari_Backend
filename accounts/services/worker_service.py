@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-
+from notifications.notification_service import NotificationService
 from accounts.models import Skill, WorkerProfile
 from services.matching import rank_candidates
 from services.models import Booking, BookingMedia, BookingOffer
@@ -246,12 +246,25 @@ class WorkerService:
             status="cancelled",
         )
 
+        try:
+            NotificationService.send_to_user(
+                user=booking.customer.user,
+                title="Booking Accepted",
+                body=f"{booking.worker.user.full_name} accepted your booking request.",
+                data={
+                    "type": "booking_accepted",
+                    "booking_id": str(booking.id),
+                },
+            )
+        except Exception as e:
+            print(f"Notification failed: {e}")
+
         return {
             "message": "Request accepted successfully.",
             "booking_id": booking.id,
             "status": booking.status,
         }
-
+            
     @staticmethod
     @transaction.atomic
     def reject_request(user, offer_id):
