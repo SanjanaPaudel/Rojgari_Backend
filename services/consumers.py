@@ -39,7 +39,7 @@ class BookingStatusConsumer(AsyncWebsocketConsumer):
     def user_owns_booking(self, user, booking_id):
         # Wrapped because the ORM is sync, but connect() is async - database_sync_to_async bridges that gap safely
         return (
-            Booking.objects.fileter(id=booking_id)
+            Booking.objects.filter(id=booking_id)
             .filter(models.Q(customer__user=user) | models.Q(worker__user=user))
             .exists()
         )
