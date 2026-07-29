@@ -49,11 +49,8 @@ INSTALLED_APPS = [
     "accounts",
     "corsheaders",  # ADDED BY JESSICA
     "services",
-<<<<<<< HEAD
-    "notifications.apps.NotificationsConfig", # for firebase notifaications
-=======
+    "notifications.apps.NotificationsConfig",  # for firebase notifaications
     "channels",
->>>>>>> d617d54f1e1248311b0ba9cbb0c2a223a1d3a694
 ]
 
 
@@ -190,7 +187,5 @@ DEFAULT_FROM_EMAIL = env(
     default="noreply@example.com",
 )
 
-#firebase for notification
-FIREBASE_CREDENTIALS = os.getenv(
-    "FIREBASE_CREDENTIALS"
-)
+# firebase for notification
+FIREBASE_CREDENTIALS = os.getenv("FIREBASE_CREDENTIALS")

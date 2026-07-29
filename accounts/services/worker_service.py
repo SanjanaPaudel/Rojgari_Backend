@@ -1,8 +1,9 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from notifications.notification_service import NotificationService
+
 from accounts.models import Skill, WorkerProfile
+from notifications.notification_service import NotificationService
 from services.matching import rank_candidates
 from services.models import Booking, BookingMedia, BookingOffer
 
@@ -264,7 +265,7 @@ class WorkerService:
             "booking_id": booking.id,
             "status": booking.status,
         }
-            
+
     @staticmethod
     @transaction.atomic
     def reject_request(user, offer_id):

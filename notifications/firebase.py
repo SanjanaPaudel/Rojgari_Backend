@@ -1,9 +1,6 @@
 import firebase_admin
-
-from firebase_admin import credentials
-
 from django.conf import settings
-
+from firebase_admin import credentials
 
 firebase_app = None
 
@@ -15,12 +12,8 @@ def initialize_firebase():
         firebase_app = firebase_admin.get_app()
         return firebase_app
 
-    cred = credentials.Certificate(
-        settings.FIREBASE_CREDENTIALS
-    )
+    cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS)
 
-    firebase_app = firebase_admin.initialize_app(
-        cred
-    )
+    firebase_app = firebase_admin.initialize_app(cred)
 
     return firebase_app

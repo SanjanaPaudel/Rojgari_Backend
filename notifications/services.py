@@ -2,7 +2,6 @@ from .models import DeviceToken
 
 
 class DeviceTokenService:
-
     @staticmethod
     def register_device(
         user,
@@ -19,6 +18,4 @@ class DeviceTokenService:
             },
         )
 
-        return {
-            "message": "Device registered successfully."
-        }
+        return {"message": "Device registered successfully."}

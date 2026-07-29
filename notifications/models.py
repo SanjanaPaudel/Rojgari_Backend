@@ -1,5 +1,7 @@
 from django.db import models
+
 from accounts.models import User
+
 
 # notification model
 class DeviceToken(models.Model):

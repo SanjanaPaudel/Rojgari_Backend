@@ -5,7 +5,6 @@ from .models import DeviceToken
 
 
 class NotificationService:
-
     @staticmethod
     def initialize():
         initialize_firebase()
@@ -23,9 +22,7 @@ class NotificationService:
             return False
 
         for device in tokens:
-
             try:
-
                 message = messaging.Message(
                     notification=messaging.Notification(
                         title=title,
@@ -38,7 +35,6 @@ class NotificationService:
                 messaging.send(message)
 
             except Exception:
-
                 device.is_active = False
                 device.save()
 
