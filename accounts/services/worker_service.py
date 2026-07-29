@@ -279,6 +279,19 @@ class WorkerService:
         offer.responded_at = timezone.now()
         offer.save()
 
+        try:
+            NotificationService.send_to_user(
+                user=offer.booking.customer.user,
+                title="Booking Declined",
+                body=f"{offer.worker.user.full_name} declined your booking request.",
+                data={
+                    "type": "booking_rejected",
+                    "booking_id": str(offer.booking.id),
+                },
+            )
+        except Exception as e:
+            print(f"Notification failed: {e}")
+
         WorkerService._backfill(offer.booking)
 
         return {
