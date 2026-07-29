@@ -83,7 +83,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "rojgari_backend.wsgi.application"
-ASGI_APPLICATION = "rojgari_backend.asgi.application" 
+ASGI_APPLICATION = "rojgari_backend.asgi.application"
 
 
 # Database
