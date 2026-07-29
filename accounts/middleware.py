@@ -1,4 +1,4 @@
-from urllib.parse import parse_qs 
+from urllib.parse import parse_qs
 
 from channels.db import database_sync_to_async
 from django.contrib.auth.models import AnonymousUser
@@ -14,7 +14,7 @@ def get_user_from_token(token_str):
     try:
         access_token = AccessToken(token_str)   #validates signature + expiry
         user_id = access_token["user_id"]   # same claim JWTAuthentication reads
-        return User.objects.get(id=user_id) 
+        return User.objects.get(id=user_id)
     except (InvalidToken, TokenError, User.DoesNotExit):
         return AnonymousUser()
 
