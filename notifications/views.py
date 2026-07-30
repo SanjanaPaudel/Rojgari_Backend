@@ -55,3 +55,16 @@ def mark_notification_read(request, notification_id):
     serializer = NotificationSerializer(notification)
 
     return Response(serializer.data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def unread_notification_count(request):
+    count = NotificationRepository.unread_count(
+        request.user,
+    )
+
+    return Response(
+        {
+            "unread_count": count,
+        }
+    )

@@ -37,4 +37,11 @@ class NotificationRepository:
         notification.save()
 
         return notification
+
+    @staticmethod
+    def unread_count(user):
+        return Notification.objects.filter(
+            user=user,
+            is_read=False,
+        ).count()
     
