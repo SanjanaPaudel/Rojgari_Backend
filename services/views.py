@@ -88,6 +88,18 @@ def create_booking(request):
                 score=score,
                 status="pending",
             )
+            transaction.on_commit(
+                lambda worker=worker, booking=booking: send_booking_offer(
+                    worker.user_id,
+                    {
+                        "booking_id": booking.id,
+                        "customer_name": request.user.full_name,
+                        "service": booking.category.name,
+                        "address": booking.address_text,
+                        "description": booking.description,
+                    },
+                )
+            )
             send_booking_offer(
                 worker.user_id,
                 {

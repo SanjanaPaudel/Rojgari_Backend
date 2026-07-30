@@ -278,7 +278,6 @@ class WorkerService:
             "status": booking.status,
             "customer_name": booking.customer.user.full_name,
         }
-
     
     @staticmethod
     @transaction.atomic
