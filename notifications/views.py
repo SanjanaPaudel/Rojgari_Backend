@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from .serializers import DeviceTokenSerializer,NotificationSerializer
 from .services import DeviceTokenService
 from .models import Notification
-
+from .repository import NotificationRepository
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -41,5 +41,17 @@ def notification_list(request):
         notifications,
         many=True,
     )
+
+    return Response(serializer.data)
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def mark_notification_read(request, notification_id):
+    notification = NotificationRepository.mark_as_read(
+        notification_id=notification_id,
+        user=request.user,
+    )
+
+    serializer = NotificationSerializer(notification)
 
     return Response(serializer.data)
