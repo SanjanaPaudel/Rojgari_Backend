@@ -5,6 +5,7 @@ from django.utils import timezone
 from accounts.models import Skill, WorkerProfile
 from services.matching import rank_candidates
 from services.models import Booking, BookingMedia, BookingOffer
+from services.realtime import send_booking_offer, send_booking_update
 
 
 class WorkerService:
@@ -234,6 +235,14 @@ class WorkerService:
         booking.status = "assigned"
         booking.save()
 
+        send_booking_update(
+            booking.id,
+            {
+                "status": booking.status,
+                "worker_name": user.full_name,
+            },
+        )
+
         offer.status = "accepted"
         offer.save()
 
@@ -341,12 +350,25 @@ class WorkerService:
 
         worker, score = ranked[0]
 
-        return BookingOffer.objects.create(
+        new_offer = BookingOffer.objects.create(
             booking=booking,
             worker=worker,
             score=score,
             status="pending",
         )
+
+        send_booking_offer(
+            worker.user_id,
+            {
+                "booking_id": booking.id,
+                "customer_name": booking.customer.user.full_name,
+                "service": booking.category.name,
+                "address": booking.address_text,
+                "description": booking.description,
+            },
+        )
+
+        return new_offer
 
     @staticmethod
     @transaction.atomic
@@ -399,6 +421,8 @@ class WorkerService:
 
         booking.save()
 
+        send_booking_update(booking.id, {"job_progress": booking.job_progress})
+
         return {
             "message": "Job started successfully.",
             "job_progress": booking.job_progress,
@@ -424,6 +448,11 @@ class WorkerService:
         worker = user.workerprofile
         worker.completed_jobs += 1
         worker.save()
+
+        send_booking_update(
+            booking.id,
+            {"status": booking.status, "job_progress": booking.job_progress},
+        )
 
         return {
             "message": "Job completed successfully.",

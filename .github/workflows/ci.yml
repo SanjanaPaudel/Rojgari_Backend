@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
 
 jobs:
   lint-and-test:
@@ -26,7 +26,7 @@ jobs:
           --health-retries 5
 
       valkey:
-        image: valkey/valkey:8.0
+        image: valkey/valkey:7.2
         ports:
           - 6379:6379
         options: >-
@@ -42,35 +42,35 @@ jobs:
       SECRET_KEY: "ci-secret-key-for-testing-only"
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
-    - name: Install uv
-      run: |
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-    - name: Set up cache for uv
-      uses: actions/cache@v4
-      with:
-        path: ~/.cache/uv
-        key: ${{ runner.os }}-uv-${{ hashFiles('**/uv.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-uv-
+      - name: Set up cache for uv
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
 
-    - name: Sync dependencies
-      run: uv sync
+      - name: Sync dependencies
+        run: uv sync
 
-    - name: Lint and Format Check (Ruff)
-      run: |
-        uvx ruff check .
-        uvx ruff format --check .
+      - name: Lint and Format Check (Ruff)
+        run: |
+          uvx ruff check .
+          uvx ruff format --check .
 
-    - name: Run Django Tests
-      run: |
-        uv run python manage.py test
+      - name: Run Django Tests
+        run: |
+          uv run python manage.py test

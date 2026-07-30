@@ -8,6 +8,7 @@ from accounts.models import Skill, WorkerProfile
 from accounts.permissions import IsCustomer
 from accounts.serializers import SkillSerializer
 
+from .realtime import send_booking_offer
 from .geocoding import reverse_geocode
 from .matching import rank_candidates
 from .models import Booking, BookingMedia, BookingOffer
@@ -84,6 +85,16 @@ def create_booking(request):
                 worker=worker,
                 score=score,
                 status="pending",
+            )
+            send_booking_offer(
+                worker.user_id,
+                {
+                    "booking_id": booking.id,
+                    "customer_name": request.user.full_name,
+                    "service": booking.category.name,
+                    "address": booking.address_text,
+                    "descritption": booking.description,
+                },
             )
 
     return Response(

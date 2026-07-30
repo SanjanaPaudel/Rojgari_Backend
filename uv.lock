@@ -887,7 +887,7 @@ requires-dist = [
     { name = "faker", specifier = ">=40.23.0" },
     { name = "pillow", specifier = ">=12.2.0" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3.4" },
-    { name = "redis", specifier = ">=8.0.1" },
+    { name = "redis", specifier = "==8.0.1" },
     { name = "requests", specifier = ">=2.34.2" },
 ]
 
