@@ -37,3 +37,6 @@ class WorkerOfferConsumer(AsyncWebsocketConsumer):
         Handler for {"type": "booking.offer", ...} messages sent via group_send() Channel maps "booking.offer" -> this method automatically (dots become underscores)
         """
         await self.send(text_data=json.dumps(event["data"]))
+
+    async def offer_cancelled(self, event):
+        await self.send(text_data=json.dumps(event["data"]))

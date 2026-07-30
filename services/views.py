@@ -11,13 +11,14 @@ from accounts.serializers import SkillSerializer
 from .geocoding import reverse_geocode
 from .matching import rank_candidates
 from .models import Booking, BookingMedia, BookingOffer
-from .realtime import send_booking_offer
+from .realtime import send_booking_offer, send_booking_update, send_offer_cancelled
 from .serializers import (
     BookingCreateSerializer,
     BookingDetailSerializer,
     RateBookingSerializer,
 )
 
+NON_CANCELLABLE_STATUSES = ["completed", "cancelled"]
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])
@@ -118,10 +119,42 @@ def booking_status(request, booking_id):
 
     return Response(BookingDetailSerializer(booking, context={"request": request}).data)
 
+# Cancel request from customer side
+@api_view(["POST"])
+@permission_classes([IsAuthenticated, IsCustomer])
+def cancel_booking(request, booking_id):
+    try:
+        booking = Booking.objects.get(
+            id=booking_id, customer=request.user.customer_profile
+        )
+    except Booking.DoesNotExist:
+        return Response(
+            {"detail": "Booking not found."},                status=status.HTTP_404_NOT_FOUND,
+        )
+    if booking.status in NON_CANCELLABLE_STATUSES:
+        return Response(
+            {"detail": "This booking can no longer be cancelled"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
 
-# Removed Booking completed section from customer to worker side
+    pending_offers = list(
+        booking.offers.filter(status="pending").values("id", "worker__user_id")
+    )
 
+    with transaction.atomic():
+        booking.status = "cancelled"
+        booking.save()
 
+        booking.offers.filter(status__in=["pending", "accepted"]).update(status="cancelled")
+
+    for offer in pending_offers:
+        send_offer_cancelled(offer["worker__user_id"], offer["id"])
+
+    send_booking_update(booking.id, {"status": "cancelled"})
+
+    return Response({"details": "Booking cancelled successfully."})
+
+#Rate Booking by Customer
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsCustomer])
 def rate_booking(request, booking_id):

@@ -236,14 +236,6 @@ class WorkerService:
         booking.status = "assigned"
         booking.save()
 
-        send_booking_update(
-            booking.id,
-            {
-                "status": booking.status,
-                "worker_name": user.full_name,
-            },
-        )
-
         offer.status = "accepted"
         offer.save()
 
@@ -266,14 +258,21 @@ class WorkerService:
                     "booking_id": str(booking.id),
                 },
             )
-        except Exception as e:
-            print(f"Notification failed: {e}")
 
-        return {
-            "message": "Request accepted successfully.",
-            "booking_id": booking.id,
-            "status": booking.status,
-        }
+            try:
+                NotificationService.send_to_user(
+                    user=booking.customer.user,
+                    title="Booking Accepted",
+                    body=f"{booking.worker.user.full_name} accepted your booking request.",
+                    data={
+                        "type": "booking_accepted",
+                        "booking_id": str(booking.id),
+                    },
+                )
+            except Exception as e:
+                print(f"Notification failed: {e}")
+
+        transaction.on_commit(_after_commit)
 
     @staticmethod
     @transaction.atomic
@@ -384,15 +383,17 @@ class WorkerService:
             status="pending",
         )
 
-        send_booking_offer(
-            worker.user_id,
-            {
-                "booking_id": booking.id,
-                "customer_name": booking.customer.user.full_name,
-                "service": booking.category.name,
-                "address": booking.address_text,
-                "description": booking.description,
-            },
+        transaction.on_commit(
+            lambda: send_booking_offer(
+                worker.user_id,
+                {
+                    "booking_id": booking.id,
+                    "customer_name": booking.customer.user.full_name,
+                    "service": booking.category.name,
+                    "address": booking.address_text,
+                    "description": booking.description,
+                },
+            )
         )
 
         return new_offer
