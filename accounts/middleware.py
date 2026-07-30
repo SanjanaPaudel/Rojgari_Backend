@@ -15,7 +15,7 @@ def get_user_from_token(token_str):
         access_token = AccessToken(token_str)  # validates signature + expiry
         user_id = access_token["user_id"]  # same claim JWTAuthentication reads
         return User.objects.get(id=user_id)
-    except (InvalidToken, TokenError, User.DoesNotExit):
+    except (InvalidToken, TokenError, User.DoesNotExist):
         return AnonymousUser()
 
 

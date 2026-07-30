@@ -438,7 +438,7 @@ class WorkerService:
                 status="accepted",
             )
             .order_by("-offered_at")
-            .first
+            .first()
         )
 
         if current_offer:
