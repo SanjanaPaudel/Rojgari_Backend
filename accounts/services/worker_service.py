@@ -131,7 +131,7 @@ class WorkerService:
     @staticmethod
     def get_incoming_requests(user):
 
-        worker_profile = user.workerprofile
+        worker_profile = user.workerprofile 
 
         offers = BookingOffer.objects.filter(
             worker=worker_profile,
@@ -261,8 +261,8 @@ class WorkerService:
                 user=booking.customer.user,
                 title="Booking Accepted",
                 body=f"{booking.worker.user.full_name} accepted your booking request.",
+                notification_type="booking_accepted",
                 data={
-                    "type": "booking_accepted",
                     "booking_id": str(booking.id),
                 },
             )
@@ -294,8 +294,8 @@ class WorkerService:
                 user=offer.booking.customer.user,
                 title="Booking Declined",
                 body=f"{offer.worker.user.full_name} declined your booking request.",
+                notification_type="booking_rejected",
                 data={
-                    "type": "booking_rejected",
                     "booking_id": str(offer.booking.id),
                 },
             )
