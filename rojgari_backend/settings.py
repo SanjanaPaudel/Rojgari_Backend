@@ -37,6 +37,7 @@ if DEBUG:
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -106,11 +107,17 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [env("CHANNEL_LAYER_URL", default="redis://127.0.0.1:6379/2")],
+            "hosts": [
+                {
+                    "address": env(
+                        "CHANNEL_LAYER_URL", default="redis://127.0.0.1:6379/2"
+                    ),
+                    "socket_timeout": 30,  # must exceed brpop_timeout (5s) with headroom
+                },
+            ],
         },
     },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
