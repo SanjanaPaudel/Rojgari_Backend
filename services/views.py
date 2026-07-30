@@ -95,7 +95,7 @@ def create_booking(request):
                     "customer_name": request.user.full_name,
                     "service": booking.category.name,
                     "address": booking.address_text,
-                    "descritption": booking.description,
+                    "description": booking.description,
                 },
             )
 

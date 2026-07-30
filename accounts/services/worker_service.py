@@ -272,6 +272,14 @@ class WorkerService:
 
         transaction.on_commit(_after_commit)
 
+        return {
+            "message": "Request accepted successfully.",
+            "booking_id": booking.id,
+            "status": booking.status,
+            "customer_name": booking.customer.user.full_name,
+        }
+
+    
     @staticmethod
     @transaction.atomic
     def reject_request(user, offer_id):
@@ -403,7 +411,7 @@ class WorkerService:
     @transaction.atomic
     def _expire_if_stale(offer):
         """
-        If `offer` is still pending but past the 30s window, expire it
+        If `offer` is still pending but past the 120s window, expire it
         and backfill a replacement. Returns the (possibly updated) offer.
         """
         if offer.status != "pending":

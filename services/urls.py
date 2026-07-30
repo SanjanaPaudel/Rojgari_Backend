@@ -13,7 +13,7 @@ urlpatterns = [
     ),
     # Cancel Booking from customer side  /api/services/bookings/<id>/cancel/
     path(
-        "bookings/<int:booking_id>/cancel", views.cancel_booking, name="cancel-booking"
+        "bookings/<int:booking_id>/cancel/", views.cancel_booking, name="cancel-booking"
     ),
     # Rate the Booking Services /api/services/bookings/38/rate/
     path("bookings/<int:booking_id>/rate/", views.rate_booking, name="rate-booking"),
