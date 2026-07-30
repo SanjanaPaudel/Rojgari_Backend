@@ -108,7 +108,9 @@ CHANNEL_LAYERS = {
         "CONFIG": {
             "hosts": [
                 {
-                    "address": env("CHANNEL_LAYER_URL", default="redis://127.0.0.1:6379/2"),
+                    "address": env(
+                        "CHANNEL_LAYER_URL", default="redis://127.0.0.1:6379/2"
+                    ),
                     "socket_timeout": 30,  # must exceed brpop_timeout (5s) with headroom
                 },
             ],
