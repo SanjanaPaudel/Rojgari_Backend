@@ -432,6 +432,24 @@ class WorkerService:
 
         worker.save()
 
+        current_offer = (
+            BookingOffer.objects.filter(
+                worker=worker,
+                status="accepted",
+            )
+            .order_by("-offered_at")
+            .first
+        )
+
+        if current_offer:
+            send_booking_update(
+                current_offer.booking_id,
+                {
+                    "latitude": str(worker.current_latitude),
+                    "longitude": str(worker.current_longitude),
+                },
+            )
+
         return {"message": "Location updated successfully."}
 
     @staticmethod
