@@ -20,6 +20,7 @@ from .serializers import (
 
 NON_CANCELLABLE_STATUSES = ["completed", "cancelled"]
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])
 def get_categories(request):
@@ -119,6 +120,7 @@ def booking_status(request, booking_id):
 
     return Response(BookingDetailSerializer(booking, context={"request": request}).data)
 
+
 # Cancel request from customer side
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsCustomer])
@@ -129,7 +131,8 @@ def cancel_booking(request, booking_id):
         )
     except Booking.DoesNotExist:
         return Response(
-            {"detail": "Booking not found."},                status=status.HTTP_404_NOT_FOUND,
+            {"detail": "Booking not found."},
+            status=status.HTTP_404_NOT_FOUND,
         )
     if booking.status in NON_CANCELLABLE_STATUSES:
         return Response(
@@ -145,7 +148,9 @@ def cancel_booking(request, booking_id):
         booking.status = "cancelled"
         booking.save()
 
-        booking.offers.filter(status__in=["pending", "accepted"]).update(status="cancelled")
+        booking.offers.filter(status__in=["pending", "accepted"]).update(
+            status="cancelled"
+        )
 
     for offer in pending_offers:
         send_offer_cancelled(offer["worker__user_id"], offer["id"])
@@ -154,7 +159,8 @@ def cancel_booking(request, booking_id):
 
     return Response({"details": "Booking cancelled successfully."})
 
-#Rate Booking by Customer
+
+# Rate Booking by Customer
 @api_view(["POST"])
 @permission_classes([IsAuthenticated, IsCustomer])
 def rate_booking(request, booking_id):

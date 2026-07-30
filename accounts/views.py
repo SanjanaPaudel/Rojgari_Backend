@@ -409,6 +409,7 @@ def update_skills(request):
 
 # Worker side location
 
+
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated, IsWorker])
 def update_location(request):

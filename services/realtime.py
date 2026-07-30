@@ -24,12 +24,16 @@ def send_booking_update(booking_id, data):
         f"booking_{booking_id}", {"type": "booking.update", "data": data}
     )
 
+
 def send_offer_cancelled(worker_user_id, offer_id):
     """
-    Tell a specific worker's app to remove a now-dead offer from their list. 
+    Tell a specific worker's app to remove a now-dead offer from their list.
     """
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         f"worker_{worker_user_id}",
-        {"type": "offer.cancelled", "data": {"event": "offer_cancelled", "offer_id": offer_id}},
+        {
+            "type": "offer.cancelled",
+            "data": {"event": "offer_cancelled", "offer_id": offer_id},
+        },
     )
