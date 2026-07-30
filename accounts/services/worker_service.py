@@ -131,7 +131,7 @@ class WorkerService:
     @staticmethod
     def get_incoming_requests(user):
 
-        worker_profile = user.workerprofile 
+        worker_profile = user.workerprofile
 
         offers = BookingOffer.objects.filter(
             worker=worker_profile,

@@ -5,10 +5,11 @@ from rest_framework.decorators import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .serializers import DeviceTokenSerializer,NotificationSerializer
-from .services import DeviceTokenService
 from .models import Notification
 from .repository import NotificationRepository
+from .serializers import DeviceTokenSerializer, NotificationSerializer
+from .services import DeviceTokenService
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -30,6 +31,7 @@ def register_device_token(request):
 
     return Response(data)
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def notification_list(request):
@@ -44,6 +46,7 @@ def notification_list(request):
 
     return Response(serializer.data)
 
+
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])
 def mark_notification_read(request, notification_id):
@@ -55,6 +58,7 @@ def mark_notification_read(request, notification_id):
     serializer = NotificationSerializer(notification)
 
     return Response(serializer.data)
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

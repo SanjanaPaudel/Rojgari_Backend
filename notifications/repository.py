@@ -1,5 +1,7 @@
-from notifications.models import Notification
 from django.shortcuts import get_object_or_404
+
+from notifications.models import Notification
+
 
 class NotificationRepository:
     @staticmethod
@@ -22,8 +24,6 @@ class NotificationRepository:
             notification_type=notification_type,
             data=data or {},
         )
-    
-
 
     @staticmethod
     def mark_as_read(notification_id, user):
@@ -44,4 +44,3 @@ class NotificationRepository:
             user=user,
             is_read=False,
         ).count()
-    

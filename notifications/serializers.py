@@ -1,4 +1,5 @@
 from rest_framework import serializers
+
 from .models import Notification
 
 
@@ -12,6 +13,7 @@ class DeviceTokenSerializer(serializers.Serializer):
         ]
     )
 
+
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
@@ -24,4 +26,3 @@ class NotificationSerializer(serializers.ModelSerializer):
             "data",
             "created_at",
         )
-        
