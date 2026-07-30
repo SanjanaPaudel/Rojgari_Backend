@@ -8,4 +8,11 @@ urlpatterns = [
         views.register_device_token,
         name="device-token",
     ),
+
+    path(
+        "",
+        views.notification_list,
+        name="notification-list",
+    ),
 ]
+
