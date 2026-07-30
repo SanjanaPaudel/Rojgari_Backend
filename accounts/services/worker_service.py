@@ -248,12 +248,14 @@ class WorkerService:
             status="cancelled",
         )
 
-        def _after_commit():
-            send_booking_update(
-                booking.id,
-                {
-                    "status": booking.status,
-                    "worker_name": user.full_name,
+        try:
+            NotificationService.send_to_user(
+                user=booking.customer.user,
+                title="Booking Accepted",
+                body=f"{booking.worker.user.full_name} accepted your booking request.",
+                notification_type="booking_accepted",
+                data={
+                    "booking_id": str(booking.id),
                 },
             )
 
@@ -286,21 +288,18 @@ class WorkerService:
         offer.responded_at = timezone.now()
         offer.save()
 
-        def _after_commit():
-            try:
-                NotificationService.send_to_user(
-                    user=offer.booking.customer.user,
-                    title="Booking Declined",
-                    body=f"{offer.worker.user.full_name} declined your booking request.",
-                    data={
-                        "type": "booking_rejected",
-                        "booking_id": str(offer.booking.id),
-                    },
-                )
-            except Exception as e:
-                print(f"Notification failed: {e}")
-
-        transaction.on_commit(_after_commit)
+        try:
+            NotificationService.send_to_user(
+                user=offer.booking.customer.user,
+                title="Booking Declined",
+                body=f"{offer.worker.user.full_name} declined your booking request.",
+                notification_type="booking_rejected",
+                data={
+                    "booking_id": str(offer.booking.id),
+                },
+            )
+        except Exception as e:
+            print(f"Notification failed: {e}")
 
         WorkerService._backfill(offer.booking)
 
