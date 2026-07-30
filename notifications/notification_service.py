@@ -2,7 +2,6 @@ from firebase_admin import messaging
 
 from .firebase import initialize_firebase
 from .models import DeviceToken
-from .repository import NotificationRepository
 
 
 class NotificationService:
@@ -11,23 +10,8 @@ class NotificationService:
         initialize_firebase()
 
     @staticmethod
-    def send_to_user(
-        user,
-        title,
-        body,
-        notification_type="general",
-        data=None,
-    ):
+    def send_to_user(user, title, body, data=None):
         initialize_firebase()
-
-        # Save notification in database
-        NotificationRepository.create_notification(
-            user=user,
-            title=title,
-            body=body,
-            notification_type=notification_type,
-            data=data,
-        )
 
         tokens = DeviceToken.objects.filter(
             user=user,
