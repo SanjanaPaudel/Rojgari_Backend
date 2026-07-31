@@ -41,6 +41,7 @@ class DeviceToken(models.Model):
     def __str__(self):
         return f"{self.user.full_name} - {self.device_type}"
 
+
 class Notification(models.Model):
     user = models.ForeignKey(
         User,

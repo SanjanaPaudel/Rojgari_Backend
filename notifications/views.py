@@ -5,12 +5,10 @@ from rest_framework.decorators import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from .serializers import DeviceTokenSerializer
-from .services import DeviceTokenService
 from .models import Notification
 from .repository import NotificationRepository
 from .serializers import DeviceTokenSerializer, NotificationSerializer
-
+from .services import DeviceTokenService
 
 
 @api_view(["POST"])
@@ -32,6 +30,7 @@ def register_device_token(request):
     )
 
     return Response(data)
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

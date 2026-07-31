@@ -231,7 +231,7 @@ class WorkerService:
                 and user.workerprofile.current_longitude is not None
                 else None
             ),
-            "expires_in_seconds": WorkerService._seconds_reamining(offer),
+            "expires_in_seconds": WorkerService._seconds_remaining(offer),
             "photos": photos,
             "video": video,
             "status": offer.status,
