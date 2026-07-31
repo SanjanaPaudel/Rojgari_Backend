@@ -83,7 +83,7 @@ def create_booking(request):
         top_candidates = ranked[:3]
 
         for worker, score in top_candidates:
-            BookingOffer.objects.create(
+            new_offer = BookingOffer.objects.create(
                 booking=booking,
                 worker=worker,
                 score=score,
