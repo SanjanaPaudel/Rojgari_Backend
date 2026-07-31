@@ -156,7 +156,7 @@ class WorkerService:
                     "service_icon": booking.category.icon or None,
                     "description": booking.description,
                     "address": booking.address_text,
-                    "distance_km":( 
+                    "distance_km": (
                         round(
                             distance_km(
                                 booking.latitude,
@@ -166,7 +166,8 @@ class WorkerService:
                             ),
                             1,
                         )
-                        if worker_profile.current_latitude is not None and worker_profile.current_longitude is not None
+                        if worker_profile.current_latitude is not None
+                        and worker_profile.current_longitude is not None
                         else None
                     ),
                     "created_at": offer.offered_at,
@@ -215,7 +216,6 @@ class WorkerService:
             "address": booking.address_text,
             "latitude": booking.latitude,
             "longitude": booking.longitude,
-            
             "distance_km": (
                 round(
                     distance_km(
@@ -226,10 +226,10 @@ class WorkerService:
                     ),
                     1,
                 )
-                if user.workerprofile.current_latitude is not None and user.workerprofile.current_longitude is not None
-                else None  
+                if user.workerprofile.current_latitude is not None
+                and user.workerprofile.current_longitude is not None
+                else None
             ),
-
             "photos": photos,
             "video": video,
             "status": offer.status,
@@ -304,7 +304,7 @@ class WorkerService:
             "status": booking.status,
             "customer_name": booking.customer.user.full_name,
         }
-    
+
     @staticmethod
     @transaction.atomic
     def reject_request(user, offer_id):
