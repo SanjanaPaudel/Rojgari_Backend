@@ -170,6 +170,7 @@ class WorkerService:
                         and worker_profile.current_longitude is not None
                         else None
                     ),
+                    "expires_in_seconds": WorkerService._seconds_reaminig(offer),
                     "created_at": offer.offered_at,
                 }
             )
@@ -230,6 +231,7 @@ class WorkerService:
                 and user.workerprofile.current_longitude is not None
                 else None
             ),
+            "expires_in_seconds": WorkerService._seconds_reamining(offer),
             "photos": photos,
             "video": video,
             "status": offer.status,
@@ -392,6 +394,12 @@ class WorkerService:
     OFFER_EXPIRY_SECONDS = 120
 
     @staticmethod
+    def _seconds_remaining(offer):
+        age_seconds = (timezone.now() - offer.offered_at).total_seconds()
+        remaining = WorkerService.OFFER_EXPIRY_SECONDS - age_seconds
+        return max(0, int(remaining))
+
+    @staticmethod
     def _backfill(booking):
         """
         Find the next-best candidate not already offered this booking,
@@ -421,11 +429,13 @@ class WorkerService:
             lambda: send_booking_offer(
                 worker.user_id,
                 {
+                    "offer_id": new_offer.id,
                     "booking_id": booking.id,
                     "customer_name": booking.customer.user.full_name,
                     "service": booking.category.name,
                     "address": booking.address_text,
                     "description": booking.description,
+                    "expires_in_seconds": WorkerService.OFFER_EXPIRY_SECONDS,
                 },
             )
         )
