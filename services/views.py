@@ -207,6 +207,7 @@ def rate_booking(request, booking_id):
 
     with transaction.atomic():
         booking.rating = new_rating
+        booking.review_text = serializer.validated_data.get("review_text", "")
         booking.save()
 
         worker = WorkerProfile.objects.select_for_update().get(id=booking.worker_id)
