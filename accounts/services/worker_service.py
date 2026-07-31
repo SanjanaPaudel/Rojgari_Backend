@@ -223,7 +223,7 @@ class WorkerService:
                         booking.latitude,
                         booking.longitude,
                         user.workerprofile.current_latitude,
-                        user.workerprofile.current_latitude,
+                        user.workerprofile.current_longitude,
                     ),
                     1,
                 )
@@ -288,8 +288,9 @@ class WorkerService:
             try:
                 NotificationService.send_to_user(
                     user=booking.customer.user,
-                    title="Booking Accepted",
+                    title="booking_accepted",
                     body=f"{booking.worker.user.full_name} accepted your booking request.",
+                    notification_type="booking_accepted",
                     data={
                         "type": "booking_accepted",
                         "booking_id": str(booking.id),
@@ -325,8 +326,9 @@ class WorkerService:
             try:
                 NotificationService.send_to_user(
                     user=offer.booking.customer.user,
-                    title="Booking Declined",
+                    title="booking_rejected",
                     body=f"{offer.worker.user.full_name} declined your booking request.",
+                    notification_type="booking_rejected",
                     data={
                         "type": "booking_rejected",
                         "booking_id": str(offer.booking.id),
