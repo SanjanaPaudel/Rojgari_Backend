@@ -12,6 +12,10 @@ urlpatterns = [
         "api/auth/",
         include("notifications.urls"),
     ),
+    path(
+        "api/notifications/",
+        include("notifications.urls"),
+    ),
 ]
 
 if settings.DEBUG:

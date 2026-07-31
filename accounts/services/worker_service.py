@@ -170,7 +170,7 @@ class WorkerService:
                         and worker_profile.current_longitude is not None
                         else None
                     ),
-                    "expires_in_seconds": WorkerService._seconds_reaminig(offer),
+                    "expires_in_seconds": WorkerService._seconds_remaining(offer),
                     "created_at": offer.offered_at,
                 }
             )
