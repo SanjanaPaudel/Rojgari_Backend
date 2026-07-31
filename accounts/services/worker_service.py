@@ -4,7 +4,7 @@ from django.utils import timezone
 
 from accounts.models import Skill, WorkerProfile
 from notifications.notification_service import NotificationService
-from services.matching import rank_candidates
+from services.matching import distance_km, rank_candidates
 from services.models import Booking, BookingMedia, BookingOffer
 from services.realtime import send_booking_offer, send_booking_update
 
@@ -156,7 +156,19 @@ class WorkerService:
                     "service_icon": booking.category.icon or None,
                     "description": booking.description,
                     "address": booking.address_text,
-                    "distance_km": 0,
+                    "distance_km":( 
+                        round(
+                            distance_km(
+                                booking.latitude,
+                                booking.longitude,
+                                worker_profile.current_latitude,
+                                worker_profile.current_longitude,
+                            ),
+                            1,
+                        )
+                        if worker_profile.current_latitude is not None and worker_profile.current_longitude is not None
+                        else None
+                    ),
                     "created_at": offer.offered_at,
                 }
             )
@@ -203,7 +215,21 @@ class WorkerService:
             "address": booking.address_text,
             "latitude": booking.latitude,
             "longitude": booking.longitude,
-            "distance_km": 0,
+            
+            "distance_km": (
+                round(
+                    distance_km(
+                        booking.latitude,
+                        booking.longitude,
+                        user.workerprofile.current_latitude,
+                        user.workerprofile.current_latitude,
+                    ),
+                    1,
+                )
+                if user.workerprofile.current_latitude is not None and user.workerprofile.current_longitude is not None
+                else None  
+            ),
+
             "photos": photos,
             "video": video,
             "status": offer.status,

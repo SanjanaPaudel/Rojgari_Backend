@@ -7,9 +7,9 @@ from django.utils import timezone
 from accounts.models import WorkerProfile
 
 
-def _distance_km(lat1, lon1, lat2, lon2):
+def distance_km(lat1, lon1, lat2, lon2):
     """
-    Haversine formula - straight-line dsitance between two coordinates, in km.
+    Haversine formula - straight-line distance between two coordinates, in km.
     """
 
     lat1, lon1, lat2, lon2 = map(float, [lat1, lon1, lat2, lon2])
@@ -76,7 +76,7 @@ def get_eligible_workers(booking):
 
 
 def score_worker(booking, worker):
-    distance = _distance_km(
+    distance = distance_km(
         booking.latitude,
         booking.longitude,
         worker.current_latitude,
