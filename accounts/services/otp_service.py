@@ -99,18 +99,18 @@ class OTPService:
             role=pending.role,
         )
 
+        #  The post_save signal on User already created the profile row —
+        # fetch and update it instead of creating a second, colliding one.
         if pending.role == "customer":
-            CustomerProfile.objects.create(
-                user=user,
-                profile_photo=pending.profile_photo,
-            )
+                profile = user.customer_profile
+                profile.profile_photo = pending.profile_photo
+                profile.save()
 
         else:
-            WorkerProfile.objects.create(
-                user=user,
-                profile_photo=pending.profile_photo,
-            )
-
+            profile = user.workerprofile
+            profile.profile_photo = pending.profile_photo
+            profile.save()
+ 
         pending.delete()
 
         return {
