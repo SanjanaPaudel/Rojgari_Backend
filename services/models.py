@@ -157,5 +157,14 @@ class PricingConfiguration(models.Model):
         auto_now=True,
     )
 
+    @classmethod
+    def get_config(cls):
+        config = cls.objects.first()
+
+        if not config:
+            config = cls.objects.create()
+
+        return config
+
     def __str__(self):
         return "Pricing Configuration"
