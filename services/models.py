@@ -131,3 +131,31 @@ class BookingOffer(models.Model):
 
     def __str__(self):
         return f"Offer for booking #{self.booking_id} to {self.worker.user.full_name}"
+
+
+class PricingConfiguration(models.Model):
+    price_per_km = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        default=100.00,
+    )
+
+    minimum_visit_charge = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        default=100.00,
+    )
+
+    maximum_service_radius = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=5.00,
+        help_text="Maximum distance (KM) to search nearby workers.",
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+    )
+
+    def __str__(self):
+        return "Pricing Configuration"
