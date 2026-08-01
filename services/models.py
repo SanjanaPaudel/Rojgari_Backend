@@ -65,6 +65,8 @@ class Booking(models.Model):
 
     rating = models.DecimalField(max_digits=2, decimal_places=1, null=True, blank=True)
 
+    review_text = models.TextField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

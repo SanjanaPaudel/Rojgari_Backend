@@ -93,3 +93,4 @@ class RateBookingSerializer(serializers.Serializer):
     rating = serializers.DecimalField(
         max_digits=2, decimal_places=1, min_value=1, max_value=5
     )
+    review_text = serializers.CharField(required=False, allow_blank=True)

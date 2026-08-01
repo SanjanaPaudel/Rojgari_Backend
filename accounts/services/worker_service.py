@@ -4,7 +4,7 @@ from django.utils import timezone
 
 from accounts.models import Skill, WorkerProfile
 from notifications.notification_service import NotificationService
-from services.matching import rank_candidates
+from services.matching import distance_km, rank_candidates
 from services.models import Booking, BookingMedia, BookingOffer
 from services.realtime import send_booking_offer, send_booking_update
 
@@ -156,7 +156,21 @@ class WorkerService:
                     "service_icon": booking.category.icon or None,
                     "description": booking.description,
                     "address": booking.address_text,
-                    "distance_km": 0,
+                    "distance_km": (
+                        round(
+                            distance_km(
+                                booking.latitude,
+                                booking.longitude,
+                                worker_profile.current_latitude,
+                                worker_profile.current_longitude,
+                            ),
+                            1,
+                        )
+                        if worker_profile.current_latitude is not None
+                        and worker_profile.current_longitude is not None
+                        else None
+                    ),
+                    "expires_in_seconds": WorkerService._seconds_remaining(offer),
                     "created_at": offer.offered_at,
                 }
             )
@@ -203,7 +217,21 @@ class WorkerService:
             "address": booking.address_text,
             "latitude": booking.latitude,
             "longitude": booking.longitude,
-            "distance_km": 0,
+            "distance_km": (
+                round(
+                    distance_km(
+                        booking.latitude,
+                        booking.longitude,
+                        user.workerprofile.current_latitude,
+                        user.workerprofile.current_latitude,
+                    ),
+                    1,
+                )
+                if user.workerprofile.current_latitude is not None
+                and user.workerprofile.current_longitude is not None
+                else None
+            ),
+            "expires_in_seconds": WorkerService._seconds_reamining(offer),
             "photos": photos,
             "video": video,
             "status": offer.status,
@@ -278,7 +306,7 @@ class WorkerService:
             "status": booking.status,
             "customer_name": booking.customer.user.full_name,
         }
-    
+
     @staticmethod
     @transaction.atomic
     def reject_request(user, offer_id):
@@ -366,6 +394,12 @@ class WorkerService:
     OFFER_EXPIRY_SECONDS = 120
 
     @staticmethod
+    def _seconds_remaining(offer):
+        age_seconds = (timezone.now() - offer.offered_at).total_seconds()
+        remaining = WorkerService.OFFER_EXPIRY_SECONDS - age_seconds
+        return max(0, int(remaining))
+
+    @staticmethod
     def _backfill(booking):
         """
         Find the next-best candidate not already offered this booking,
@@ -395,11 +429,13 @@ class WorkerService:
             lambda: send_booking_offer(
                 worker.user_id,
                 {
+                    "offer_id": new_offer.id,
                     "booking_id": booking.id,
                     "customer_name": booking.customer.user.full_name,
                     "service": booking.category.name,
                     "address": booking.address_text,
                     "description": booking.description,
+                    "expires_in_seconds": WorkerService.OFFER_EXPIRY_SECONDS,
                 },
             )
         )

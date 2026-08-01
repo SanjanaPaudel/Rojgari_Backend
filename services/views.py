@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from accounts.models import Skill, WorkerProfile
 from accounts.permissions import IsCustomer
 from accounts.serializers import SkillSerializer
+from accounts.services.worker_service import WorkerService
 
 from .geocoding import reverse_geocode
 from .matching import rank_candidates
@@ -82,7 +83,7 @@ def create_booking(request):
         top_candidates = ranked[:3]
 
         for worker, score in top_candidates:
-            BookingOffer.objects.create(
+            new_offer = BookingOffer.objects.create(
                 booking=booking,
                 worker=worker,
                 score=score,
@@ -92,23 +93,15 @@ def create_booking(request):
                 lambda worker=worker, booking=booking: send_booking_offer(
                     worker.user_id,
                     {
+                        "offer_id": new_offer.id,
                         "booking_id": booking.id,
                         "customer_name": request.user.full_name,
                         "service": booking.category.name,
                         "address": booking.address_text,
                         "description": booking.description,
+                        "expires_in_seconds": WorkerService.OFFER_EXPIRY_SECONDS,
                     },
                 )
-            )
-            send_booking_offer(
-                worker.user_id,
-                {
-                    "booking_id": booking.id,
-                    "customer_name": request.user.full_name,
-                    "service": booking.category.name,
-                    "address": booking.address_text,
-                    "description": booking.description,
-                },
             )
 
     return Response(
@@ -207,6 +200,7 @@ def rate_booking(request, booking_id):
 
     with transaction.atomic():
         booking.rating = new_rating
+        booking.review_text = serializer.validated_data.get("review_text", "")
         booking.save()
 
         worker = WorkerProfile.objects.select_for_update().get(id=booking.worker_id)
