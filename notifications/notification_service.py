@@ -11,7 +11,7 @@ class NotificationService:
         initialize_firebase()
 
     @staticmethod
-    def send_to_user(user, title, body, notification_type="general", data=None):
+    def send_to_user(user, title, body, notification_type, data=None):
         initialize_firebase()
 
         NotificationRepository.create_notification(
@@ -44,5 +44,8 @@ class NotificationService:
     @staticmethod
     def send_test_notification(user):
         return NotificationService.send_to_user(
-            user=user, title="Rojgari", body="Notification system is working!"
+            user=user,
+            title="Rojgari",
+            body="Notification system is working!",
+            notification_type="booking_accepted",
         )
