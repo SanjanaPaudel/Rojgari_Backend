@@ -4,7 +4,6 @@ from services.models import PricingConfiguration
 
 
 class PricingService:
-
     @staticmethod
     def calculate_visit_charge(distance_km):
 

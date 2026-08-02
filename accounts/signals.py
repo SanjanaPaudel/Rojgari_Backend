@@ -7,6 +7,7 @@ from .models import CustomerProfile, User, WorkerProfile
 
 logger = logging.getLogger(__name__)
 
+
 @receiver(post_save, sender=User)
 
 # Automatically create the user profile in either Customer or Worker table

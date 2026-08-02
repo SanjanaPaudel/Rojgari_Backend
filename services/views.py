@@ -8,6 +8,8 @@ from accounts.models import Skill, WorkerProfile
 from accounts.permissions import IsCustomer
 from accounts.serializers import SkillSerializer
 from accounts.services.worker_service import WorkerService
+from services.matching import distance_km
+from services.pricing_service import PricingService
 
 from .geocoding import reverse_geocode
 from .matching import rank_candidates
@@ -18,8 +20,6 @@ from .serializers import (
     BookingDetailSerializer,
     RateBookingSerializer,
 )
-from services.matching import distance_km
-from services.pricing_service import PricingService
 
 NON_CANCELLABLE_STATUSES = ["completed", "cancelled"]
 
@@ -109,18 +109,20 @@ def create_booking(request):
             )
 
             transaction.on_commit(
-                lambda worker=worker, booking=booking, new_offer=new_offer: send_booking_offer(
-                    worker.user_id,
-                    {
-                        "offer_id": new_offer.id,
-                        "booking_id": booking.id,
-                        "customer_name": request.user.full_name,
-                        "service": booking.category.name,
-                        "address": booking.address_text,
-                        "description": booking.description,
-                        "visit_charge": float(new_offer.visit_charge),
-                        "expires_in_seconds": WorkerService.OFFER_EXPIRY_SECONDS,
-                    },
+                lambda worker=worker, booking=booking, new_offer=new_offer: (
+                    send_booking_offer(
+                        worker.user_id,
+                        {
+                            "offer_id": new_offer.id,
+                            "booking_id": booking.id,
+                            "customer_name": request.user.full_name,
+                            "service": booking.category.name,
+                            "address": booking.address_text,
+                            "description": booking.description,
+                            "visit_charge": float(new_offer.visit_charge),
+                            "expires_in_seconds": WorkerService.OFFER_EXPIRY_SECONDS,
+                        },
+                    )
                 )
             )
 

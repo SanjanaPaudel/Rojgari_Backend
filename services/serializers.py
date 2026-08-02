@@ -49,6 +49,7 @@ class BookingDetailSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source="category.name")
     worker = serializers.SerializerMethodField()
     visit_charge = serializers.SerializerMethodField()
+
     class Meta:
         model = Booking
         fields = [
@@ -74,14 +75,13 @@ class BookingDetailSerializer(serializers.ModelSerializer):
         return WorkerSummarySerializer(booking.worker, context=self.context).data
 
     def get_visit_charge(self, booking):
-        accepted_offer = booking.offers.filter(
-            status="accepted"
-        ).first()
+        accepted_offer = booking.offers.filter(status="accepted").first()
 
         if not accepted_offer:
             return None
 
         return float(accepted_offer.visit_charge)
+
 
 class BookingOfferSerializer(serializers.ModelSerializer):
     worker_name = serializers.CharField(source="worker.user.full_name")
@@ -93,7 +93,7 @@ class BookingOfferSerializer(serializers.ModelSerializer):
             "worker",
             "worker_name",
             "score",
-            "visit_charge", 
+            "visit_charge",
             "status",
             "offered_at",
             "responded_at",

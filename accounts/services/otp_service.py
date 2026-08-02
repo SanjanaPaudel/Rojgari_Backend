@@ -6,10 +6,8 @@ from django.core.mail import send_mail
 from django.utils import timezone
 
 from accounts.models import (
-    CustomerProfile,
     PendingRegistration,
     User,
-    WorkerProfile,
 )
 
 
@@ -102,15 +100,15 @@ class OTPService:
         #  The post_save signal on User already created the profile row —
         # fetch and update it instead of creating a second, colliding one.
         if pending.role == "customer":
-                profile = user.customer_profile
-                profile.profile_photo = pending.profile_photo
-                profile.save()
+            profile = user.customer_profile
+            profile.profile_photo = pending.profile_photo
+            profile.save()
 
         else:
             profile = user.workerprofile
             profile.profile_photo = pending.profile_photo
             profile.save()
- 
+
         pending.delete()
 
         return {
