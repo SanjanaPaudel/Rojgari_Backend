@@ -18,6 +18,8 @@ from .serializers import (
     BookingDetailSerializer,
     RateBookingSerializer,
 )
+from services.matching import distance_km
+from services.pricing_service import PricingService
 
 NON_CANCELLABLE_STATUSES = ["completed", "cancelled"]
 
@@ -80,17 +82,34 @@ def create_booking(request):
             )
 
         ranked = rank_candidates(booking)
+        print("Ranked workers:", ranked)
+        print("Number of ranked workers:", len(ranked))
         top_candidates = ranked[:3]
 
         for worker, score in top_candidates:
+            print("Entered loop")
+            distance = distance_km(
+                booking.latitude,
+                booking.longitude,
+                worker.current_latitude,
+                worker.current_longitude,
+            )
+            print("Distance:", distance)
+            pricing = PricingService.calculate_visit_charge(distance)
+            print(pricing)
+            # Skip workers outside the configured service radius
+            if not pricing["success"]:
+                continue
             new_offer = BookingOffer.objects.create(
                 booking=booking,
                 worker=worker,
                 score=score,
+                visit_charge=pricing["visit_charge"],
                 status="pending",
             )
+
             transaction.on_commit(
-                lambda worker=worker, booking=booking: send_booking_offer(
+                lambda worker=worker, booking=booking, new_offer=new_offer: send_booking_offer(
                     worker.user_id,
                     {
                         "offer_id": new_offer.id,
@@ -99,6 +118,7 @@ def create_booking(request):
                         "service": booking.category.name,
                         "address": booking.address_text,
                         "description": booking.description,
+                        "visit_charge": float(new_offer.visit_charge),
                         "expires_in_seconds": WorkerService.OFFER_EXPIRY_SECONDS,
                     },
                 )

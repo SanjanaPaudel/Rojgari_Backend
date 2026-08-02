@@ -155,6 +155,7 @@ class WorkerService:
                     "service": booking.category.name,
                     "service_icon": booking.category.icon or None,
                     "description": booking.description,
+                    "visit_charge": float(offer.visit_charge),
                     "address": booking.address_text,
                     "distance_km": (
                         round(
@@ -214,6 +215,7 @@ class WorkerService:
             "service": booking.category.name,
             "service_icon": booking.category.icon or None,
             "description": booking.description,
+            "visit_charge": float(offer.visit_charge),
             "address": booking.address_text,
             "latitude": booking.latitude,
             "longitude": booking.longitude,
@@ -223,7 +225,7 @@ class WorkerService:
                         booking.latitude,
                         booking.longitude,
                         user.workerprofile.current_latitude,
-                        user.workerprofile.current_latitude,
+                        user.workerprofile.current_longitude,
                     ),
                     1,
                 )
@@ -231,7 +233,7 @@ class WorkerService:
                 and user.workerprofile.current_longitude is not None
                 else None
             ),
-            "expires_in_seconds": WorkerService._seconds_reamining(offer),
+            "expires_in_seconds": WorkerService._seconds_remaining(offer),
             "photos": photos,
             "video": video,
             "status": offer.status,
@@ -435,6 +437,7 @@ class WorkerService:
                     "service": booking.category.name,
                     "address": booking.address_text,
                     "description": booking.description,
+                    "visit_charge": float(new_offer.visit_charge),
                     "expires_in_seconds": WorkerService.OFFER_EXPIRY_SECONDS,
                 },
             )

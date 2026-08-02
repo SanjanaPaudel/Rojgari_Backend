@@ -129,6 +129,12 @@ class BookingOffer(models.Model):
 
     responded_at = models.DateTimeField(null=True, blank=True)
 
+    visit_charge = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        default=0.00,
+    )
+
     def __str__(self):
         return f"Offer for booking #{self.booking_id} to {self.worker.user.full_name}"
 
