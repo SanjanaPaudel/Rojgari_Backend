@@ -5,25 +5,18 @@ from accounts.models import CustomerProfile, Skill, WorkerProfile
 
 
 class Booking(models.Model):
+    # Single lifecycle field covering both matching and on-site work progress:
+    # active (searching for a worker) -> assigned (worker accepted) ->
+    # working (worker started) -> completed / cancelled.
+    # "scheduled" is reserved for the not-yet-implemented scheduled-booking flow.
     STATUS_CHOICES = [
         ("active", "Active"),
         ("scheduled", "Scheduled"),
-        ("completed", "Completed"),
-        ("cancelled", "Cancelled"),
         ("assigned", "Assigned"),
-    ]
-
-    JOB_PROGRESS_CHOICES = [
-        ("accepted", "Accepted"),
         ("working", "Working"),
         ("completed", "Completed"),
+        ("cancelled", "Cancelled"),
     ]
-
-    job_progress = models.CharField(
-        max_length=20,
-        choices=JOB_PROGRESS_CHOICES,
-        default="accepted",
-    )
 
     customer = models.ForeignKey(
         CustomerProfile,
@@ -60,8 +53,6 @@ class Booking(models.Model):
     )
 
     scheduled_time = models.DateTimeField(null=True, blank=True)
-
-    price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
 
     rating = models.DecimalField(max_digits=2, decimal_places=1, null=True, blank=True)
 

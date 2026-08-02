@@ -387,11 +387,7 @@ class WorkerService:
             "latitude": booking.latitude,
             "longitude": booking.longitude,
             "requested_at": booking.created_at,
-            "job_progress": getattr(
-                booking,
-                "job_progress",
-                "accepted",
-            ),
+            "status": booking.status,
             "distance_km": None,
         }
 
@@ -512,15 +508,15 @@ class WorkerService:
 
         booking = offer.booking
 
-        booking.job_progress = "working"
+        booking.status = "working"
 
         booking.save()
 
-        send_booking_update(booking.id, {"job_progress": booking.job_progress})
+        send_booking_update(booking.id, {"status": booking.status})
 
         return {
             "message": "Job started successfully.",
-            "job_progress": booking.job_progress,
+            "status": booking.status,
         }
 
     @staticmethod
@@ -533,11 +529,10 @@ class WorkerService:
 
         booking = offer.booking
 
-        if booking.job_progress != "working":
+        if booking.status != "working":
             raise ValueError("Job has not been started yet.")
 
         booking.status = "completed"
-        booking.job_progress = "completed"
         booking.save()
 
         worker = user.workerprofile
@@ -546,12 +541,11 @@ class WorkerService:
 
         send_booking_update(
             booking.id,
-            {"status": booking.status, "job_progress": booking.job_progress},
+            {"status": booking.status},
         )
 
         return {
             "message": "Job completed successfully.",
             "status": booking.status,
-            "job_progress": booking.job_progress,
             "completed_jobs": worker.completed_jobs,
         }

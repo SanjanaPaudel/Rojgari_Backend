@@ -60,8 +60,6 @@ class BookingDetailSerializer(serializers.ModelSerializer):
             "latitude",
             "longitude",
             "status",
-            "job_progress",
-            "price",
             "visit_charge",
             "rating",
             "created_at",
