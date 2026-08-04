@@ -4,7 +4,6 @@ from accounts.services.auth_service import AuthService
 
 
 class AdminAuthService:
-
     @staticmethod
     def login(validated_data):
 

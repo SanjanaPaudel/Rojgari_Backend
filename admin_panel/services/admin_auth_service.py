@@ -1,9 +1,10 @@
-from accounts.models import User
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 
-class AdminAuthService:
+from accounts.models import User
 
+
+class AdminAuthService:
     @staticmethod
     def create_admin(validated_data):
 
@@ -28,7 +29,6 @@ class AdminAuthService:
                 "email": user.email,
             },
         }
-
 
     @staticmethod
     def login(validated_data):
