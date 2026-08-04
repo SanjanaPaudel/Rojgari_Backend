@@ -10,6 +10,7 @@ class User(AbstractUser):
     ROLE_CHOICES = (
         ("customer", "Customer"),
         ("worker", "Worker"),
+        ("admin", "Admin"),
     )
 
     username = None

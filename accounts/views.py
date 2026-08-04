@@ -175,7 +175,10 @@ def user_login(request):
 
     next_screen = ""
 
-    if user.role == "customer":
+    if user.is_staff:
+        next_screen = "admin_dashboard"
+
+    elif user.role == "customer":
         next_screen = "customer_dashboard"
 
     elif user.role == "worker":

@@ -6,6 +6,9 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.serializers import UserLoginSerializer
 from accounts.services.auth_service import AuthService
+from admin_panel.serializers import CreateAdminSerializer
+from .services.admin_auth_service import AdminAuthService
+from rest_framework.permissions import IsAuthenticated
 
 
 @api_view(["POST"])
@@ -14,7 +17,7 @@ def admin_login(request):
     serializer = UserLoginSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
-    user = AuthService.login(serializer.validated_data)
+    user = AdminAuthService.login(serializer.validated_data)
 
     if not user.is_staff:
         return Response(
@@ -36,3 +39,21 @@ def admin_login(request):
         },
         status=status.HTTP_200_OK,
     )
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def create_admin(request):
+
+    if not request.user.is_staff:
+        return Response(
+            {"detail": "Permission denied."},
+            status=403,
+        )
+
+    serializer = CreateAdminSerializer(data=request.data)
+
+    serializer.is_valid(raise_exception=True)
+
+    result = AdminAuthService.create_admin(serializer.validated_data)
+
+    return Response(result)
