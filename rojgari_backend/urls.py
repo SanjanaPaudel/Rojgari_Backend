@@ -16,6 +16,10 @@ urlpatterns = [
         "api/notifications/",
         include("notifications.urls"),
     ),
+    path(
+        "api/admin/",
+        include("admin_panel.urls"),
+    ),
 ]
 
 if settings.DEBUG:

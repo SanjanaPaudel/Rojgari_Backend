@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "services",
     "notifications.apps.NotificationsConfig",  # for firebase notifaications
     "channels",
+    "admin_panel",
 ]
 
 
