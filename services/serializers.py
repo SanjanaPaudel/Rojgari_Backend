@@ -51,7 +51,7 @@ class BookingListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        field = [
+        fields = [
             "id",
             "category",
             "category_icon",
