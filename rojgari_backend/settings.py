@@ -130,6 +130,13 @@ CELERY_TIMEZONE = TIME_ZONE
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
+CELERY_BEAT_SCHEDULE = {
+    "expire-stale-bookings" : {
+        "task": "services.tasks.expire_stale_bookings",
+        "schedule": timedelta(minutes=10),
+    },
+}
+
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
