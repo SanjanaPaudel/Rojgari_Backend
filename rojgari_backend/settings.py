@@ -120,6 +120,16 @@ CHANNEL_LAYERS = {
     },
 }
 
+TIME_ZONE = "UTC"
+
+# Celery - uses the Redis/Valkey instaces on its own db so task messages don't mix with cache keys or channel groups
+
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://127.0.0.1:6379/3")
+CELERY_RESULT_BACKEND = None # we don't need to store task results anywhere
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
@@ -143,8 +153,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
 
 USE_I18N = True
 
