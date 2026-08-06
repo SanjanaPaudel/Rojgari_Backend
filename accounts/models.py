@@ -147,7 +147,17 @@ class WorkerProfile(models.Model):
 
     total_reviews = models.PositiveIntegerField(default=0)
 
-    is_verified = models.BooleanField(default=False)
+    VERIFICATION_STATUS = [
+        ("pending", "Pending"),
+        ("verified", "Verified"),
+        ("rejected", "Rejected"),
+    ]
+
+    verification_status = models.CharField(
+        max_length=20,
+        choices=VERIFICATION_STATUS,
+        default="pending",
+    )
 
     def __str__(self):
         return self.user.full_name

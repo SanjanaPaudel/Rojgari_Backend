@@ -132,7 +132,7 @@ class WorkerDashboardSerializer(serializers.ModelSerializer):
             "average_rating",
             "completed_jobs",
             "total_reviews",
-            "is_verified",
+            "verification_status",
             "is_online",
             "primary_skill",
         ]

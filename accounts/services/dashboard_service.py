@@ -26,7 +26,7 @@ class WorkerDashboardService:
                 ),
                 "skills": skills,
                 "years_of_experience": worker.years_of_experience,
-                "verified": worker.is_verified,
+                "verified": worker.verification_status == "verified",
                 "is_online": worker.is_online,
                 "stats": {
                     "jobs_done": 40,

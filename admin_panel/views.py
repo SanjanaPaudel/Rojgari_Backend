@@ -12,6 +12,8 @@ from admin_panel.serializers import (
 )
 
 from .services.admin_auth_service import AdminAuthService
+from .services.dashboard_service import DashboardService
+from .serializers import DashboardSerializer
 
 
 @api_view(["POST"])
@@ -87,3 +89,19 @@ def verify_admin_otp(request):
     user.save()
 
     return Response({"message": "Admin verified successfully."})
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def dashboard(request):
+
+    if not request.user.is_staff:
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = DashboardService.get_dashboard_data()
+
+    serializer = DashboardSerializer(data)
+
+    return Response(serializer.data)

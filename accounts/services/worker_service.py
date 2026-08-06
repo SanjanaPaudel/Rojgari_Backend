@@ -37,18 +37,16 @@ class WorkerService:
                 profile.profile_photo.url if profile.profile_photo else None
             ),
             # Document URLs allow the frontend to distinguish:
-            #   is_verified=True → verified
-            #   is_verified=False + front/back present →
-            #       pending (awaiting admin review)
-            #   is_verified=False + front/back absent →
-            #       incomplete (no docs uploaded)
+            # verification_status="verified" → verified
+            # verification_status="pending" → waiting for admin review
+            # verification_status="rejected" → rejected by admin
             "citizenship_front": (
                 profile.citizenship_front.url if profile.citizenship_front else None
             ),
             "citizenship_back": (
                 profile.citizenship_back.url if profile.citizenship_back else None
             ),
-            "is_verified": profile.is_verified,
+            "verification_status": profile.verification_status,
         }
 
     @staticmethod
@@ -107,7 +105,7 @@ class WorkerService:
 
         # Documents uploaded.
         # Admin verification will happen later.
-        worker.is_verified = False
+        worker.verification_status = "pending"
 
         worker.save()
 

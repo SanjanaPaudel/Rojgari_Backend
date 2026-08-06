@@ -10,8 +10,15 @@ class DashboardRepository:
     def get_worker_statistics():
         return {
             "total": WorkerProfile.objects.count(),
-            "verified": WorkerProfile.objects.filter(is_verified=True).count(),
-            "pending": WorkerProfile.objects.filter(is_verified=False).count(),
+            "verified": WorkerProfile.objects.filter(
+                verification_status="verified"
+            ).count(),
+            "pending": WorkerProfile.objects.filter(
+                verification_status="pending"
+            ).count(),
+            "rejected": WorkerProfile.objects.filter(
+                verification_status="rejected"
+            ).count(),
         }
 
     @staticmethod

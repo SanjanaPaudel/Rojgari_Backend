@@ -378,7 +378,7 @@ def upload_identity_documents(request):
                     if worker.experience_document
                     else None
                 ),
-                "is_verified": worker.is_verified,
+                "verification_status": worker.verification_status,
             },
         },
         status=status.HTTP_200_OK,
