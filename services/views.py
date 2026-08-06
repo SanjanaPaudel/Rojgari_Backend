@@ -17,6 +17,7 @@ from .models import Booking, BookingMedia, BookingOffer
 from .realtime import send_booking_offer, send_booking_update, send_offer_cancelled
 from .serializers import (
     BookingCreateSerializer,
+    BookingListSerializer,
     BookingDetailSerializer,
     RateBookingSerializer,
 )
@@ -130,6 +131,22 @@ def create_booking(request):
         BookingDetailSerializer(booking, context={"request": request}).data,
         status=status.HTTP_201_CREATED,
     )
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated, IsCustomer])
+def booking_list(request):
+    bookings = Booking.objects.filter(customer=request.user.customer_profile)
+
+    status_filter = request.query_params.get("status")
+
+    if status_filter:
+        bookings = bookings.filter(status=status_filter)
+
+    bookings = bookings.order_by("-created_at")
+
+    serializer = BookingListSerializer(bookings, many=True, context={"request": request})
+
+    return Response(serializer.data)
 
 
 @api_view(["GET"])
