@@ -1,17 +1,16 @@
 from rest_framework.exceptions import AuthenticationFailed
-from accounts.services.auth_service import AuthService
+
 from accounts.models import User
+from accounts.services.auth_service import AuthService
 
 
 class AdminAuthService:
-
     @staticmethod
     def create_admin(validated_data):
 
         validated_data["role"] = "admin"
 
         return AuthService.create_user_registration(validated_data)
-
 
     @staticmethod
     def login(validated_data):
@@ -32,8 +31,6 @@ class AdminAuthService:
 
         # NEW
         if not user.is_active:
-            raise AuthenticationFailed(
-                "Please verify your email before logging in."
-            )
+            raise AuthenticationFailed("Please verify your email before logging in.")
 
         return user

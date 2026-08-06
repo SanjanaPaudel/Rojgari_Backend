@@ -4,14 +4,15 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from accounts.models import User
+from accounts.services.otp_service import OTPService
 from admin_panel.serializers import (
     AdminLoginSerializer,
     CreateAdminSerializer,
 )
-from admin_panel.serializers import CreateAdminSerializer
-from accounts.models import User
+
 from .services.admin_auth_service import AdminAuthService
-from accounts.services.otp_service import OTPService
+
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -63,6 +64,7 @@ def create_admin(request):
 
     return Response(result)
 
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def verify_admin_otp(request):
@@ -78,14 +80,10 @@ def verify_admin_otp(request):
     if not result["success"]:
         return Response(result, status=400)
 
-    user = User.objects.get(
-        phone_number=phone_number
-    )
+    user = User.objects.get(phone_number=phone_number)
 
     user.is_staff = True
     user.is_active = True
     user.save()
 
-    return Response({
-        "message": "Admin verified successfully."
-    })
+    return Response({"message": "Admin verified successfully."})
