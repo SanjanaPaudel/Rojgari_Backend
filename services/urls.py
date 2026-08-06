@@ -11,6 +11,8 @@ urlpatterns = [
     path(
         "bookings/<int:booking_id>/status/", views.booking_status, name="booking-status"
     ),
+    # List all of teh customer's bookings, optionally filterd by ? status= /api/services/bookings/list/
+    path("bookings/list/", views.booking_list, name="booking-list"),
     # Cancel Booking from customer side  /api/services/bookings/<id>/cancel/
     path(
         "bookings/<int:booking_id>/cancel/", views.cancel_booking, name="cancel-booking"

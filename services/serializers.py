@@ -45,6 +45,32 @@ class WorkerSummarySerializer(serializers.Serializer):
         return None
 
 
+class BookingListSerializer(serializers.ModelSerializer):
+    category = serializers.CharField(source="category.name")
+    category_icon = serializers.CharField(source="category.icon")
+    visit_charge = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Booking
+        fields = [
+            "id",
+            "category",
+            "category_icon",
+            "description",
+            "status",
+            "visit_charge",
+            "created_at",
+        ]
+
+    def get_visit_charge(self, booking):
+        accepted_offer = booking.offers.filter(status="accepted").first()
+
+        if not accepted_offer:
+            return None
+
+        return float(accepted_offer.visit_charge)
+
+
 class BookingDetailSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source="category.name")
     worker = serializers.SerializerMethodField()
