@@ -41,15 +41,15 @@ def signup(request):
     if serializer.is_valid():
         result = AuthService.create_user_registration(serializer.validated_data)
 
-        return Response(
-            result,
-            status=status.HTTP_200_OK,
-        )
+        if not result["success"]:
+            return Response(
+                {
+                    result["field"]: [result["message"]]
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-    return Response(
-        serializer.errors,
-        status=status.HTTP_400_BAD_REQUEST,
-    )
+        return Response(result)
 
 
 @api_view(["POST"])

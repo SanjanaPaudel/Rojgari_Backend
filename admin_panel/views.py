@@ -62,7 +62,15 @@ def create_admin(request):
 
     result = AdminAuthService.create_admin(serializer.validated_data)
 
-    return Response(result)
+    if not result["success"]:
+        return Response(
+            {
+                result["field"]: [result["message"]]
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    return Response(result, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
