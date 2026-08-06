@@ -73,6 +73,7 @@ class BookingListSerializer(serializers.ModelSerializer):
 
 class BookingDetailSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source="category.name")
+    category_icon = serializers.CharField(source="category.icon")
     worker = serializers.SerializerMethodField()
     visit_charge = serializers.SerializerMethodField()
 
@@ -81,6 +82,7 @@ class BookingDetailSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "category",
+            "category_icon",
             "description",
             "address_text",
             "latitude",
@@ -88,6 +90,7 @@ class BookingDetailSerializer(serializers.ModelSerializer):
             "status",
             "visit_charge",
             "rating",
+            "review_text",
             "created_at",
             "worker",
         ]

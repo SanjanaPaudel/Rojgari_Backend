@@ -1,5 +1,6 @@
 from accounts.models import WorkerProfile
-
+from services.models import BookingOffer
+from notifications.models import Notification
 
 class WorkerDashboardService:
     @staticmethod
@@ -17,6 +18,16 @@ class WorkerDashboardService:
             )
         )
 
+        incoming_request_count = BookingOffer.objects.filter(
+            worker=worker,
+            status="pending",
+        ).count()
+
+        unread_notifications = Notification.objects.filter(
+            user=user,
+            is_read=False,
+        ).count()
+
         return {
             "worker": {
                 "full_name": worker.user.full_name,
@@ -29,13 +40,13 @@ class WorkerDashboardService:
                 "verified": worker.verification_status == "verified",
                 "is_online": worker.is_online,
                 "stats": {
-                    "jobs_done": 40,
+                    "jobs_done": worker.completed_jobs,
                     "skills": len(skills),
-                    "reviews": 10,
-                    "rating": 4,
+                    "reviews": worker.total_reviews,
+                    "rating": float(worker.average_rating),
                 },
             },
-            "notifications": 3,
-            "messages": 2,
-            "incoming_request_count": 0,
+            "notifications": unread_notifications,
+            "messages": 2, # no Message model yet — left as a placeholder, see note
+            "incoming_request_count": incoming_request_count,
         }
