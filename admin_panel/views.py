@@ -117,3 +117,23 @@ def pending_workers(request):
     data = WorkerVerificationService.get_pending_workers()
 
     return Response(data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def worker_details(request, worker_id):
+
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    worker = WorkerVerificationService.get_worker_details(worker_id)
+
+    if worker is None:
+        return Response(
+            {"detail": "Worker not found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    return Response(worker)

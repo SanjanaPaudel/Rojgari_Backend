@@ -8,4 +8,5 @@ urlpatterns = [
     path("verify-otp/",views.verify_admin_otp,),
     path("dashboard/",views.dashboard,),
     path("workers/pending/",views.pending_workers,),
+    path("workers/<int:worker_id>/",views.worker_details,),
 ]

@@ -34,3 +34,48 @@ class WorkerVerificationService:
             )
 
         return data
+
+    @staticmethod
+    def get_worker_details(worker_id):
+
+        worker = WorkerVerificationRepository.get_worker(worker_id)
+
+        if worker is None:
+            return None
+
+        return {
+            "id": worker.id,
+            "full_name": worker.user.full_name,
+            "phone_number": worker.user.phone_number,
+            "email": worker.user.email,
+            "verification_status": worker.verification_status,
+            "years_of_experience": worker.years_of_experience,
+            "about_me": worker.about_me,
+            "service_areas": worker.service_areas,
+            "permanent_address": worker.permanent_address,
+            "skills": [
+                skill.name
+                for skill in worker.skills.all()
+            ],
+            "profile_photo": (
+                worker.profile_photo.url
+                if worker.profile_photo
+                else None
+            ),
+            "citizenship_front": (
+                worker.citizenship_front.url
+                if worker.citizenship_front
+                else None
+            ),
+            "citizenship_back": (
+                worker.citizenship_back.url
+                if worker.citizenship_back
+                else None
+            ),
+            "experience_document": (
+                worker.experience_document.url
+                if worker.experience_document
+                else None
+            ),
+            "submitted_on": worker.user.date_joined,
+        }

@@ -1,5 +1,5 @@
 from accounts.models import WorkerProfile
-
+from django.core.exceptions import ObjectDoesNotExist
 
 class WorkerVerificationRepository:
 
@@ -11,3 +11,16 @@ class WorkerVerificationRepository:
             .filter(verification_status="pending")
             .order_by("-id")
         )
+
+    @staticmethod
+    def get_worker(worker_id):
+        try:
+            return (
+                WorkerProfile.objects.select_related("user")
+                .prefetch_related("skills")
+                .get(id=worker_id)
+            )
+        except ObjectDoesNotExist:
+            return None
+
+    
