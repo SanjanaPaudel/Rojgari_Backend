@@ -6,7 +6,7 @@ from accounts.models import Skill, WorkerProfile
 from notifications.notification_service import NotificationService
 from services.matching import distance_km
 from services.models import Booking, BookingMedia, BookingOffer
-from services.offers import backfill, OFFER_EXPIRY_SECONDS
+from services.offers import OFFER_EXPIRY_SECONDS, backfill
 from services.realtime import send_booking_update
 
 
@@ -337,7 +337,7 @@ class WorkerService:
 
         transaction.on_commit(_after_commit)
 
-        WorkerService.backfill(offer.booking)
+        backfill(offer.booking)
 
         return {
             "message": "Request rejected successfully.",
@@ -386,7 +386,7 @@ class WorkerService:
             "status": booking.status,
             "distance_km": None,
         }
-    
+
     @staticmethod
     def _seconds_remaining(offer):
         age_seconds = (timezone.now() - offer.offered_at).total_seconds()
@@ -405,7 +405,7 @@ class WorkerService:
 
         age_seconds = (timezone.now() - offer.offered_at).total_seconds()
 
-        if age_seconds <= WorkerService.OFFER_EXPIRY_SECONDS:
+        if age_seconds <= OFFER_EXPIRY_SECONDS:
             return offer
 
         offer.status = "expired"

@@ -17,8 +17,8 @@ from .offers import OFFER_EXPIRY_SECONDS
 from .realtime import send_booking_offer, send_booking_update, send_offer_cancelled
 from .serializers import (
     BookingCreateSerializer,
-    BookingListSerializer,
     BookingDetailSerializer,
+    BookingListSerializer,
     RateBookingSerializer,
 )
 

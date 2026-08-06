@@ -1,17 +1,14 @@
-import logging 
-
-from celery import shared_task
-from django.db.models import Q
-from django.utils import timezone
+import logging
 from datetime import timedelta
 
-from accounts.models import WorkerProfile
-from services.matching import rank_candidates
+from celery import shared_task
+from django.utils import timezone
+
 from services.models import Booking, BookingOffer
-from services.realtime import send_booking_offer, send_booking_update
+from services.realtime import send_booking_update
 
 from .models import Booking
-from .offers import backfill, OFFER_EXPIRY_SECONDS
+from .offers import OFFER_EXPIRY_SECONDS, backfill
 from .realtime import send_booking_update
 
 logger = logging.getLogger(__name__)
