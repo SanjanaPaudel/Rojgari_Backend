@@ -11,13 +11,12 @@ from services.models import Booking, BookingOffer
 from services.realtime import send_booking_offer, send_booking_update
 
 from .models import Booking
-from .offers import backfill
+from .offers import backfill, OFFER_EXPIRY_SECONDS
 from .realtime import send_booking_update
 
 logger = logging.getLogger(__name__)
 
 STALE_BOOKING_MINUTES = 10
-OFFER_EXPIRY_SECONDS = 120
 
 @shared_task
 def expire_stale_bookings():

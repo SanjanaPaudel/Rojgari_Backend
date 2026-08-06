@@ -136,7 +136,7 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": timedelta(minutes=10),
     },
     "expire-stale-offers": {
-        "task": "servies.tasks.expire_stale_offers",
+        "task": "services.tasks.expire_stale_offers",
         "schedule": timedelta(seconds=30)
     }
 }

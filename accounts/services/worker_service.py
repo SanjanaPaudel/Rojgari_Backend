@@ -4,10 +4,10 @@ from django.utils import timezone
 
 from accounts.models import Skill, WorkerProfile
 from notifications.notification_service import NotificationService
-from services.matching import distance_km, rank_candidates
+from services.matching import distance_km
 from services.models import Booking, BookingMedia, BookingOffer
-from services.offers import backfill
-from services.realtime import send_booking_offer, send_booking_update
+from services.offers import backfill, OFFER_EXPIRY_SECONDS
+from services.realtime import send_booking_update
 
 
 class WorkerService:
@@ -386,13 +386,11 @@ class WorkerService:
             "status": booking.status,
             "distance_km": None,
         }
-
-    OFFER_EXPIRY_SECONDS = 120
-
+    
     @staticmethod
     def _seconds_remaining(offer):
         age_seconds = (timezone.now() - offer.offered_at).total_seconds()
-        remaining = WorkerService.OFFER_EXPIRY_SECONDS - age_seconds
+        remaining = OFFER_EXPIRY_SECONDS - age_seconds
         return max(0, int(remaining))
 
     @staticmethod
