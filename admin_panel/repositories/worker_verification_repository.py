@@ -39,3 +39,12 @@ class WorkerVerificationRepository:
         worker.save(update_fields=["verification_status"])
 
         return worker
+
+    @staticmethod
+    def get_verified_workers():
+        return (
+            WorkerProfile.objects.select_related("user")
+            .prefetch_related("skills")
+            .filter(verification_status="verified")
+            .order_by("-id")
+        )

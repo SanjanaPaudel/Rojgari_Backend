@@ -191,3 +191,17 @@ def reject_worker(request, worker_id):
         {"message": result["message"]},
         status=status.HTTP_200_OK,
     )
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def verified_workers(request):
+
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = WorkerVerificationService.get_verified_workers()
+
+    return Response(data)

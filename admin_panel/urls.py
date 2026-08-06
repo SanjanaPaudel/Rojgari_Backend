@@ -11,4 +11,6 @@ urlpatterns = [
     path("workers/<int:worker_id>/",views.worker_details,),
     path("workers/<int:worker_id>/approve/",views.approve_worker,),
     path("workers/<int:worker_id>/reject/",views.reject_worker,),
+    path("workers/verified/",views.verified_workers,),
 ]
+
