@@ -23,4 +23,19 @@ class WorkerVerificationRepository:
         except ObjectDoesNotExist:
             return None
 
-    
+    @staticmethod
+    def approve_worker(worker):
+
+        worker.verification_status = "verified"
+        worker.save(update_fields=["verification_status"])
+
+        return worker
+
+
+    @staticmethod
+    def reject_worker(worker):
+
+        worker.verification_status = "rejected"
+        worker.save(update_fields=["verification_status"])
+
+        return worker

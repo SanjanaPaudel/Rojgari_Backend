@@ -79,3 +79,27 @@ class WorkerVerificationService:
             ),
             "submitted_on": worker.user.date_joined,
         }
+
+    @staticmethod
+    def approve_worker(worker_id):
+
+        worker = WorkerVerificationRepository.get_worker(worker_id)
+
+        if worker is None:
+            return {
+                "success": False,
+                "message": "Worker not found.",
+            }
+
+        if worker.verification_status == "verified":
+            return {
+                "success": False,
+                "message": "Worker is already verified.",
+            }
+
+        WorkerVerificationRepository.approve_worker(worker)
+
+        return {
+            "success": True,
+            "message": "Worker verified successfully.",
+        }
