@@ -4,7 +4,6 @@ from admin_panel.repositories.worker_verification_repository import (
 
 
 class WorkerVerificationService:
-
     @staticmethod
     def get_pending_workers():
 
@@ -20,14 +19,9 @@ class WorkerVerificationService:
                     "phone_number": worker.user.phone_number,
                     "email": worker.user.email,
                     "profile_photo": (
-                        worker.profile_photo.url
-                        if worker.profile_photo
-                        else None
+                        worker.profile_photo.url if worker.profile_photo else None
                     ),
-                    "skills": [
-                        skill.name
-                        for skill in worker.skills.all()
-                    ],
+                    "skills": [skill.name for skill in worker.skills.all()],
                     "submitted_on": worker.user.date_joined,
                     "status": worker.verification_status,
                 }
@@ -53,29 +47,18 @@ class WorkerVerificationService:
             "about_me": worker.about_me,
             "service_areas": worker.service_areas,
             "permanent_address": worker.permanent_address,
-            "skills": [
-                skill.name
-                for skill in worker.skills.all()
-            ],
+            "skills": [skill.name for skill in worker.skills.all()],
             "profile_photo": (
-                worker.profile_photo.url
-                if worker.profile_photo
-                else None
+                worker.profile_photo.url if worker.profile_photo else None
             ),
             "citizenship_front": (
-                worker.citizenship_front.url
-                if worker.citizenship_front
-                else None
+                worker.citizenship_front.url if worker.citizenship_front else None
             ),
             "citizenship_back": (
-                worker.citizenship_back.url
-                if worker.citizenship_back
-                else None
+                worker.citizenship_back.url if worker.citizenship_back else None
             ),
             "experience_document": (
-                worker.experience_document.url
-                if worker.experience_document
-                else None
+                worker.experience_document.url if worker.experience_document else None
             ),
             "submitted_on": worker.user.date_joined,
         }
@@ -143,14 +126,9 @@ class WorkerVerificationService:
                     "phone_number": worker.user.phone_number,
                     "email": worker.user.email,
                     "profile_photo": (
-                        worker.profile_photo.url
-                        if worker.profile_photo
-                        else None
+                        worker.profile_photo.url if worker.profile_photo else None
                     ),
-                    "skills": [
-                        skill.name
-                        for skill in worker.skills.all()
-                    ],
+                    "skills": [skill.name for skill in worker.skills.all()],
                     "verification_status": worker.verification_status,
                     "verified_on": worker.user.date_joined,
                 }

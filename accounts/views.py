@@ -43,9 +43,7 @@ def signup(request):
 
         if not result["success"]:
             return Response(
-                {
-                    result["field"]: [result["message"]]
-                },
+                {result["field"]: [result["message"]]},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

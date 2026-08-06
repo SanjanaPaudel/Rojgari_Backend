@@ -3,16 +3,19 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+
 from accounts.models import User
 from accounts.services.otp_service import OTPService
 from admin_panel.serializers import (
     AdminLoginSerializer,
     CreateAdminSerializer,
 )
+
+from .serializers import DashboardSerializer
 from .services.admin_auth_service import AdminAuthService
 from .services.dashboard_service import DashboardService
-from .serializers import DashboardSerializer
 from .services.worker_verification_service import WorkerVerificationService
+
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -64,9 +67,7 @@ def create_admin(request):
 
     if not result["success"]:
         return Response(
-            {
-                result["field"]: [result["message"]]
-            },
+            {result["field"]: [result["message"]]},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -96,6 +97,7 @@ def verify_admin_otp(request):
 
     return Response({"message": "Admin verified successfully."})
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def dashboard(request):
@@ -112,6 +114,7 @@ def dashboard(request):
 
     return Response(serializer.data)
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def pending_workers(request):
@@ -125,6 +128,7 @@ def pending_workers(request):
     data = WorkerVerificationService.get_pending_workers()
 
     return Response(data)
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -145,6 +149,7 @@ def worker_details(request, worker_id):
         )
 
     return Response(worker)
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -170,6 +175,7 @@ def approve_worker(request, worker_id):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def reject_worker(request, worker_id):
@@ -183,7 +189,6 @@ def reject_worker(request, worker_id):
     result = WorkerVerificationService.reject_worker(worker_id)
 
     if not result["success"]:
-
         if result["message"] == "Worker not found.":
             return Response(
                 {"detail": result["message"]},
@@ -199,6 +204,7 @@ def reject_worker(request, worker_id):
         {"message": result["message"]},
         status=status.HTTP_200_OK,
     )
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

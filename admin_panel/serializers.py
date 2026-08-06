@@ -22,6 +22,7 @@ class CreateAdminSerializer(serializers.Serializer):
 
         return attrs
 
+
 class DashboardSerializer(serializers.Serializer):
     workers = serializers.DictField()
     bookings = serializers.DictField()

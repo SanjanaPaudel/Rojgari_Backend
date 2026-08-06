@@ -1,8 +1,9 @@
-from accounts.models import WorkerProfile
 from django.core.exceptions import ObjectDoesNotExist
 
-class WorkerVerificationRepository:
+from accounts.models import WorkerProfile
 
+
+class WorkerVerificationRepository:
     @staticmethod
     def get_pending_workers():
         return (
@@ -30,7 +31,6 @@ class WorkerVerificationRepository:
         worker.save(update_fields=["verification_status"])
 
         return worker
-
 
     @staticmethod
     def reject_worker(worker):

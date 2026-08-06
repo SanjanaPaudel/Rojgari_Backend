@@ -1,6 +1,7 @@
 from accounts.models import WorkerProfile
-from services.models import BookingOffer
 from notifications.models import Notification
+from services.models import BookingOffer
+
 
 class WorkerDashboardService:
     @staticmethod
@@ -47,6 +48,6 @@ class WorkerDashboardService:
                 },
             },
             "notifications": unread_notifications,
-            "messages": 2, # no Message model yet — left as a placeholder, see note
+            "messages": 2,  # no Message model yet — left as a placeholder, see note
             "incoming_request_count": incoming_request_count,
         }

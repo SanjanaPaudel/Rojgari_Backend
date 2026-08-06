@@ -2,7 +2,6 @@ from admin_panel.repository import DashboardRepository
 
 
 class DashboardService:
-
     @staticmethod
     def get_dashboard_data():
 

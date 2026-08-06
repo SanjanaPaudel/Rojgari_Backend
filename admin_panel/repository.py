@@ -5,7 +5,6 @@ from services.models import Booking
 
 
 class DashboardRepository:
-
     @staticmethod
     def get_worker_statistics():
         return {

@@ -75,7 +75,7 @@ class AuthService:
             "message": "OTP sent successfully.",
             "expires_in": 180,
         }
-    
+
     @staticmethod
     def login(validated_data):
         phone_number = validated_data["phone_number"]
