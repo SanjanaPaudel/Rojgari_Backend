@@ -103,3 +103,27 @@ class WorkerVerificationService:
             "success": True,
             "message": "Worker verified successfully.",
         }
+
+    @staticmethod
+    def reject_worker(worker_id):
+
+        worker = WorkerVerificationRepository.get_worker(worker_id)
+
+        if worker is None:
+            return {
+                "success": False,
+                "message": "Worker not found.",
+            }
+
+        if worker.verification_status == "rejected":
+            return {
+                "success": False,
+                "message": "Worker is already rejected.",
+            }
+
+        WorkerVerificationRepository.reject_worker(worker)
+
+        return {
+            "success": True,
+            "message": "Worker rejected successfully.",
+        }
