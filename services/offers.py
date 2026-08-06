@@ -14,9 +14,7 @@ def backfill(booking):
     offered this booking, and create a fresh pending offer for them.
     """
     already_offered_ids = list(
-        BookingOffer.objects.filter(booking=booking).values_list(
-            "worker_id", flat=True
-        )
+        BookingOffer.objects.filter(booking=booking).values_list("worker_id", flat=True)
     )
 
     ranked = rank_candidates(booking, exclude_worker_ids=already_offered_ids)

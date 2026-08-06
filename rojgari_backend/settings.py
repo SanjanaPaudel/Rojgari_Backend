@@ -125,7 +125,7 @@ TIME_ZONE = "UTC"
 # Celery - uses the Redis/Valkey instaces on its own db so task messages don't mix with cache keys or channel groups
 
 CELERY_BROKER_URL = env("CELERY_BROKER_URL", default="redis://127.0.0.1:6379/3")
-CELERY_RESULT_BACKEND = None # we don't need to store task results anywhere
+CELERY_RESULT_BACKEND = None  # we don't need to store task results anywhere
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
@@ -137,8 +137,8 @@ CELERY_BEAT_SCHEDULE = {
     },
     "expire-stale-offers": {
         "task": "services.tasks.expire_stale_offers",
-        "schedule": timedelta(seconds=30)
-    }
+        "schedule": timedelta(seconds=30),
+    },
 }
 
 # Password validation

@@ -44,6 +44,7 @@ class WorkerSummarySerializer(serializers.Serializer):
 
         return None
 
+
 class BookingListSerializer(serializers.ModelSerializer):
     category = serializers.CharField(source="category.name")
     category_icon = serializers.CharField(source="category.icon")

@@ -7,13 +7,12 @@ from django.utils import timezone
 from services.models import Booking, BookingOffer
 from services.realtime import send_booking_update
 
-from .models import Booking
 from .offers import OFFER_EXPIRY_SECONDS, backfill
-from .realtime import send_booking_update
 
 logger = logging.getLogger(__name__)
 
 STALE_BOOKING_MINUTES = 10
+
 
 @shared_task
 def expire_stale_bookings():
@@ -41,6 +40,7 @@ def expire_stale_bookings():
 
     return count
 
+
 @shared_task
 def expire_stale_offers():
     cutoff = timezone.now() - timedelta(seconds=OFFER_EXPIRY_SECONDS)
@@ -57,7 +57,7 @@ def expire_stale_offers():
         offer.responded_at = timezone.now()
         offer.save()
 
-        count +=1
+        count += 1
 
         backfill(offer.booking)
 

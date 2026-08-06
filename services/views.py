@@ -132,6 +132,7 @@ def create_booking(request):
         status=status.HTTP_201_CREATED,
     )
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])
 def booking_list(request):
@@ -144,7 +145,9 @@ def booking_list(request):
 
     bookings = bookings.order_by("-created_at")
 
-    serializer = BookingListSerializer(bookings, many=True, context={"request": request})
+    serializer = BookingListSerializer(
+        bookings, many=True, context={"request": request}
+    )
 
     return Response(serializer.data)
 
