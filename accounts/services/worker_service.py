@@ -6,6 +6,7 @@ from accounts.models import Skill, WorkerProfile
 from notifications.notification_service import NotificationService
 from services.matching import distance_km, rank_candidates
 from services.models import Booking, BookingMedia, BookingOffer
+from services.offers import backfill
 from services.realtime import send_booking_offer, send_booking_update
 
 
@@ -143,9 +144,6 @@ class WorkerService:
         for offer in offers:
             offer = WorkerService._expire_if_stale(offer)
 
-            if offer.status != "pending":
-                continue
-
             booking = offer.booking
 
             requests.append(
@@ -189,8 +187,6 @@ class WorkerService:
             id=offer_id,
             worker=user.workerprofile,
         )
-
-        offer = WorkerService._expire_if_stale(offer)
 
         booking = offer.booking
 
@@ -341,7 +337,7 @@ class WorkerService:
 
         transaction.on_commit(_after_commit)
 
-        WorkerService._backfill(offer.booking)
+        WorkerService.backfill(offer.booking)
 
         return {
             "message": "Request rejected successfully.",
@@ -400,50 +396,6 @@ class WorkerService:
         return max(0, int(remaining))
 
     @staticmethod
-    def _backfill(booking):
-        """
-        Find the next-best candidate not already offered this booking,
-        and create a fresh pending offer for them.
-        """
-        already_offered_ids = list(
-            BookingOffer.objects.filter(booking=booking).values_list(
-                "worker_id", flat=True
-            )
-        )
-
-        ranked = rank_candidates(booking, exclude_worker_ids=already_offered_ids)
-
-        if not ranked:
-            return None
-
-        worker, score = ranked[0]
-
-        new_offer = BookingOffer.objects.create(
-            booking=booking,
-            worker=worker,
-            score=score,
-            status="pending",
-        )
-
-        transaction.on_commit(
-            lambda: send_booking_offer(
-                worker.user_id,
-                {
-                    "offer_id": new_offer.id,
-                    "booking_id": booking.id,
-                    "customer_name": booking.customer.user.full_name,
-                    "service": booking.category.name,
-                    "address": booking.address_text,
-                    "description": booking.description,
-                    "visit_charge": float(new_offer.visit_charge),
-                    "expires_in_seconds": WorkerService.OFFER_EXPIRY_SECONDS,
-                },
-            )
-        )
-
-        return new_offer
-
-    @staticmethod
     @transaction.atomic
     def _expire_if_stale(offer):
         """
@@ -462,7 +414,7 @@ class WorkerService:
         offer.responded_at = timezone.now()
         offer.save()
 
-        WorkerService._backfill(offer.booking)
+        backfill(offer.booking)
 
         return offer
 

@@ -11,6 +11,7 @@ from services.models import Booking, BookingOffer
 from services.realtime import send_booking_offer, send_booking_update
 
 from .models import Booking
+from .offers import backfill
 from .realtime import send_booking_update
 
 logger = logging.getLogger(__name__)
@@ -62,7 +63,7 @@ def expire_stale_offers():
 
         count +=1
 
-        _backfill(offer.booking)
+        backfill(offer.booking)
 
     if count:
         logger.info(f"Expired {count} satle offer(s).")
