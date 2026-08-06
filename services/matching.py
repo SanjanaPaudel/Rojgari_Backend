@@ -68,7 +68,7 @@ def get_eligible_workers(booking):
     return WorkerProfile.objects.filter(
         skills=booking.category,
         is_online=True,
-        verification_status="verified"
+        verification_status="verified",
         last_location_update__gte=stale_cutoff,
         current_latitude__isnull=False,
         current_longitude__isnull=False,

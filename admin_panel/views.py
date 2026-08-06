@@ -3,18 +3,16 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from accounts.models import User
 from accounts.services.otp_service import OTPService
 from admin_panel.serializers import (
     AdminLoginSerializer,
     CreateAdminSerializer,
 )
-
 from .services.admin_auth_service import AdminAuthService
 from .services.dashboard_service import DashboardService
 from .serializers import DashboardSerializer
-
+from .services.worker_verification_service import WorkerVerificationService
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -105,3 +103,17 @@ def dashboard(request):
     serializer = DashboardSerializer(data)
 
     return Response(serializer.data)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def pending_workers(request):
+
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=403,
+        )
+
+    data = WorkerVerificationService.get_pending_workers()
+
+    return Response(data)
