@@ -1,6 +1,5 @@
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
-
 from accounts.models import User
 
 
@@ -30,21 +29,22 @@ class AdminAuthService:
             },
         }
 
+
     @staticmethod
     def login(validated_data):
 
-        phone_number = validated_data["phone_number"]
+        email = validated_data["email"]
         password = validated_data["password"]
 
-        user = authenticate(
-            phone_number=phone_number,
-            password=password,
-        )
+        user = User.objects.filter(email=email).first()
 
         if user is None:
-            raise AuthenticationFailed("Invalid phone number or password.")
+            raise AuthenticationFailed("Invalid email or password.")
+
+        if not user.check_password(password):
+            raise AuthenticationFailed("Invalid email or password.")
 
         if user.role != "admin":
-            raise AuthenticationFailed("You are not an admin.")
+            raise AuthenticationFailed("You are not authorized.")
 
         return user

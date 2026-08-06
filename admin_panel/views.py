@@ -4,7 +4,10 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from accounts.serializers import UserLoginSerializer
+from admin_panel.serializers import (
+    AdminLoginSerializer,
+    CreateAdminSerializer,
+)
 from admin_panel.serializers import CreateAdminSerializer
 
 from .services.admin_auth_service import AdminAuthService
@@ -13,7 +16,7 @@ from .services.admin_auth_service import AdminAuthService
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def admin_login(request):
-    serializer = UserLoginSerializer(data=request.data)
+    serializer = AdminLoginSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
     user = AdminAuthService.login(serializer.validated_data)
@@ -34,6 +37,8 @@ def admin_login(request):
                 "id": user.id,
                 "full_name": user.full_name,
                 "phone_number": user.phone_number,
+                "email": user.email,
+                "role": user.role,
             },
         },
         status=status.HTTP_200_OK,
