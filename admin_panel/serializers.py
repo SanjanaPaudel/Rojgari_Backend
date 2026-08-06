@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from accounts.models import User
 
 class AdminLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -11,3 +11,15 @@ class CreateAdminSerializer(serializers.Serializer):
     phone_number = serializers.CharField(max_length=15)
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+
+        if attrs["password"] != attrs["confirm_password"]:
+            raise serializers.ValidationError(
+                {
+                    "confirm_password": "Passwords do not match."
+                }
+            )
+
+        return attrs

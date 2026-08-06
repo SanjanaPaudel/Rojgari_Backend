@@ -9,9 +9,9 @@ from admin_panel.serializers import (
     CreateAdminSerializer,
 )
 from admin_panel.serializers import CreateAdminSerializer
-
+from accounts.models import User
 from .services.admin_auth_service import AdminAuthService
-
+from accounts.services.otp_service import OTPService
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -62,3 +62,30 @@ def create_admin(request):
     result = AdminAuthService.create_admin(serializer.validated_data)
 
     return Response(result)
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def verify_admin_otp(request):
+
+    phone_number = request.data.get("phone_number")
+    otp = request.data.get("otp")
+
+    result = OTPService.verify_otp(
+        phone_number,
+        otp,
+    )
+
+    if not result["success"]:
+        return Response(result, status=400)
+
+    user = User.objects.get(
+        phone_number=phone_number
+    )
+
+    user.is_staff = True
+    user.is_active = True
+    user.save()
+
+    return Response({
+        "message": "Admin verified successfully."
+    })

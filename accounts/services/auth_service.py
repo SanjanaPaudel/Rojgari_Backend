@@ -10,7 +10,7 @@ class AuthService:
     @staticmethod
     def create_user_registration(validated_data):
 
-        validated_data.pop("confirm_password")
+        validated_data.pop("confirm_password",None)
 
         otp = OTPService.generate_otp()
 

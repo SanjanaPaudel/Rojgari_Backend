@@ -96,18 +96,30 @@ class OTPService:
             password=pending.password,
             role=pending.role,
         )
+        if pending.role == "admin":
+            user.is_staff = True
+            user.is_active = True
+            user.save(update_fields=["is_staff", "is_active"])
 
         #  The post_save signal on User already created the profile row —
         # fetch and update it instead of creating a second, colliding one.
         if pending.role == "customer":
+
             profile = user.customer_profile
+
             profile.profile_photo = pending.profile_photo
+
             profile.save()
 
-        else:
+        elif pending.role == "worker":
+
             profile = user.workerprofile
+
             profile.profile_photo = pending.profile_photo
+
             profile.save()
+
+        # Admin has no profile, so nothing to create/update.
 
         pending.delete()
 

@@ -1,33 +1,16 @@
-from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
+from accounts.services.auth_service import AuthService
 from accounts.models import User
 
 
 class AdminAuthService:
+
     @staticmethod
     def create_admin(validated_data):
 
-        user = User.objects.create_user(
-            phone_number=validated_data["phone_number"],
-            full_name=validated_data["full_name"],
-            email=validated_data["email"],
-            password=validated_data["password"],
-            role="admin",
-        )
+        validated_data["role"] = "admin"
 
-        user.is_staff = True
-        user.is_superuser = True
-        user.save()
-
-        return {
-            "message": "Admin created successfully.",
-            "admin": {
-                "id": user.id,
-                "full_name": user.full_name,
-                "phone_number": user.phone_number,
-                "email": user.email,
-            },
-        }
+        return AuthService.create_user_registration(validated_data)
 
 
     @staticmethod
@@ -46,5 +29,11 @@ class AdminAuthService:
 
         if user.role != "admin":
             raise AuthenticationFailed("You are not authorized.")
+
+        # NEW
+        if not user.is_active:
+            raise AuthenticationFailed(
+                "Please verify your email before logging in."
+            )
 
         return user
