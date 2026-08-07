@@ -236,3 +236,20 @@ def all_workers(request):
         data,
         status=status.HTTP_200_OK,
     )
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def worker_statistics(request):
+
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = WorkerVerificationService.get_worker_statistics()
+
+    return Response(
+        data,
+        status=status.HTTP_200_OK,
+    )

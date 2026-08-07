@@ -166,3 +166,8 @@ class WorkerVerificationService:
             )
 
         return data
+
+    @staticmethod
+    def get_worker_statistics():
+
+        return WorkerVerificationRepository.get_worker_statistics()

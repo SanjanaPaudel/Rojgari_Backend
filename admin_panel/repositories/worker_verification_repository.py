@@ -57,3 +57,17 @@ class WorkerVerificationRepository:
             .order_by("-id")
         )
 
+    @staticmethod
+    def get_worker_statistics():
+        return {
+            "all": WorkerProfile.objects.count(),
+            "pending": WorkerProfile.objects.filter(
+                verification_status="pending"
+            ).count(),
+            "verified": WorkerProfile.objects.filter(
+                verification_status="verified"
+            ).count(),
+            "rejected": WorkerProfile.objects.filter(
+                verification_status="rejected"
+            ).count(),
+        }
