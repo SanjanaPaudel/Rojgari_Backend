@@ -39,7 +39,7 @@ class PasswordResetService:
     def request_reset(email):
         try:
             user = User.objects.get(email=email)
-        except User.DOesNotExist:
+        except User.DoesNotExist:
             return {"success": False, "message": "No account found with email address"}
 
         otp = OTPService.generate_otp()
@@ -79,7 +79,7 @@ class PasswordResetService:
         if not reset_request.is_expired():
             remaining = int((reset_request.expires_at - timezone.now()).total_seconds())
             return {
-                "succcess": False,
+                "success": False,
                 "message": "Please wait before requesting another OTP.",
                 "remaining_seconds": remaining,
             }
@@ -181,5 +181,5 @@ class PasswordResetService:
 
         return {
             "success": True,
-            "message": "Pasword reset successfully. Please login with your new password.",
+            "message": "Password reset successfully. Please login with your new password.",
         }
