@@ -30,6 +30,13 @@ class WorkerVerificationRepository:
         worker.verification_status = "rejected"
         worker.save(update_fields=["verification_status"])
 
+        WorkerVerificationHistory.objects.create(
+            worker=worker,
+            admin=admin_user,
+            action="rejected",
+            note=note,
+        )
+
         return worker
 
     @staticmethod
