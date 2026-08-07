@@ -104,9 +104,7 @@ class WorkerVerificationService:
         }
 
     @staticmethod
-    def reject_worker(worker_id, admin_user, note=""):
-        worker = WorkerVerificationRepository.get_worker(worker_id)
-
+    def reject_worker(worker, admin_user, note=""):
         if worker is None:
             return {
                 "success": False,

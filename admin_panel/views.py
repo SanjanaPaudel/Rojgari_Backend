@@ -10,6 +10,9 @@ from admin_panel.serializers import (
     AdminLoginSerializer,
     CreateAdminSerializer,
 )
+from .repositories.worker_verification_repository import (
+    WorkerVerificationRepository,
+)
 
 from .serializers import DashboardSerializer
 from .services.admin_auth_service import AdminAuthService
@@ -173,23 +176,15 @@ def approve_worker(request, worker_id):
 
 @api_view(["POST"])
 def reject_worker(request, worker_id):
+    worker = WorkerVerificationRepository.get_worker(worker_id)
+
     result = WorkerVerificationService.reject_worker(
-        worker_id,
+        worker,
         request.user,
         request.data.get("note", ""),
     )
 
-    if not result["success"]:
-        return Response(
-            result,
-            status=status.HTTP_400_BAD_REQUEST,
-        )
-
-    return Response(
-        result,
-        status=status.HTTP_200_OK,
-    )
-
+    return Response(result)
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
