@@ -4,13 +4,11 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
 from accounts.models import Skill, WorkerProfile
 from accounts.permissions import IsCustomer
 from accounts.serializers import SkillSerializer
 from services.matching import distance_km
 from services.pricing_service import PricingService
-
 from .geocoding import reverse_geocode
 from .matching import rank_candidates
 from .models import Booking, BookingMedia, BookingOffer
@@ -31,7 +29,10 @@ NON_CANCELLABLE_STATUSES = ["completed", "cancelled"]
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])
 def get_categories(request):
-    categories = Skill.objects.filter(is_active=True).order_by("display_order")
+    categories = Skill.objects.filter(is_active=True).order_by(
+        "display_order",
+        "id",
+    )
 
     serializer = SkillSerializer(categories, many=True)
 
