@@ -1,6 +1,5 @@
 from django.db import transaction
 from django.utils import timezone
-
 from accounts.models import Skill, WorkerProfile
 from services.models import Booking
 
