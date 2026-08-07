@@ -1,8 +1,9 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import AbstractUser
+
 from accounts.managers import UserManager
+
 
 class User(AbstractUser):
     objects = UserManager()
@@ -47,7 +48,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.full_name} ({self.role})"
-    
+
 
 class CustomerProfile(models.Model):
     user = models.OneToOneField(

@@ -7,12 +7,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.models import User
 from accounts.services.otp_service import OTPService
 from admin_panel.serializers import (
+    AdminChangePasswordSerializer,
     AdminLoginSerializer,
+    AdminProfilePhotoSerializer,
+    AdminProfileSerializer,
     CreateAdminSerializer,
     DashboardSerializer,
-    AdminProfileSerializer,
-    AdminProfilePhotoSerializer,
-    AdminChangePasswordSerializer,
 )
 
 from .repositories.worker_verification_repository import (
