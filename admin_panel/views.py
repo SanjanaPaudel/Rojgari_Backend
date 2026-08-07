@@ -8,8 +8,10 @@ from accounts.models import User
 from accounts.services.otp_service import OTPService
 from admin_panel.serializers import (
     AdminLoginSerializer,
-    CategorySerializer,
     CreateAdminSerializer,
+    DashboardSerializer,
+    AdminProfileSerializer,
+    AdminProfilePhotoSerializer,
 )
 
 from .repositories.worker_verification_repository import (
@@ -53,6 +55,70 @@ def admin_login(request):
         status=status.HTTP_200_OK,
     )
 
+@api_view(["GET", "PATCH"])
+@permission_classes([IsAuthenticated])
+def admin_profile(request):
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    if request.method == "GET":
+        data = AdminAuthService.get_profile(request.user)
+
+        serializer = AdminProfileSerializer(data)
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+    serializer = AdminProfileSerializer(
+        data=request.data,
+    )
+
+    serializer.is_valid(raise_exception=True)
+
+    data = AdminAuthService.update_profile(
+        request.user,
+        serializer.validated_data,
+    )
+
+    return Response(
+        data,
+        status=status.HTTP_200_OK,
+    )
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def admin_profile_photo(request):
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    serializer = AdminProfilePhotoSerializer(
+        data=request.data,
+    )
+
+    serializer.is_valid(raise_exception=True)
+
+    data = AdminAuthService.update_profile_photo(
+        request.user,
+        serializer.validated_data["profile_photo"],
+    )
+
+    data["profile_photo"] = request.build_absolute_uri(
+        data["profile_photo"]
+    )
+
+    return Response(
+        data,
+        status=status.HTTP_200_OK,
+    )
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

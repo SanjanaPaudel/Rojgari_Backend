@@ -37,4 +37,14 @@ urlpatterns = [
         "categories/<int:category_id>/",
         views.category_detail,
     ),
+    path(
+        "profile/",
+        views.admin_profile,
+        name="admin-profile",
+    ),
+    path(
+        "profile/photo/",
+        views.admin_profile_photo,
+        name="admin-profile-photo",
+    ),
 ]

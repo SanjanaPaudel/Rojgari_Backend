@@ -4,9 +4,9 @@ from django.utils import timezone
 
 from accounts.managers import UserManager
 
-
 class User(AbstractUser):
     objects = UserManager()
+
     ROLE_CHOICES = (
         ("customer", "Customer"),
         ("worker", "Worker"),
@@ -26,7 +26,15 @@ class User(AbstractUser):
         null=True,
     )
 
-    full_name = models.CharField(max_length=255)
+    full_name = models.CharField(
+        max_length=255,
+    )
+
+    profile_photo = models.ImageField(
+        upload_to="admin/profile/",
+        blank=True,
+        null=True,
+    )
 
     role = models.CharField(
         max_length=20,
@@ -39,7 +47,7 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.full_name} ({self.role})"
-
+    
 
 class CustomerProfile(models.Model):
     user = models.OneToOneField(

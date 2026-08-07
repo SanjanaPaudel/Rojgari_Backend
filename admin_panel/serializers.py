@@ -52,3 +52,24 @@ class CategorySerializer(serializers.ModelSerializer):
             "id",
             "total_workers",
         ]
+
+class AdminProfileSerializer(serializers.Serializer):
+    full_name = serializers.CharField(
+        max_length=255,
+        required=False,
+    )
+    phone_number = serializers.CharField(
+        max_length=15,
+        required=False,
+    )
+    email = serializers.EmailField(
+        required=False,
+        allow_blank=True,
+        allow_null=True,
+    )
+
+
+class AdminProfilePhotoSerializer(serializers.Serializer):
+    profile_photo = serializers.ImageField(
+        required=True,
+    )
