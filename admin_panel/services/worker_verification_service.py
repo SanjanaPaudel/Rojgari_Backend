@@ -178,3 +178,30 @@ class WorkerVerificationService:
     def get_worker_statistics():
 
         return WorkerVerificationRepository.get_worker_statistics()
+
+    @staticmethod
+    def request_resubmission(worker_id, admin_user, note=""):
+        worker = WorkerVerificationRepository.get_worker(worker_id)
+
+        if worker is None:
+            return {
+                "success": False,
+                "message": "Worker not found.",
+            }
+
+        if worker.verification_status != "rejected":
+            return {
+                "success": False,
+                "message": "Resubmission can only be requested for rejected workers.",
+            }
+
+        WorkerVerificationRepository.request_resubmission(
+            worker,
+            admin_user,
+            note,
+        )
+
+        return {
+            "success": True,
+            "message": "Resubmission requested successfully.",
+        }

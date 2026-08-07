@@ -263,3 +263,25 @@ def worker_statistics(request):
         data,
         status=status.HTTP_200_OK,
     )
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def request_resubmission(request, worker_id):
+    note = request.data.get("note", "")
+
+    result = WorkerVerificationService.request_resubmission(
+        worker_id,
+        request.user,
+        note,
+    )
+
+    if not result["success"]:
+        return Response(
+            result,
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    return Response(
+        result,
+        status=status.HTTP_200_OK,
+    )

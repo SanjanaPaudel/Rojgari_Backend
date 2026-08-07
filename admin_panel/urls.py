@@ -24,4 +24,8 @@ urlpatterns = [
         "workers/<int:worker_id>/reject/",
         views.reject_worker,
     ),
+    path(
+        "workers/<int:worker_id>/request-resubmission/",
+        views.request_resubmission,
+    ),
 ]

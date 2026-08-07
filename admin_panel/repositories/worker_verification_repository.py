@@ -97,3 +97,17 @@ class WorkerVerificationRepository:
         )
 
         return worker
+
+    @staticmethod
+    def request_resubmission(worker, admin_user, note=""):
+        worker.verification_status = "pending"
+        worker.save(update_fields=["verification_status"])
+
+        WorkerVerificationHistory.objects.create(
+            worker=worker,
+            admin=admin_user,
+            action="resubmission_requested",
+            note=note,
+        )
+
+        return worker
