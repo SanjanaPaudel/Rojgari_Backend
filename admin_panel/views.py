@@ -412,7 +412,7 @@ def category_detail(request, category_id):
     CategoryService.delete_category(category)
 
     return Response(
-        {"message": "Category deleted successfully."},
+        {"message": "Category deactivated successfully."},
         status=status.HTTP_200_OK,
     )
 

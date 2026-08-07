@@ -23,4 +23,7 @@ class CategoryService:
 
     @staticmethod
     def delete_category(category):
-        CategoryRepository.delete_category(category)
+        category.is_active = False
+        category.save(update_fields=["is_active"])
+
+        return category
