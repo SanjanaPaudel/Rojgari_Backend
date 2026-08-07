@@ -164,7 +164,7 @@ def approve_worker(request, worker_id):
     result = WorkerVerificationService.approve_worker(
         worker_id,
         request.user,
-        note,
+        request.data.get("note", ""),
     )
 
     if not result["success"]:
@@ -193,7 +193,7 @@ def reject_worker(request, worker_id):
     result = WorkerVerificationService.reject_worker(
         worker_id,
         request.user,
-        note,
+        request.data.get("note", ""),
     )
 
     if not result["success"]:

@@ -77,8 +77,7 @@ class WorkerVerificationService:
         }
 
     @staticmethod
-    def approve_worker(worker_id):
-
+    def approve_worker(worker_id, admin_user, note=""):
         worker = WorkerVerificationRepository.get_worker(worker_id)
 
         if worker is None:
@@ -93,7 +92,11 @@ class WorkerVerificationService:
                 "message": "Worker is already verified.",
             }
 
-        WorkerVerificationRepository.approve_worker(worker)
+        WorkerVerificationRepository.approve_worker(
+            worker,
+            admin_user,
+            note,
+        )
 
         return {
             "success": True,
@@ -101,8 +104,7 @@ class WorkerVerificationService:
         }
 
     @staticmethod
-    def reject_worker(worker_id):
-
+    def reject_worker(worker_id, admin_user, note=""):
         worker = WorkerVerificationRepository.get_worker(worker_id)
 
         if worker is None:
@@ -117,7 +119,11 @@ class WorkerVerificationService:
                 "message": "Worker is already rejected.",
             }
 
-        WorkerVerificationRepository.reject_worker(worker)
+        WorkerVerificationRepository.reject_worker(
+            worker,
+            admin_user,
+            note,
+        )
 
         return {
             "success": True,
