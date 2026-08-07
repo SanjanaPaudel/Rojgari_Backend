@@ -24,6 +24,7 @@ from .serializers import (
     RateBookingSerializer,
 )
 
+MAX_INITIAL_OFFERS = 3
 NON_CANCELLABLE_STATUSES = ["completed", "cancelled"]
 
 
@@ -85,24 +86,28 @@ def create_booking(request):
             )
 
         ranked = rank_candidates(booking)
-        print("Ranked workers:", ranked)
-        print("Number of ranked workers:", len(ranked))
-        top_candidates = ranked[:3]
 
-        for worker, score in top_candidates:
-            print("Entered loop")
+        offers_created = 0
+
+        for worker, score in ranked:
+            # Stop once we've successfully sent out enough offers - not just after checking the first 3 candidates.
+            
+            if offers_created >= MAX_INITIAL_OFFERS:
+                break
+
             distance = distance_km(
                 booking.latitude,
                 booking.longitude,
                 worker.current_latitude,
                 worker.current_longitude,
             )
-            print("Distance:", distance)
+
             pricing = PricingService.calculate_visit_charge(distance)
-            print(pricing)
-            # Skip workers outside the configured service radius
+
+            # Skip workers outside the configured service radius - keep checking further candidates instead of giving up
             if not pricing["success"]:
                 continue
+
             new_offer = BookingOffer.objects.create(
                 booking=booking,
                 worker=worker,
@@ -110,6 +115,8 @@ def create_booking(request):
                 visit_charge=pricing["visit_charge"],
                 status="pending",
             )
+
+            offers_created += 1
 
             transaction.on_commit(
                 lambda worker=worker, booking=booking, new_offer=new_offer: (
@@ -133,7 +140,6 @@ def create_booking(request):
         BookingDetailSerializer(booking, context={"request": request}).data,
         status=status.HTTP_201_CREATED,
     )
-
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])
