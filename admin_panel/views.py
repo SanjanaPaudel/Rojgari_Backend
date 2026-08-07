@@ -152,15 +152,7 @@ def worker_details(request, worker_id):
 
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
 def approve_worker(request, worker_id):
-
-    if request.user.role != "admin":
-        return Response(
-            {"detail": "Permission denied."},
-            status=status.HTTP_403_FORBIDDEN,
-        )
-    note = request.data.get("note", "")
     result = WorkerVerificationService.approve_worker(
         worker_id,
         request.user,
@@ -168,28 +160,19 @@ def approve_worker(request, worker_id):
     )
 
     if not result["success"]:
-        if result["message"] == "Worker not found.":
-            return Response(
-                {"detail": result["message"]},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
         return Response(
-            {"detail": result["message"]},
+            result,
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+    return Response(
+        result,
+        status=status.HTTP_200_OK,
+    )
+
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
 def reject_worker(request, worker_id):
-
-    if request.user.role != "admin":
-        return Response(
-            {"detail": "Permission denied."},
-            status=status.HTTP_403_FORBIDDEN,
-        )
-    note = request.data.get("note", "")
     result = WorkerVerificationService.reject_worker(
         worker_id,
         request.user,
@@ -197,19 +180,13 @@ def reject_worker(request, worker_id):
     )
 
     if not result["success"]:
-        if result["message"] == "Worker not found.":
-            return Response(
-                {"detail": result["message"]},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
         return Response(
-            {"detail": result["message"]},
+            result,
             status=status.HTTP_400_BAD_REQUEST,
         )
 
     return Response(
-        {"message": result["message"]},
+        result,
         status=status.HTTP_200_OK,
     )
 
@@ -266,14 +243,11 @@ def worker_statistics(request):
 
 
 @api_view(["POST"])
-@permission_classes([IsAuthenticated])
 def request_resubmission(request, worker_id):
-    note = request.data.get("note", "")
-
     result = WorkerVerificationService.request_resubmission(
         worker_id,
         request.user,
-        note,
+        request.data.get("note", ""),
     )
 
     if not result["success"]:
