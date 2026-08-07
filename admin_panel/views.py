@@ -56,6 +56,7 @@ def admin_login(request):
         status=status.HTTP_200_OK,
     )
 
+
 @api_view(["GET", "PATCH"])
 @permission_classes([IsAuthenticated])
 def admin_profile(request):
@@ -112,14 +113,13 @@ def admin_profile_photo(request):
         serializer.validated_data["profile_photo"],
     )
 
-    data["profile_photo"] = request.build_absolute_uri(
-        data["profile_photo"]
-    )
+    data["profile_photo"] = request.build_absolute_uri(data["profile_photo"])
 
     return Response(
         data,
         status=status.HTTP_200_OK,
     )
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -415,6 +415,7 @@ def category_detail(request, category_id):
         {"message": "Category deleted successfully."},
         status=status.HTTP_200_OK,
     )
+
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])

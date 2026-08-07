@@ -53,6 +53,7 @@ class CategorySerializer(serializers.ModelSerializer):
             "total_workers",
         ]
 
+
 class AdminProfileSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
 
@@ -82,6 +83,7 @@ class AdminProfilePhotoSerializer(serializers.Serializer):
     profile_photo = serializers.ImageField(
         required=True,
     )
+
 
 class AdminChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(

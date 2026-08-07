@@ -66,6 +66,7 @@ class CustomerProfile(models.Model):
     def __str__(self):
         return self.user.full_name
 
+
 class AdminProfile(models.Model):
     user = models.OneToOneField(
         User,
@@ -81,6 +82,7 @@ class AdminProfile(models.Model):
 
     def __str__(self):
         return self.user.full_name
+
 
 class Skill(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -251,7 +253,9 @@ class PendingRegistration(models.Model):
     def __str__(self):
         return self.phone_number
 
-# Reset Password Through OTP from GMAIL 
+
+# Reset Password Through OTP from GMAIL
+
 
 class PasswordResetOTP(models.Model):
     """
@@ -268,7 +272,7 @@ class PasswordResetOTP(models.Model):
     expires_at = models.DateTimeField()
     attempts = models.PositiveSmallIntegerField(default=0)
 
-    #True once the OTP has been verified - reset-password checks this instead of asking for the OTP a second time. 
+    # True once the OTP has been verified - reset-password checks this instead of asking for the OTP a second time.
     is_verified = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)

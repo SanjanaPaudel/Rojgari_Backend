@@ -8,15 +8,19 @@ from .validators import (
     validate_unique_phone,
 )
 
+
 class ForgotPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
 
 class ResendResetOTPSerializer(serializers.Serializer):
     email = serializers.EmailField()
 
+
 class VerifyResetOTPSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    otp = serializers.charField(max_length=6, min_length=6)
+    otp = serializers.CharField(max_length=6, min_length=6)
+
 
 class ResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -24,12 +28,15 @@ class ResetPasswordSerializer(serializers.Serializer):
         write_only=True,
         validators=[validate_strong_password],
     )
-    confirm_password = serializers.charField(write_only=True)
+    confirm_password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
         if attrs["new_password"] != attrs["confirm_password"]:
-            raise serializers.ValidationError({"confirm_password": "Passwords do not match."})
+            raise serializers.ValidationError(
+                {"confirm_password": "Passwords do not match."}
+            )
         return attrs
+
 
 class BaseSignupSerializer(serializers.Serializer):
     full_name = serializers.CharField(

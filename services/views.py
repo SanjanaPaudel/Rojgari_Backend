@@ -91,7 +91,7 @@ def create_booking(request):
 
         for worker, score in ranked:
             # Stop once we've successfully sent out enough offers - not just after checking the first 3 candidates.
-            
+
             if offers_created >= MAX_INITIAL_OFFERS:
                 break
 
@@ -140,6 +140,7 @@ def create_booking(request):
         BookingDetailSerializer(booking, context={"request": request}).data,
         status=status.HTTP_201_CREATED,
     )
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])

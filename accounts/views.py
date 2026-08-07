@@ -11,19 +11,24 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.models import Skill
 from accounts.permissions import IsWorker
 from accounts.serializers import (
+    ForgotPasswordSerializer,
     IdentityDocumentSerializer,
     ResendOTPSerializer,
+    ResendResetOTPSerializer,
+    ResetPasswordSerializer,
     SelectSkillsSerializer,
     SignupSerializer,
     SkillSerializer,
     UpdateSkillSerializer,
     UserLoginSerializer,
     VerifyOTPSerializer,
+    VerifyResetOTPSerializer,
     WorkerPhotoSerializer,
     WorkerProfileSerializer,
     WorkerStatusSerializer,
 )
 from accounts.services.customer_service import CustomerService
+from accounts.services.password_reset_service import PasswordResetService
 from services.models import BookingOffer
 
 from .services.auth_service import AuthService
@@ -53,6 +58,7 @@ def signup(request):
         serializer.errors,
         status=status.HTTP_400_BAD_REQUEST,
     )
+
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -127,6 +133,80 @@ def resend_otp(request):
         result,
         status=status.HTTP_400_BAD_REQUEST,
     )
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def forgot_password(request):
+    serializer = ForgotPasswordSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    result = PasswordResetService.request_reset(serializer.validated_data["email"])
+
+    if result["success"]:
+        return Response(result, status=status.HTTP_200_OK)
+    return Response(result, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def resend_reset_otp(request):
+    serializer = ResendResetOTPSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    result = PasswordResetService.resend_otp(serializer.validated_data["email"])
+
+    if result["success"]:
+        return Response(result, status=status.HTTP_200_OK)
+    return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def verify_reset_otp(request):
+    serializer = VerifyResetOTPSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    result = PasswordResetService.verify_otp(
+        serializer.validated_data["email"],
+        serializer.validated_data["otp"],
+    )
+
+    if result["success"]:
+        return Response(result, status=status.HTTP_200_OK)
+
+    message = result["message"]
+    if message == "No account found with this email address.":
+        return Response(result, status=status.HTTP_404_NOT_FOUND)
+    elif message == "OTP has expired.":
+        return Response(result, status=status.HTTP_410_GONE)
+    elif message == "Maximum OTP attempts exceeded. Please start again.":
+        return Response(result, status=status.HTTP_429_TOO_MANY_REQUESTS)
+    return Response(result, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def reset_password(request):
+    serializer = ResetPasswordSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    result = PasswordResetService.reset_password(
+        serializer.validated_data["email"],
+        serializer.validated_data["new_password"],
+    )
+
+    if result["success"]:
+        return Response(result, status=status.HTTP_200_OK)
+
+    message = result["message"]
+    if message == "No account found with this email address.":
+        return Response(result, status=status.HTTP_404_NOT_FOUND)
+    return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])

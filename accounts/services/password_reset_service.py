@@ -40,15 +40,12 @@ class PasswordResetService:
         try:
             user = User.objects.get(email=email)
         except User.DOesNotExist:
-            return {
-                "success": False,
-                "message": "No account found with email address"
-            }
+            return {"success": False, "message": "No account found with email address"}
 
         otp = OTPService.generate_otp()
         expires_at = OTPService.get_expiry_time()
 
-        # Only one active reset request per user at a time - calling this twice just replaces the old OTP. 
+        # Only one active reset request per user at a time - calling this twice just replaces the old OTP.
         PasswordResetOTP.objects.filter(user=user).delete()
 
         PasswordResetOTP.objects.create(
@@ -57,7 +54,7 @@ class PasswordResetService:
             expires_at=expires_at,
         )
 
-        PasswordResetService._send_reset_otp(email,otp)
+        PasswordResetService._send_reset_otp(email, otp)
 
         return {
             "success": True,
@@ -70,7 +67,10 @@ class PasswordResetService:
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return {"success": False, "message":"No account found with this email address."}
+            return {
+                "success": False,
+                "message": "No account found with this email address.",
+            }
 
         reset_request = PasswordResetOTP.objects.filter(user=user).first()
         if not reset_request:
@@ -93,18 +93,28 @@ class PasswordResetService:
 
         PasswordResetService._send_reset_otp(email, otp)
 
-        return {"success": True, "message": "OTP sent successfully to your email.", "expires_in": 180}
+        return {
+            "success": True,
+            "message": "OTP sent successfully to your email.",
+            "expires_in": 180,
+        }
 
     @staticmethod
     def verify_otp(email, otp):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return {"success": False, "message": "No account found with this email address."}
+            return {
+                "success": False,
+                "message": "No account found with this email address.",
+            }
 
         reset_request = PasswordResetOTP.objects.filter(user=user).first()
         if not reset_request:
-            return {"success": False, "message": "No pending password reset request found. Please start again."}
+            return {
+                "success": False,
+                "message": "No pending password reset request found. Please start again.",
+            }
 
         if reset_request.is_expired():
             reset_request.delete()
@@ -116,36 +126,60 @@ class PasswordResetService:
 
             if reset_request.attempts >= 3:
                 reset_request.delete()
-                return {"success": False, "message": "Maximum OTP attempts exceeded. Please start again."}
+                return {
+                    "success": False,
+                    "message": "Maximum OTP attempts exceeded. Please start again.",
+                }
 
-            return {"success": False, "message": f"Invalid OTP. Remaining attempts: {3 - reset_request.attempts}"}
+            return {
+                "success": False,
+                "message": f"Invalid OTP. Remaining attempts: {3 - reset_request.attempts}",
+            }
 
         reset_request.is_verified = True
         reset_request.save()
 
-        return {"success": True, "message": "OTP verified successfully. You can now set a new password."}
+        return {
+            "success": True,
+            "message": "OTP verified successfully. You can now set a new password.",
+        }
 
     @staticmethod
     def reset_password(email, new_password):
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
-            return {"success": False, "message": "No account found with this email address."}
+            return {
+                "success": False,
+                "message": "No account found with this email address.",
+            }
 
         reset_request = PasswordResetOTP.objects.filter(user=user).first()
         if not reset_request:
-            return {"success": False, "message": "No pending password reset request found. Please start again."}
+            return {
+                "success": False,
+                "message": "No pending password reset request found. Please start again.",
+            }
 
         if reset_request.is_expired():
             reset_request.delete()
-            return {"success": False, "message": "Your OTP has expired. Please start again."}
+            return {
+                "success": False,
+                "message": "Your OTP has expired. Please start again.",
+            }
 
         if not reset_request.is_verified:
-            return {"success": False, "message": "Please verify the OTP before setting a new password."}
+            return {
+                "success": False,
+                "message": "Please verify the OTP before setting a new password.",
+            }
 
         user.set_password(new_password)
         user.save(update_fields=["password"])
 
         reset_request.delete()
 
-        return {"success": True, "message": "Pasword reset successfully. Please login with your new password."}
+        return {
+            "success": True,
+            "message": "Pasword reset successfully. Please login with your new password.",
+        }
