@@ -264,6 +264,7 @@ def worker_statistics(request):
         status=status.HTTP_200_OK,
     )
 
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def request_resubmission(request, worker_id):
