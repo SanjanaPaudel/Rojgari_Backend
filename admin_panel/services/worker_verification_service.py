@@ -37,6 +37,10 @@ class WorkerVerificationService:
         if worker is None:
             return None
 
+        history = worker.verification_history.select_related("admin").order_by(
+            "-created_at"
+        )
+
         return {
             "id": worker.id,
             "full_name": worker.user.full_name,
@@ -61,11 +65,19 @@ class WorkerVerificationService:
                 worker.experience_document.url if worker.experience_document else None
             ),
             "submitted_on": worker.user.date_joined,
+            "verification_history": [
+                {
+                    "action": item.action,
+                    "admin_name": (item.admin.full_name if item.admin else None),
+                    "note": item.note,
+                    "created_at": item.created_at,
+                }
+                for item in history
+            ],
         }
 
     @staticmethod
-    def approve_worker(worker_id):
-
+    def approve_worker(worker_id, admin_user, note=""):
         worker = WorkerVerificationRepository.get_worker(worker_id)
 
         if worker is None:
@@ -80,7 +92,11 @@ class WorkerVerificationService:
                 "message": "Worker is already verified.",
             }
 
-        WorkerVerificationRepository.approve_worker(worker)
+        WorkerVerificationRepository.approve_worker(
+            worker,
+            admin_user,
+            note,
+        )
 
         return {
             "success": True,
@@ -88,8 +104,7 @@ class WorkerVerificationService:
         }
 
     @staticmethod
-    def reject_worker(worker_id):
-
+    def reject_worker(worker_id, admin_user, note=""):
         worker = WorkerVerificationRepository.get_worker(worker_id)
 
         if worker is None:
@@ -104,7 +119,11 @@ class WorkerVerificationService:
                 "message": "Worker is already rejected.",
             }
 
-        WorkerVerificationRepository.reject_worker(worker)
+        WorkerVerificationRepository.reject_worker(
+            worker,
+            admin_user,
+            note,
+        )
 
         return {
             "success": True,
@@ -135,3 +154,60 @@ class WorkerVerificationService:
             )
 
         return data
+
+    @staticmethod
+    def get_all_workers():
+
+        workers = WorkerVerificationRepository.get_all_workers()
+
+        data = []
+
+        for worker in workers:
+            data.append(
+                {
+                    "id": worker.id,
+                    "full_name": worker.user.full_name,
+                    "phone_number": worker.user.phone_number,
+                    "email": worker.user.email,
+                    "profile_photo": (
+                        worker.profile_photo.url if worker.profile_photo else None
+                    ),
+                    "skills": [skill.name for skill in worker.skills.all()],
+                    "verification_status": worker.verification_status,
+                    "submitted_on": worker.user.date_joined,
+                }
+            )
+
+        return data
+
+    @staticmethod
+    def get_worker_statistics():
+
+        return WorkerVerificationRepository.get_worker_statistics()
+
+    @staticmethod
+    def request_resubmission(worker_id, admin_user, note=""):
+        worker = WorkerVerificationRepository.get_worker(worker_id)
+
+        if worker is None:
+            return {
+                "success": False,
+                "message": "Worker not found.",
+            }
+
+        if worker.verification_status != "rejected":
+            return {
+                "success": False,
+                "message": "Resubmission can only be requested for rejected workers.",
+            }
+
+        WorkerVerificationRepository.request_resubmission(
+            worker,
+            admin_user,
+            note,
+        )
+
+        return {
+            "success": True,
+            "message": "Resubmission requested successfully.",
+        }
