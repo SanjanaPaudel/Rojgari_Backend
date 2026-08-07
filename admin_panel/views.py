@@ -7,18 +7,18 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from accounts.models import User
 from accounts.services.otp_service import OTPService
 from admin_panel.serializers import (
+    AdminChangePasswordSerializer,
     AdminLoginSerializer,
+    AdminProfilePhotoSerializer,
+    AdminProfileSerializer,
     CreateAdminSerializer,
     DashboardSerializer,
-    AdminProfileSerializer,
-    AdminProfilePhotoSerializer,
-    AdminChangePasswordSerializer,
 )
 
 from .repositories.worker_verification_repository import (
     WorkerVerificationRepository,
 )
-from .serializers import CategorySerializer, DashboardSerializer
+from .serializers import CategorySerializer
 from .services.admin_auth_service import AdminAuthService
 from .services.category_service import CategoryService
 from .services.dashboard_service import DashboardService
@@ -55,6 +55,7 @@ def admin_login(request):
         },
         status=status.HTTP_200_OK,
     )
+
 
 @api_view(["GET", "PATCH"])
 @permission_classes([IsAuthenticated])
@@ -112,14 +113,13 @@ def admin_profile_photo(request):
         serializer.validated_data["profile_photo"],
     )
 
-    data["profile_photo"] = request.build_absolute_uri(
-        data["profile_photo"]
-    )
+    data["profile_photo"] = request.build_absolute_uri(data["profile_photo"])
 
     return Response(
         data,
         status=status.HTTP_200_OK,
     )
+
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -415,6 +415,7 @@ def category_detail(request, category_id):
         {"message": "Category deleted successfully."},
         status=status.HTTP_200_OK,
     )
+
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])

@@ -54,6 +54,7 @@ def signup(request):
         status=status.HTTP_400_BAD_REQUEST,
     )
 
+
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def verify_otp(request):
