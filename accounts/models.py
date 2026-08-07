@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
-
+from django.contrib.auth.models import AbstractUser
 from accounts.managers import UserManager
 
 class User(AbstractUser):
@@ -65,6 +65,21 @@ class CustomerProfile(models.Model):
     def __str__(self):
         return self.user.full_name
 
+class AdminProfile(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="admin_profile",
+    )
+
+    profile_photo = models.ImageField(
+        upload_to="admin/profile/",
+        blank=True,
+        null=True,
+    )
+
+    def __str__(self):
+        return self.user.full_name
 
 class Skill(models.Model):
     name = models.CharField(max_length=100, unique=True)

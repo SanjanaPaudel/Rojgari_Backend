@@ -75,11 +75,33 @@ class AdminAuthService:
         }
 
     @staticmethod
-    def update_profile_photo(user, photo):
-        user.profile_photo = photo
-        user.save()
+    def update_profile_photo(user, profile_photo):
+        profile = user.admin_profile
+
+        profile.profile_photo = profile_photo
+        profile.save()
 
         return {
             "message": "Profile photo updated successfully.",
-            "profile_photo": user.profile_photo.url,
+            "profile_photo": profile.profile_photo.url,
+        }
+
+    @staticmethod
+    def change_password(user, validated_data):
+        old_password = validated_data["old_password"]
+        new_password = validated_data["new_password"]
+
+        if not user.check_password(old_password):
+            return {
+                "success": False,
+                "field": "old_password",
+                "message": "Old password is incorrect.",
+            }
+
+        user.set_password(new_password)
+        user.save()
+
+        return {
+            "success": True,
+            "message": "Password changed successfully.",
         }

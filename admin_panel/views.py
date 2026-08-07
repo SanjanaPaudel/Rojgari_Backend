@@ -12,12 +12,13 @@ from admin_panel.serializers import (
     DashboardSerializer,
     AdminProfileSerializer,
     AdminProfilePhotoSerializer,
+    AdminChangePasswordSerializer,
 )
 
 from .repositories.worker_verification_repository import (
     WorkerVerificationRepository,
 )
-from .serializers import DashboardSerializer
+from .serializers import CategorySerializer, DashboardSerializer
 from .services.admin_auth_service import AdminAuthService
 from .services.category_service import CategoryService
 from .services.dashboard_service import DashboardService
@@ -412,5 +413,40 @@ def category_detail(request, category_id):
 
     return Response(
         {"message": "Category deleted successfully."},
+        status=status.HTTP_200_OK,
+    )
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def change_admin_password(request):
+    if not request.user.is_staff:
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    serializer = AdminChangePasswordSerializer(
+        data=request.data,
+    )
+
+    serializer.is_valid(raise_exception=True)
+
+    result = AdminAuthService.change_password(
+        request.user,
+        serializer.validated_data,
+    )
+
+    if not result["success"]:
+        return Response(
+            {
+                result["field"]: [result["message"]],
+            },
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    return Response(
+        {
+            "message": result["message"],
+        },
         status=status.HTTP_200_OK,
     )

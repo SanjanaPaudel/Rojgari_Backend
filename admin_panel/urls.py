@@ -47,4 +47,9 @@ urlpatterns = [
         views.admin_profile_photo,
         name="admin-profile-photo",
     ),
+    path(
+        "change-password/",
+        views.change_admin_password,
+        name="change-admin-password",
+    ),
 ]

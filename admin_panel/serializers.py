@@ -54,17 +54,26 @@ class CategorySerializer(serializers.ModelSerializer):
         ]
 
 class AdminProfileSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+
     full_name = serializers.CharField(
         max_length=255,
         required=False,
     )
+
     phone_number = serializers.CharField(
         max_length=15,
         required=False,
     )
+
     email = serializers.EmailField(
         required=False,
         allow_blank=True,
+        allow_null=True,
+    )
+
+    profile_photo = serializers.CharField(
+        read_only=True,
         allow_null=True,
     )
 
@@ -73,3 +82,24 @@ class AdminProfilePhotoSerializer(serializers.Serializer):
     profile_photo = serializers.ImageField(
         required=True,
     )
+
+class AdminChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(
+        write_only=True,
+    )
+
+    new_password = serializers.CharField(
+        write_only=True,
+    )
+
+    confirm_password = serializers.CharField(
+        write_only=True,
+    )
+
+    def validate(self, attrs):
+        if attrs["new_password"] != attrs["confirm_password"]:
+            raise serializers.ValidationError(
+                {"confirm_password": "Passwords do not match."}
+            )
+
+        return attrs
