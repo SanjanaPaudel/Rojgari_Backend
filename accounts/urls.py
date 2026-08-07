@@ -19,6 +19,19 @@ urlpatterns = [
         views.resend_otp,
         name="resend-otp",
     ),
+    # Forgot password (customer, worker and admin all use this)
+    path("forgot-password/", views.forgot_password, name="forgot-password"),
+    path(
+        "forgot-password/resend-otp/",
+        views.resend_reset_otp,
+        name="forgot-password-resend-otp",
+    ),
+    path(
+        "forgot-password/verify-otp/",
+        views.verify_reset_otp,
+        name="forgot-password-verify-otp",
+    ),
+    path("reset-password/", views.reset_password, name="reset-password"),
     path(
         "worker/skills/",
         views.get_skills,
