@@ -135,3 +135,34 @@ class WorkerVerificationService:
             )
 
         return data
+
+
+    @staticmethod
+    def get_all_workers():
+
+        workers = WorkerVerificationRepository.get_all_workers()
+
+        data = []
+
+        for worker in workers:
+            data.append(
+                {
+                    "id": worker.id,
+                    "full_name": worker.user.full_name,
+                    "phone_number": worker.user.phone_number,
+                    "email": worker.user.email,
+                    "profile_photo": (
+                        worker.profile_photo.url
+                        if worker.profile_photo
+                        else None
+                    ),
+                    "skills": [
+                        skill.name
+                        for skill in worker.skills.all()
+                    ],
+                    "verification_status": worker.verification_status,
+                    "submitted_on": worker.user.date_joined,
+                }
+            )
+
+        return data

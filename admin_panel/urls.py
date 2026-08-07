@@ -33,4 +33,8 @@ urlpatterns = [
         "workers/verified/",
         views.verified_workers,
     ),
+    path(
+        "workers/",
+        views.all_workers,
+    ),
 ]

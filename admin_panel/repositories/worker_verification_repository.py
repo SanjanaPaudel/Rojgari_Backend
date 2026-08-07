@@ -48,3 +48,12 @@ class WorkerVerificationRepository:
             .filter(verification_status="verified")
             .order_by("-id")
         )
+
+    @staticmethod
+    def get_all_workers():
+        return (
+            WorkerProfile.objects.select_related("user")
+            .prefetch_related("skills")
+            .order_by("-id")
+        )
+
