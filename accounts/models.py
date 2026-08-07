@@ -66,6 +66,7 @@ class CustomerProfile(models.Model):
     def __str__(self):
         return self.user.full_name
 
+
 class AdminProfile(models.Model):
     user = models.OneToOneField(
         User,
@@ -81,6 +82,7 @@ class AdminProfile(models.Model):
 
     def __str__(self):
         return self.user.full_name
+
 
 class Skill(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -250,3 +252,33 @@ class PendingRegistration(models.Model):
 
     def __str__(self):
         return self.phone_number
+
+
+# Reset Password Through OTP from GMAIL
+
+
+class PasswordResetOTP(models.Model):
+    """
+    Holds a one-time password used to verify a "forget password" request. Works for any role (customer, worker, admin)
+    """
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="password_reset_otp",
+    )
+
+    otp = models.CharField(max_length=6)
+    expires_at = models.DateTimeField()
+    attempts = models.PositiveSmallIntegerField(default=0)
+
+    # True once the OTP has been verified - reset-password checks this instead of asking for the OTP a second time.
+    is_verified = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        return timezone.now() > self.expires_at
+
+    def __str__(self):
+        return f"Password reset for {self.user.phone_number}"

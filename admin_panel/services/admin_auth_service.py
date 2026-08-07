@@ -42,11 +42,7 @@ class AdminAuthService:
             "full_name": user.full_name,
             "phone_number": user.phone_number,
             "email": user.email,
-            "profile_photo": (
-                user.profile_photo.url
-                if user.profile_photo
-                else None
-            ),
+            "profile_photo": (user.profile_photo.url if user.profile_photo else None),
         }
 
     @staticmethod
