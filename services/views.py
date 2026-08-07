@@ -278,6 +278,12 @@ def message_list(request, booking_id):
             status=status.HTTP_404_NOT_FOUND,
         )
 
-    messages = booking.messages.all()[:100]
+    messages = list(booking.messages.order_by("-created_at")[:100])
+    messages.reverse()
+
     serializer = MessageSerializer(messages, many=True)
+    data = serializer.data
+
+    booking.messages.exclude(sender=request.user).filter(is_read=False).update(is_read=True)
+    
     return Response(serializer.data)

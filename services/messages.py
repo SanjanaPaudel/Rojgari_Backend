@@ -6,8 +6,11 @@ from .realtime import send_chat_message
 
 def create_message(booking, sender, content):
     """
-    Persist a chat message for a booking and broadcast it to everyone currently watching that booking's group (customer + assigned worker).
+    Persist a chat message for a booking and broadcast it to everyone
+    currently watching that booking's group (customer + assigned worker).
     """
+    content = content.strip()[:2000]
+
     message = Message.objects.create(
         booking=booking,
         sender=sender,
@@ -27,11 +30,10 @@ def create_message(booking, sender, content):
         },
     )
 
-    recipient = (
-        booking.worker.user
-        if sender == booking.customer.user
-        else booking.customer.user
-    )
+    if sender == booking.customer.user:
+        recipient = booking.worker.user if booking.worker else None
+    else:
+        recipient = booking.customer.user
 
     if recipient:
         try:
