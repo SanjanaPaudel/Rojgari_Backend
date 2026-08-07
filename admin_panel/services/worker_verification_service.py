@@ -1,6 +1,7 @@
 from admin_panel.repositories.worker_verification_repository import (
     WorkerVerificationRepository,
 )
+from notifications.notification_service import NotificationService
 
 
 class WorkerVerificationService:
@@ -98,6 +99,21 @@ class WorkerVerificationService:
             note,
         )
 
+        NotificationService.send_to_user(
+            user=worker.user,
+            title="Worker Verification Approved",
+            body=(
+                "Your worker verification has been approved."
+                if not note
+                else f"Your worker verification has been approved. Note: {note}"
+            ),
+            notification_type="worker_verification_approved",
+            data={
+                "type": "worker_verification_approved",
+                "worker_id": str(worker.id),
+            },
+        )
+
         return {
             "success": True,
             "message": "Worker verified successfully.",
@@ -121,6 +137,21 @@ class WorkerVerificationService:
             worker,
             admin_user,
             note,
+        )
+
+        NotificationService.send_to_user(
+            user=worker.user,
+            title="Worker Verification Rejected",
+            body=(
+                "Your worker verification has been rejected."
+                if not note
+                else f"Your worker verification has been rejected. Note: {note}"
+            ),
+            notification_type="worker_verification_rejected",
+            data={
+                "type": "worker_verification_rejected",
+                "worker_id": str(worker.id),
+            },
         )
 
         return {
@@ -203,6 +234,21 @@ class WorkerVerificationService:
             worker,
             admin_user,
             note,
+        )
+
+        NotificationService.send_to_user(
+            user=worker.user,
+            title="Verification Resubmission Required",
+            body=(
+                "Please resubmit your verification documents."
+                if not note
+                else f"Please resubmit your verification documents. Note: {note}"
+            ),
+            notification_type="worker_verification_resubmission",
+            data={
+                "type": "worker_verification_resubmission",
+                "worker_id": str(worker.id),
+            },
         )
 
         return {
