@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from accounts.models import Skill
 
-from .models import Booking, BookingOffer
+from .models import Booking, BookingOffer, Message
 
 
 class BookingCreateSerializer(serializers.ModelSerializer):
@@ -132,3 +132,19 @@ class RateBookingSerializer(serializers.Serializer):
         max_digits=2, decimal_places=1, min_value=1, max_value=5
     )
     review_text = serializers.CharField(required=False, allow_blank=True)
+
+class MessageSerializer(serializers.ModelSerializer):
+    sender_name = serializers.CharField(source="sender.full_name")
+
+    class Meta:
+        model = Message
+        fields = [
+            "id",
+            "booking",
+            "sender",
+            "sender_name",
+            "content",
+            "is_read",
+            "created_at",
+        ]
+        read_only_fields = ["id", "sender", "sender_name", "is_read", "created_at"]

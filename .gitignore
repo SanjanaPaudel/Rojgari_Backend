@@ -21,6 +21,7 @@ env/
 *.sqlite3
 *.sqlite3-journal
 *.log
+celerybeat-schedule*
 
 # OS files
 .DS_Store

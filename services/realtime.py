@@ -37,3 +37,13 @@ def send_offer_cancelled(worker_user_id, offer_id):
             "data": {"event": "offer_cancelled", "offer_id": offer_id},
         },
     )
+
+def send_chat_message(booking_id, data):
+    """
+    Push a new chat message to everyone watching this booking. Rides the same booking_<id> group as booking.update, just a different  event type so the client can tell the two apart.
+    """
+
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"booking_{booking_id}", {"type": "chat.message", "data": data}
+    )

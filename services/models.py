@@ -1,7 +1,7 @@
 # Create your models here.
 from django.db import models
 
-from accounts.models import CustomerProfile, Skill, WorkerProfile
+from accounts.models import CustomerProfile, Skill, WorkerProfile, User
 
 
 class Booking(models.Model):
@@ -165,3 +165,26 @@ class PricingConfiguration(models.Model):
 
     def __str__(self):
         return "Pricing Configuration"
+
+class Message(models.Model):
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE,
+        related_name="messages",
+    )
+
+    sender = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="sent_message",
+    )
+
+    content = models.TextField(max_length=2000)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"Message from {self.sender.full_name} on booking #{self.booking_id}"
