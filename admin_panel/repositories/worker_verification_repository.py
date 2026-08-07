@@ -1,6 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
-from admin_panel.models import WorkerVerificationHistory
+
 from accounts.models import WorkerProfile
+from admin_panel.models import WorkerVerificationHistory
 
 
 class WorkerVerificationRepository:
@@ -23,33 +24,6 @@ class WorkerVerificationRepository:
             )
         except ObjectDoesNotExist:
             return None
-
-    @staticmethod
-    def approve_worker(worker_id, admin_user, note=""):
-        worker = WorkerVerificationRepository.get_worker(worker_id)
-
-        if worker is None:
-            return {
-                "success": False,
-                "message": "Worker not found.",
-            }
-
-        if worker.verification_status == "verified":
-            return {
-                "success": False,
-                "message": "Worker is already verified.",
-            }
-
-        WorkerVerificationRepository.approve_worker(
-            worker,
-            admin_user,
-            note,
-        )
-
-        return {
-            "success": True,
-            "message": "Worker verified successfully.",
-        }
 
     @staticmethod
     def reject_worker(worker_id, admin_user, note=""):

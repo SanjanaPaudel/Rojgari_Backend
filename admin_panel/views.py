@@ -161,7 +161,11 @@ def approve_worker(request, worker_id):
             status=status.HTTP_403_FORBIDDEN,
         )
     note = request.data.get("note", "")
-    result = WorkerVerificationService.approve_worker(worker_id,request.user,note,)
+    result = WorkerVerificationService.approve_worker(
+        worker_id,
+        request.user,
+        note,
+    )
 
     if not result["success"]:
         if result["message"] == "Worker not found.":
@@ -186,7 +190,11 @@ def reject_worker(request, worker_id):
             status=status.HTTP_403_FORBIDDEN,
         )
     note = request.data.get("note", "")
-    result = WorkerVerificationService.reject_worker(worker_id,request.user,note,)
+    result = WorkerVerificationService.reject_worker(
+        worker_id,
+        request.user,
+        note,
+    )
 
     if not result["success"]:
         if result["message"] == "Worker not found.":
@@ -220,6 +228,7 @@ def verified_workers(request):
 
     return Response(data)
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def all_workers(request):
@@ -236,6 +245,7 @@ def all_workers(request):
         data,
         status=status.HTTP_200_OK,
     )
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

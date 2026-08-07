@@ -40,7 +40,4 @@ class WorkerVerificationHistory(models.Model):
     )
 
     def __str__(self):
-        return (
-            f"{self.worker.user.full_name} - "
-            f"{self.action} by {self.admin}"
-        )
+        return f"{self.worker.user.full_name} - {self.action} by {self.admin}"
