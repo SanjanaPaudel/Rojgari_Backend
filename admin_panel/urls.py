@@ -28,4 +28,13 @@ urlpatterns = [
         "workers/<int:worker_id>/request-resubmission/",
         views.request_resubmission,
     ),
+    # Category management
+    path(
+        "categories/",
+        views.categories,
+    ),
+    path(
+        "categories/<int:category_id>/",
+        views.category_detail,
+    ),
 ]

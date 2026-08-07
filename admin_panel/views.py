@@ -8,6 +8,7 @@ from accounts.models import User
 from accounts.services.otp_service import OTPService
 from admin_panel.serializers import (
     AdminLoginSerializer,
+    CategorySerializer,
     CreateAdminSerializer,
 )
 
@@ -16,6 +17,7 @@ from .repositories.worker_verification_repository import (
 )
 from .serializers import DashboardSerializer
 from .services.admin_auth_service import AdminAuthService
+from .services.category_service import CategoryService
 from .services.dashboard_service import DashboardService
 from .services.worker_verification_service import WorkerVerificationService
 
@@ -254,5 +256,95 @@ def request_resubmission(request, worker_id):
 
     return Response(
         result,
+        status=status.HTTP_200_OK,
+    )
+
+
+@api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
+def categories(request):
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    if request.method == "GET":
+        categories = CategoryService.get_all_categories()
+
+        serializer = CategorySerializer(
+            categories,
+            many=True,
+        )
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+    serializer = CategorySerializer(data=request.data)
+
+    serializer.is_valid(raise_exception=True)
+
+    category = CategoryService.create_category(serializer.validated_data)
+
+    response_serializer = CategorySerializer(category)
+
+    return Response(
+        response_serializer.data,
+        status=status.HTTP_201_CREATED,
+    )
+
+
+@api_view(["GET", "PUT", "PATCH", "DELETE"])
+@permission_classes([IsAuthenticated])
+def category_detail(request, category_id):
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    category = CategoryService.get_category(category_id)
+
+    if category is None:
+        return Response(
+            {"detail": "Category not found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    if request.method == "GET":
+        serializer = CategorySerializer(category)
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+    if request.method in ["PUT", "PATCH"]:
+        serializer = CategorySerializer(
+            category,
+            data=request.data,
+            partial=request.method == "PATCH",
+        )
+
+        serializer.is_valid(raise_exception=True)
+
+        category = CategoryService.update_category(
+            category,
+            serializer.validated_data,
+        )
+
+        response_serializer = CategorySerializer(category)
+
+        return Response(
+            response_serializer.data,
+            status=status.HTTP_200_OK,
+        )
+
+    CategoryService.delete_category(category)
+
+    return Response(
+        {"message": "Category deleted successfully."},
         status=status.HTTP_200_OK,
     )

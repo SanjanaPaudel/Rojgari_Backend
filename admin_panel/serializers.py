@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from accounts.models import Skill
+
 
 class AdminLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -27,3 +29,26 @@ class DashboardSerializer(serializers.Serializer):
     workers = serializers.DictField()
     bookings = serializers.DictField()
     skills = serializers.DictField()
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    total_workers = serializers.IntegerField(
+        source="workers.count",
+        read_only=True,
+    )
+
+    class Meta:
+        model = Skill
+        fields = [
+            "id",
+            "name",
+            "icon",
+            "description",
+            "is_active",
+            "display_order",
+            "total_workers",
+        ]
+        read_only_fields = [
+            "id",
+            "total_workers",
+        ]
