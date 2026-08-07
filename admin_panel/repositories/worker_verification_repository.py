@@ -31,7 +31,7 @@ class WorkerVerificationRepository:
         worker.save(update_fields=["verification_status"])
 
         return worker
-    
+
     @staticmethod
     def get_all_workers():
         return (

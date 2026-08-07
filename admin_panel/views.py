@@ -10,10 +10,10 @@ from admin_panel.serializers import (
     AdminLoginSerializer,
     CreateAdminSerializer,
 )
+
 from .repositories.worker_verification_repository import (
     WorkerVerificationRepository,
 )
-
 from .serializers import DashboardSerializer
 from .services.admin_auth_service import AdminAuthService
 from .services.dashboard_service import DashboardService
@@ -185,6 +185,7 @@ def reject_worker(request, worker_id):
     )
 
     return Response(result)
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

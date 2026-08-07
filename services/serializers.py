@@ -133,6 +133,7 @@ class RateBookingSerializer(serializers.Serializer):
     )
     review_text = serializers.CharField(required=False, allow_blank=True)
 
+
 class MessageSerializer(serializers.ModelSerializer):
     sender_name = serializers.CharField(source="sender.full_name")
 

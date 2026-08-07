@@ -48,7 +48,7 @@ class BookingStatusConsumer(AsyncWebsocketConsumer):
         if payload.get("type") != "chat.message":
             return
 
-        content = (payload.get("content")or "").strip()
+        content = (payload.get("content") or "").strip()
         if not content:
             return
 

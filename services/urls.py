@@ -19,8 +19,7 @@ urlpatterns = [
     ),
     # Rate the Booking Services /api/services/bookings/38/rate/
     path("bookings/<int:booking_id>/rate/", views.rate_booking, name="rate-booking"),
-
-    #View The Message Endpoint
+    # View The Message Endpoint
     path(
         "bookings/<int:booking_id>/messages/",
         views.message_list,

@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -7,13 +8,12 @@ from rest_framework.response import Response
 from accounts.models import Skill, WorkerProfile
 from accounts.permissions import IsCustomer
 from accounts.serializers import SkillSerializer
-from django.db.models import Q
 from services.matching import distance_km
 from services.pricing_service import PricingService
 
 from .geocoding import reverse_geocode
 from .matching import rank_candidates
-from .models import Booking, BookingMedia, BookingOffer, Message
+from .models import Booking, BookingMedia, BookingOffer
 from .offers import OFFER_EXPIRY_SECONDS
 from .realtime import send_booking_offer, send_booking_update, send_offer_cancelled
 from .serializers import (
@@ -260,7 +260,9 @@ def rate_booking(request, booking_id):
 
     return Response(BookingDetailSerializer(booking, context={"request": request}).data)
 
-#Message View Function
+
+# Message View Function
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])

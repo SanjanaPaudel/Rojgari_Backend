@@ -1,7 +1,7 @@
 # Create your models here.
 from django.db import models
 
-from accounts.models import CustomerProfile, Skill, WorkerProfile, User
+from accounts.models import CustomerProfile, Skill, User, WorkerProfile
 
 
 class Booking(models.Model):
@@ -165,6 +165,7 @@ class PricingConfiguration(models.Model):
 
     def __str__(self):
         return "Pricing Configuration"
+
 
 class Message(models.Model):
     booking = models.ForeignKey(
