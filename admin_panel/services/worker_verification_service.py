@@ -37,6 +37,10 @@ class WorkerVerificationService:
         if worker is None:
             return None
 
+        history = worker.verification_history.select_related("admin").order_by(
+            "-created_at"
+        )
+
         return {
             "id": worker.id,
             "full_name": worker.user.full_name,
@@ -52,15 +56,35 @@ class WorkerVerificationService:
                 worker.profile_photo.url if worker.profile_photo else None
             ),
             "citizenship_front": (
-                worker.citizenship_front.url if worker.citizenship_front else None
+                worker.citizenship_front.url
+                if worker.citizenship_front
+                else None
             ),
             "citizenship_back": (
-                worker.citizenship_back.url if worker.citizenship_back else None
+                worker.citizenship_back.url
+                if worker.citizenship_back
+                else None
             ),
             "experience_document": (
-                worker.experience_document.url if worker.experience_document else None
+                worker.experience_document.url
+                if worker.experience_document
+                else None
             ),
             "submitted_on": worker.user.date_joined,
+
+            "verification_history": [
+                {
+                    "action": item.action,
+                    "admin_name": (
+                        item.admin.full_name
+                        if item.admin
+                        else None
+                    ),
+                    "note": item.note,
+                    "created_at": item.created_at,
+                }
+                for item in history
+            ],
         }
 
     @staticmethod

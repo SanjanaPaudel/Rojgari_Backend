@@ -160,8 +160,8 @@ def approve_worker(request, worker_id):
             {"detail": "Permission denied."},
             status=status.HTTP_403_FORBIDDEN,
         )
-
-    result = WorkerVerificationService.approve_worker(worker_id)
+    note = request.data.get("note", "")
+    result = WorkerVerificationService.approve_worker(worker_id,request.user,note,)
 
     if not result["success"]:
         if result["message"] == "Worker not found.":
@@ -185,8 +185,8 @@ def reject_worker(request, worker_id):
             {"detail": "Permission denied."},
             status=status.HTTP_403_FORBIDDEN,
         )
-
-    result = WorkerVerificationService.reject_worker(worker_id)
+    note = request.data.get("note", "")
+    result = WorkerVerificationService.reject_worker(worker_id,request.user,note,)
 
     if not result["success"]:
         if result["message"] == "Worker not found.":

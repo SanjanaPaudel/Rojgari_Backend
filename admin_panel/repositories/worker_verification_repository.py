@@ -1,5 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
-
+from admin_panel.models import WorkerVerificationHistory
 from accounts.models import WorkerProfile
 
 
@@ -25,20 +25,58 @@ class WorkerVerificationRepository:
             return None
 
     @staticmethod
-    def approve_worker(worker):
+    def approve_worker(worker_id, admin_user, note=""):
+        worker = WorkerVerificationRepository.get_worker(worker_id)
 
-        worker.verification_status = "verified"
-        worker.save(update_fields=["verification_status"])
+        if worker is None:
+            return {
+                "success": False,
+                "message": "Worker not found.",
+            }
 
-        return worker
+        if worker.verification_status == "verified":
+            return {
+                "success": False,
+                "message": "Worker is already verified.",
+            }
+
+        WorkerVerificationRepository.approve_worker(
+            worker,
+            admin_user,
+            note,
+        )
+
+        return {
+            "success": True,
+            "message": "Worker verified successfully.",
+        }
 
     @staticmethod
-    def reject_worker(worker):
+    def reject_worker(worker_id, admin_user, note=""):
+        worker = WorkerVerificationRepository.get_worker(worker_id)
 
-        worker.verification_status = "rejected"
-        worker.save(update_fields=["verification_status"])
+        if worker is None:
+            return {
+                "success": False,
+                "message": "Worker not found.",
+            }
 
-        return worker
+        if worker.verification_status == "rejected":
+            return {
+                "success": False,
+                "message": "Worker is already rejected.",
+            }
+
+        WorkerVerificationRepository.reject_worker(
+            worker,
+            admin_user,
+            note,
+        )
+
+        return {
+            "success": True,
+            "message": "Worker rejected successfully.",
+        }
 
     @staticmethod
     def get_verified_workers():
@@ -71,3 +109,17 @@ class WorkerVerificationRepository:
                 verification_status="rejected"
             ).count(),
         }
+
+    @staticmethod
+    def approve_worker(worker, admin_user, note=""):
+        worker.verification_status = "verified"
+        worker.save(update_fields=["verification_status"])
+
+        WorkerVerificationHistory.objects.create(
+            worker=worker,
+            admin=admin_user,
+            action="approved",
+            note=note,
+        )
+
+        return worker
