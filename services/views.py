@@ -284,6 +284,8 @@ def message_list(request, booking_id):
     serializer = MessageSerializer(messages, many=True)
     data = serializer.data
 
-    booking.messages.exclude(sender=request.user).filter(is_read=False).update(is_read=True)
-    
-    return Response(serializer.data)
+    booking.messages.exclude(sender=request.user).filter(is_read=False).update(
+        is_read=True
+    )
+
+    return Response(data)
