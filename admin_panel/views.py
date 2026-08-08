@@ -14,18 +14,20 @@ from admin_panel.serializers import (
     CreateAdminSerializer,
     DashboardSerializer,
 )
+from services.models import Booking
 
 from .repositories.worker_verification_repository import (
     WorkerVerificationRepository,
 )
-from .serializers import CategorySerializer, AdminBookingListSerializer
+from .serializers import (
+    AdminBookingDetailSerializer,
+    CategorySerializer,
+)
 from .services.admin_auth_service import AdminAuthService
 from .services.booking_service import BookingService
 from .services.category_service import CategoryService
 from .services.dashboard_service import DashboardService
 from .services.worker_verification_service import WorkerVerificationService
-
-from services.models import Booking
 
 
 @api_view(["GET"])

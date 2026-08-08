@@ -106,7 +106,7 @@ class AdminChangePasswordSerializer(serializers.Serializer):
             )
 
         return attrs
-    
+
 class AdminBookingDetailSerializer(serializers.ModelSerializer):
     customer_name = serializers.CharField(source="customer.user.full_name")
     customer_phone = serializers.CharField(source="customer.user.phone_number")
