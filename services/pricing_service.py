@@ -22,7 +22,10 @@ class PricingService:
         # 4.50 -> 5
         rounded_distance = math.floor(distance_km + 0.5)
 
-        visit_charge = rounded_distance * float(config.price_per_km)
+        visit_charge = max(
+            rounded_distance * float(config.price_per_km),
+            float(config.minimum_visit_charge),
+        )
 
         return {
             "success": True,

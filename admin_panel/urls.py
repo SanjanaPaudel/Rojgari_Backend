@@ -38,6 +38,16 @@ urlpatterns = [
         views.category_detail,
     ),
     path(
+        "bookings/",
+        views.admin_bookings_list,
+        name="admin-bookings-list",
+    ),
+    path(
+        "bookings/<int:booking_id>/",
+        views.admin_booking_detail,
+        name="admin-booking-detail",
+    ),
+    path(
         "profile/",
         views.admin_profile,
         name="admin-profile",
@@ -51,5 +61,15 @@ urlpatterns = [
         "change-password/",
         views.change_admin_password,
         name="change-admin-password",
+    ),
+    path(
+        "reports/bookings-trend/",
+        views.admin_bookings_trend,
+        name="admin-reports-bookings-trend",
+    ),
+    path(
+        "reports/active-users/",
+        views.admin_active_users,
+        name="admin-reports-active-users",
     ),
 ]

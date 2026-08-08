@@ -14,15 +14,69 @@ from admin_panel.serializers import (
     CreateAdminSerializer,
     DashboardSerializer,
 )
+from services.models import Booking
 
 from .repositories.worker_verification_repository import (
     WorkerVerificationRepository,
 )
-from .serializers import CategorySerializer
+from .serializers import (
+    AdminBookingDetailSerializer,
+    CategorySerializer,
+)
 from .services.admin_auth_service import AdminAuthService
+from .services.booking_service import BookingService
 from .services.category_service import CategoryService
 from .services.dashboard_service import DashboardService
+from .services.report_service import ReportService
 from .services.worker_verification_service import WorkerVerificationService
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def admin_bookings_list(request):
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = BookingService.get_bookings_list(
+        search=request.query_params.get("search"),
+        status_filter=request.query_params.get("status"),
+        category_id=request.query_params.get("category"),
+        date_from=request.query_params.get("date_from"),
+        date_to=request.query_params.get("date_to"),
+        page=request.query_params.get("page", 1),
+        page_size=request.query_params.get("page_size", 10),
+    )
+
+    return Response(data, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def admin_booking_detail(request, booking_id):
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    try:
+        booking = (
+            Booking.objects.select_related("customer__user", "worker__user", "category")
+            .prefetch_related("media", "status_history")
+            .get(id=booking_id)
+        )
+    except Booking.DoesNotExist:
+        return Response(
+            {"detail": "Booking not found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    data = AdminBookingDetailSerializer(booking, context={"request": request}).data
+
+    return Response(data, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])
@@ -123,6 +177,34 @@ def admin_profile_photo(request):
         data,
         status=status.HTTP_200_OK,
     )
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def admin_bookings_trend(request):
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = ReportService.get_bookings_trend_24h()
+
+    return Response({"bookings_trend_24h": data}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def admin_active_users(request):
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    count = ReportService.get_active_users_count()
+
+    return Response({"active_users": count}, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])

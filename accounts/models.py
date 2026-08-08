@@ -43,7 +43,7 @@ class User(AbstractUser):
     )
 
     USERNAME_FIELD = "phone_number"
-
+    last_active_at = models.DateTimeField(null=True, blank=True)
     REQUIRED_FIELDS = ["full_name"]
 
     def __str__(self):

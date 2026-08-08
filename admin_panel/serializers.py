@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from accounts.models import Skill
+from services.models import Booking
 
 
 class AdminLoginSerializer(serializers.Serializer):
@@ -105,3 +106,79 @@ class AdminChangePasswordSerializer(serializers.Serializer):
             )
 
         return attrs
+
+
+class AdminBookingDetailSerializer(serializers.ModelSerializer):
+    customer_name = serializers.CharField(source="customer.user.full_name")
+    customer_phone = serializers.CharField(source="customer.user.phone_number")
+    customer_email = serializers.CharField(source="customer.user.email")
+    worker_name = serializers.CharField(source="worker.user.full_name", default=None)
+    worker_phone = serializers.CharField(
+        source="worker.user.phone_number", default=None
+    )
+    worker_email = serializers.CharField(source="worker.user.email", default=None)
+    category_name = serializers.CharField(source="category.name")
+    media = serializers.SerializerMethodField()
+    timeline = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Booking
+        fields = [
+            "id",
+            "category_name",
+            "status",
+            "description",
+            "address_text",
+            "latitude",
+            "longitude",
+            "created_at",
+            "customer_name",
+            "customer_phone",
+            "customer_email",
+            "worker_name",
+            "worker_phone",
+            "worker_email",
+            "media",
+            "timeline",
+        ]
+
+    def get_media(self, booking):
+        request = self.context.get("request")
+        return [
+            {
+                "url": request.build_absolute_uri(m.file.url)
+                if request
+                else m.file.url,
+                "type": m.media_type,
+            }
+            for m in booking.media.all()
+        ]
+
+    def get_timeline(self, booking):
+        return [
+            {"status": h.status, "changed_at": h.changed_at}
+            for h in booking.status_history.all()
+        ]
+
+
+class AdminBookingListSerializer(serializers.ModelSerializer):
+    customer_name = serializers.CharField(source="customer.user.full_name")
+    customer_phone = serializers.CharField(source="customer.user.phone_number")
+    worker_name = serializers.CharField(source="worker.user.full_name", default=None)
+    worker_phone = serializers.CharField(
+        source="worker.user.phone_number", default=None
+    )
+    category_name = serializers.CharField(source="category.name")
+
+    class Meta:
+        model = Booking
+        fields = [
+            "id",
+            "customer_name",
+            "customer_phone",
+            "worker_name",
+            "worker_phone",
+            "category_name",
+            "status",
+            "created_at",
+        ]
