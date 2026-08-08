@@ -55,6 +55,6 @@ class WorkerDashboardService:
                 },
             },
             "notifications": unread_notifications,
-            "messages": unread_messages, 
+            "messages": unread_messages,
             "incoming_request_count": incoming_request_count,
         }
