@@ -333,6 +333,7 @@ def approve_worker(request, worker_id):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def reject_worker(request, worker_id):
     worker = WorkerVerificationRepository.get_worker(worker_id)
 
@@ -397,6 +398,7 @@ def worker_statistics(request):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def request_resubmission(request, worker_id):
     result = WorkerVerificationService.request_resubmission(
         worker_id,
