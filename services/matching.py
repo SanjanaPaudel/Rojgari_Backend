@@ -72,6 +72,8 @@ def get_eligible_workers(booking):
         last_location_update__gte=stale_cutoff,
         current_latitude__isnull=False,
         current_longitude__isnull=False,
+    ).exclude(
+        bookings__status__in=["assigned", "working"],
     )
 
 
