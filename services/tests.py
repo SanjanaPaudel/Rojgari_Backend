@@ -101,7 +101,6 @@ class BookingCreationTests(APITestCase):
         self.worker_profile = self.worker_user.workerprofile
         self.worker_profile.is_online = True
         self.worker_profile.verification_status = "verified"
-        self.worker_profile.is_verified = True
         self.worker_profile.average_rating = Decimal("4.5")
         self.worker_profile.completed_jobs = 8
         self.worker_profile.current_latitude = Decimal("27.7172")
@@ -198,7 +197,6 @@ class MatchingTests(APITestCase):
         profile = user.workerprofile
         profile.is_online = online
         profile.verification_status = "verified"
-        profile.is_verified = True
         profile.average_rating = Decimal(str(rating))
         profile.completed_jobs = jobs
         profile.current_latitude = Decimal(str(lat))
