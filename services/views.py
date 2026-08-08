@@ -13,7 +13,7 @@ from services.pricing_service import PricingService
 
 from .geocoding import reverse_geocode
 from .matching import rank_candidates
-from .models import Booking, BookingMedia, BookingOffer
+from .models import Booking, BookingMedia, BookingOffer, BookingStatusHistory
 from .offers import OFFER_EXPIRY_SECONDS
 from .realtime import send_booking_offer, send_booking_update, send_offer_cancelled
 from .serializers import (
@@ -31,10 +31,7 @@ NON_CANCELLABLE_STATUSES = ["completed", "cancelled"]
 @api_view(["GET"])
 @permission_classes([IsAuthenticated, IsCustomer])
 def get_categories(request):
-    categories = Skill.objects.filter(is_active=True).order_by(
-        "display_order",
-        "id",
-    )
+    categories = Skill.objects.filter(is_active=True).order_by("display_order")
 
     serializer = SkillSerializer(categories, many=True)
 
@@ -73,6 +70,8 @@ def create_booking(request):
             address_text=address_text,
             status="active",
         )
+
+        BookingStatusHistory.objects.create(booking=booking, status="active")
 
         for photo in photos:
             BookingMedia.objects.create(
@@ -206,6 +205,8 @@ def cancel_booking(request, booking_id):
     with transaction.atomic():
         booking.status = "cancelled"
         booking.save()
+
+        BookingStatusHistory.objects.create(booking=booking, status="cancelled")
 
         booking.offers.filter(status__in=["pending", "accepted"]).update(
             status="cancelled"

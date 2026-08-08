@@ -4,7 +4,7 @@ from datetime import timedelta
 from celery import shared_task
 from django.utils import timezone
 
-from services.models import Booking, BookingOffer
+from services.models import Booking, BookingOffer, BookingStatusHistory
 from services.realtime import send_booking_update
 
 from .offers import OFFER_EXPIRY_SECONDS, backfill
@@ -30,6 +30,8 @@ def expire_stale_bookings():
     for booking in stale_bookings:
         booking.status = "cancelled"
         booking.save()
+
+        BookingStatusHistory.objects.create(booking=booking, status="cancelled")
 
         send_booking_update(booking.id, {"status": "cancelled"})
 

@@ -5,7 +5,7 @@ from django.utils import timezone
 from accounts.models import Skill, WorkerProfile
 from notifications.notification_service import NotificationService
 from services.matching import distance_km
-from services.models import Booking, BookingMedia, BookingOffer
+from services.models import Booking, BookingMedia, BookingOffer, BookingStatusHistory
 from services.offers import OFFER_EXPIRY_SECONDS, backfill
 from services.realtime import send_booking_update
 
@@ -259,6 +259,7 @@ class WorkerService:
         booking.worker = user.workerprofile
         booking.status = "assigned"
         booking.save()
+        BookingStatusHistory.objects.create(booking=booking, status="assigned")
 
         offer.status = "accepted"
         offer.save()
@@ -460,6 +461,8 @@ class WorkerService:
 
         booking.save()
 
+        BookingStatusHistory.objects.create(booking=booking, status="working")
+
         send_booking_update(booking.id, {"status": booking.status})
 
         return {
@@ -482,6 +485,7 @@ class WorkerService:
 
         booking.status = "completed"
         booking.save()
+        BookingStatusHistory.objects.create(booking=booking, status="completed")
 
         worker = user.workerprofile
         worker.completed_jobs += 1
