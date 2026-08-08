@@ -61,9 +61,7 @@ class WorkerVerificationRepository:
             "rejected": WorkerProfile.objects.filter(
                 verification_status="rejected"
             ).count(),
-            "available_now": WorkerProfile.objects.filter(
-                is_online=True
-            ).count(),
+            "available_now": WorkerProfile.objects.filter(is_online=True).count(),
         }
 
     @staticmethod
