@@ -25,6 +25,7 @@ from .services.category_service import CategoryService
 from .services.dashboard_service import DashboardService
 from .services.worker_verification_service import WorkerVerificationService
 
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def admin_bookings_list(request):

@@ -1,7 +1,13 @@
 # Register your models here.
 from django.contrib import admin
 
-from .models import Booking, BookingMedia, BookingOffer, BookingStatusHistory, PricingConfiguration
+from .models import (
+    Booking,
+    BookingMedia,
+    BookingOffer,
+    BookingStatusHistory,
+    PricingConfiguration,
+)
 
 admin.site.register(PricingConfiguration)
 
