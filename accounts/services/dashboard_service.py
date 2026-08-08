@@ -1,6 +1,6 @@
 from accounts.models import WorkerProfile
 from notifications.models import Notification
-from services.models import BookingOffer
+from services.models import BookingOffer, Message
 
 
 class WorkerDashboardService:
@@ -29,6 +29,13 @@ class WorkerDashboardService:
             is_read=False,
         ).count()
 
+        unread_messages = Message.objects.filter(
+            booking__worker=worker,
+            is_read=False,
+        ).exclude(
+            sender=user,
+        ).count()
+
         return {
             "worker": {
                 "full_name": worker.user.full_name,
@@ -48,6 +55,6 @@ class WorkerDashboardService:
                 },
             },
             "notifications": unread_notifications,
-            "messages": 2,  # no Message model yet — left as a placeholder, see note
+            "messages": unread_messages, 
             "incoming_request_count": incoming_request_count,
         }
