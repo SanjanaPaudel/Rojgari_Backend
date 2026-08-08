@@ -50,6 +50,7 @@ class WorkerVerificationService:
             "phone_number": worker.user.phone_number,
             "email": worker.user.email,
             "verification_status": worker.verification_status,
+            "is_online": worker.is_online,
             "years_of_experience": worker.years_of_experience,
             "about_me": worker.about_me,
             "service_areas": worker.service_areas,

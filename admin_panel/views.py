@@ -1,6 +1,6 @@
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -224,21 +224,24 @@ def worker_details(request, worker_id):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def approve_worker(request, worker_id):
+    note = request.data.get("note", "").strip()
+
     result = WorkerVerificationService.approve_worker(
-        worker_id,
-        request.user,
-        request.data.get("note", ""),
+        worker_id=worker_id,
+        admin_user=request.user,
+        note=note,
     )
 
     if not result["success"]:
         return Response(
-            result,
+            {"message": result["message"]},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
     return Response(
-        result,
+        {"message": result["message"]},
         status=status.HTTP_200_OK,
     )
 
