@@ -69,6 +69,9 @@ def admin_profile(request):
     if request.method == "GET":
         data = AdminAuthService.get_profile(request.user)
 
+        if data["profile_photo"]:
+            data["profile_photo"] = request.build_absolute_uri(data["profile_photo"])
+
         serializer = AdminProfileSerializer(data)
 
         return Response(
@@ -85,6 +88,7 @@ def admin_profile(request):
     data = AdminAuthService.update_profile(
         request.user,
         serializer.validated_data,
+        request,
     )
 
     return Response(

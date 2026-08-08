@@ -219,6 +219,7 @@ class WorkerVerificationService:
                     "years_of_experience": worker.years_of_experience,
                     # Verification
                     "verification_status": worker.verification_status,
+                    "is_online": worker.is_online,
                     "submitted_on": worker.user.date_joined,
                     # Work statistics
                     "jobs_completed": (

@@ -1,6 +1,6 @@
 from rest_framework.exceptions import AuthenticationFailed
 
-from accounts.models import User
+from accounts.models import AdminProfile, User
 from accounts.services.auth_service import AuthService
 
 
@@ -42,11 +42,15 @@ class AdminAuthService:
             "full_name": user.full_name,
             "phone_number": user.phone_number,
             "email": user.email,
-            "profile_photo": (user.profile_photo.url if user.profile_photo else None),
+            "profile_photo": (
+                user.admin_profile.profile_photo.url
+                if user.admin_profile.profile_photo
+                else None
+            ),
         }
 
     @staticmethod
-    def update_profile(user, validated_data):
+    def update_profile(user, validated_data, request):
         email_change_requested = "email" in validated_data
 
         if "full_name" in validated_data:
@@ -58,6 +62,11 @@ class AdminAuthService:
         user.save()
 
         profile = AdminAuthService.get_profile(user)
+
+        if profile["profile_photo"]:
+            profile["profile_photo"] = request.build_absolute_uri(
+                profile["profile_photo"]
+            )
 
         if email_change_requested:
             return {
@@ -72,7 +81,9 @@ class AdminAuthService:
 
     @staticmethod
     def update_profile_photo(user, profile_photo):
-        profile = user.admin_profile
+        profile, created = AdminProfile.objects.get_or_create(
+            user=user,
+        )
 
         profile.profile_photo = profile_photo
         profile.save()
