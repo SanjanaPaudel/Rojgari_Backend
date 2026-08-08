@@ -67,4 +67,9 @@ urlpatterns = [
         views.admin_bookings_trend,
         name="admin-reports-bookings-trend",
     ),
+    path(
+        "reports/active-users/",
+        views.admin_active_users,
+        name="admin-reports-active-users",
+    ),
 ]

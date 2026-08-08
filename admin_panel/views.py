@@ -183,6 +183,19 @@ def admin_bookings_trend(request):
 
     return Response({"bookings_trend_24h": data}, status=status.HTTP_200_OK)
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def admin_active_users(request):
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    count = ReportService.get_active_users_count()
+
+    return Response({"active_users": count}, status=status.HTTP_200_OK)
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def create_admin(request):
