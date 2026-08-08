@@ -1,4 +1,8 @@
-from django.db.models import Q
+from datetime import timedelta
+
+from django.db.models import Count, Q
+from django.db.models.functions import TruncHour
+from django.utils import timezone
 
 from services.models import Booking
 
@@ -54,3 +58,24 @@ class BookingRepository:
             qs = qs.filter(created_at__date__lte=date_to)
 
         return qs.order_by("-created_at")
+
+@staticmethod
+def get_bookings_trend_24h():
+    now = timezone.now()
+    start = (now - timedelta(hours=23)).replace(minute=0, second=0, microsecond=0)
+
+    counts = (
+        Booking.objects.filter(created_at__gte=start)
+        .annotate(hour=TruncHour("created_at"))
+        .values("hour")
+        .annotate(count=Count("id"))
+    )
+    counts_by_hour = {row["hour"]: row["count"] for row in counts}
+
+    return [
+        {
+            "hour": (start + timedelta(hours=i)).isoformat(),
+            "count": counts_by_hour.get(start + timedelta(hours=i), 0),
+        }
+        for i in range(24)
+    ]

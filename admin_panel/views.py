@@ -27,6 +27,7 @@ from .services.admin_auth_service import AdminAuthService
 from .services.booking_service import BookingService
 from .services.category_service import CategoryService
 from .services.dashboard_service import DashboardService
+from .services.report_service import ReportService
 from .services.worker_verification_service import WorkerVerificationService
 
 
@@ -169,6 +170,18 @@ def admin_profile_photo(request):
         status=status.HTTP_200_OK,
     )
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def admin_bookings_trend(request):
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = ReportService.get_bookings_trend_24h()
+
+    return Response({"bookings_trend_24h": data}, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])

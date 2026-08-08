@@ -62,4 +62,9 @@ urlpatterns = [
         views.change_admin_password,
         name="change-admin-password",
     ),
+    path(
+        "reports/bookings-trend/",
+        views.admin_bookings_trend,
+        name="admin-reports-bookings-trend",
+    ),
 ]
