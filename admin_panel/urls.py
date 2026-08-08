@@ -38,6 +38,11 @@ urlpatterns = [
         views.category_detail,
     ),
     path(
+        "bookings/",
+        views.admin_bookings_list,
+        name="admin-bookings-list",
+    ),
+    path(
         "profile/",
         views.admin_profile,
         name="admin-profile",

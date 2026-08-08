@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from accounts.models import Skill
+from services.models import Booking
 
 
 class AdminLoginSerializer(serializers.Serializer):
@@ -105,3 +106,27 @@ class AdminChangePasswordSerializer(serializers.Serializer):
             )
 
         return attrs
+
+class AdminBookingListSerializer(serializers.ModelSerializer):
+    customer_name = serializers.CharField(source="customer.user.full_name")
+    customer_phone = serializers.CharField(source="customer.user.phone_number")
+    worker_name = serializers.CharField(
+        source="worker.user.full_name", default=None
+    )
+    worker_phone = serializers.CharField(
+        source="worker.user.phone_number", default=None
+    )
+    category_name = serializers.CharField(source="category.name")
+
+    class Meta:
+        model = Booking
+        fields = [
+            "id",
+            "customer_name",
+            "customer_phone",
+            "worker_name",
+            "worker_phone",
+            "category_name",
+            "status",
+            "created_at",
+        ]
