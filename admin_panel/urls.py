@@ -43,6 +43,11 @@ urlpatterns = [
         name="admin-bookings-list",
     ),
     path(
+        "bookings/<int:booking_id>/",
+        views.admin_booking_detail,
+        name="admin-booking-detail",
+    ),
+    path(
         "profile/",
         views.admin_profile,
         name="admin-profile",

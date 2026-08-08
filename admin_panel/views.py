@@ -18,12 +18,14 @@ from admin_panel.serializers import (
 from .repositories.worker_verification_repository import (
     WorkerVerificationRepository,
 )
-from .serializers import CategorySerializer
+from .serializers import CategorySerializer, AdminBookingListSerializer
 from .services.admin_auth_service import AdminAuthService
 from .services.booking_service import BookingService
 from .services.category_service import CategoryService
 from .services.dashboard_service import DashboardService
 from .services.worker_verification_service import WorkerVerificationService
+
+from services.models import Booking
 
 
 @api_view(["GET"])
@@ -44,6 +46,29 @@ def admin_bookings_list(request):
         page=request.query_params.get("page", 1),
         page_size=request.query_params.get("page_size", 10),
     )
+
+    return Response(data, status=status.HTTP_200_OK)
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def admin_booking_detail(request, booking_id):
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    try:
+        booking = Booking.objects.select_related(
+            "customer__user", "worker__user", "category"
+        ).prefetch_related("media", "status_history").get(id=booking_id)
+    except Booking.DoesNotExist:
+        return Response(
+            {"detail": "Booking not found."},
+            status=status.HTTP_404_NOT_FOUND,
+        )
+
+    data = AdminBookingDetailSerializer(booking, context={"request": request}).data
 
     return Response(data, status=status.HTTP_200_OK)
 
