@@ -20,10 +20,32 @@ from .repositories.worker_verification_repository import (
 )
 from .serializers import CategorySerializer
 from .services.admin_auth_service import AdminAuthService
+from .services.booking_service import BookingService
 from .services.category_service import CategoryService
 from .services.dashboard_service import DashboardService
 from .services.worker_verification_service import WorkerVerificationService
 
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def admin_bookings_list(request):
+    if request.user.role != "admin":
+        return Response(
+            {"detail": "Permission denied."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = BookingService.get_bookings_list(
+        search=request.query_params.get("search"),
+        status_filter=request.query_params.get("status"),
+        category_id=request.query_params.get("category"),
+        date_from=request.query_params.get("date_from"),
+        date_to=request.query_params.get("date_to"),
+        page=request.query_params.get("page", 1),
+        page_size=request.query_params.get("page_size", 10),
+    )
+
+    return Response(data, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
 @permission_classes([AllowAny])

@@ -1,7 +1,13 @@
 # Register your models here.
 from django.contrib import admin
 
-from .models import Booking, BookingMedia, BookingOffer, PricingConfiguration
+from .models import (
+    Booking,
+    BookingMedia,
+    BookingOffer,
+    BookingStatusHistory,
+    PricingConfiguration,
+)
 
 admin.site.register(PricingConfiguration)
 
@@ -21,4 +27,9 @@ class BookingMediaAdmin(admin.ModelAdmin):
 @admin.register(BookingOffer)
 class BookingOfferAdmin(admin.ModelAdmin):
     list_display = ("id", "booking", "worker", "score", "status", "offered_at")
+    list_filter = ("status",)
+
+@admin.register(BookingStatusHistory)
+class BookingStatusHistoryAdmin(admin.ModelAdmin):
+    list_display = ("id", "booking", "status", "changed_at")
     list_filter = ("status",)

@@ -63,6 +63,31 @@ class Booking(models.Model):
     def __str__(self):
         return f"{self.category.name} booking by {self.customer.user.full_name}"
 
+class BookingStatusHistory(models.Model):
+    """
+    Append-only log of every status a booking has passed through, and when.
+    One row is created each time Booking.status changes (including the
+    initial "active" row at creation) — we never update rows, only add new ones.
+    """
+
+    booking = models.ForeignKey(
+        Booking,
+        on_delete=models.CASCADE,
+        related_name="status_history",
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=Booking.STATUS_CHOICES,
+    )
+
+    changed_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["changed_at"]
+
+    def __str__(self):
+        return f"Booking #{self.booking_id} -> {self.status} at {self.changed_at}"
 
 class BookingMedia(models.Model):
     MEDIA_TYPE_CHOICES = [
