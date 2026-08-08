@@ -10,6 +10,7 @@ from accounts.permissions import IsCustomer
 from accounts.serializers import SkillSerializer
 from services.matching import distance_km
 from services.pricing_service import PricingService
+
 from .geocoding import reverse_geocode
 from .matching import rank_candidates
 from .models import Booking, BookingMedia, BookingOffer

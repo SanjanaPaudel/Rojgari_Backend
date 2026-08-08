@@ -2,6 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from accounts.models import WorkerProfile
 from admin_panel.models import WorkerVerificationHistory
+from services.models import Booking
 
 
 class WorkerVerificationRepository:
@@ -89,3 +90,10 @@ class WorkerVerificationRepository:
         )
 
         return worker
+
+    @staticmethod
+    def get_completed_jobs_count(worker):
+        return Booking.objects.filter(
+            worker=worker,
+            status="completed",
+        ).count()

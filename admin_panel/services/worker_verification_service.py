@@ -42,6 +42,8 @@ class WorkerVerificationService:
             "-created_at"
         )
 
+        skills = list(worker.skills.all())
+
         return {
             "id": worker.id,
             "full_name": worker.user.full_name,
@@ -52,7 +54,13 @@ class WorkerVerificationService:
             "about_me": worker.about_me,
             "service_areas": worker.service_areas,
             "permanent_address": worker.permanent_address,
-            "skills": [skill.name for skill in worker.skills.all()],
+            "jobs_completed": (
+                WorkerVerificationRepository.get_completed_jobs_count(worker)
+            ),
+            "average_rating": worker.average_rating,
+            "total_reviews": worker.total_reviews,
+            "skills": [skill.name for skill in skills],
+            "primary_skill": skills[0].name if skills else None,
             "profile_photo": (
                 worker.profile_photo.url if worker.profile_photo else None
             ),
@@ -192,6 +200,8 @@ class WorkerVerificationService:
         data = []
 
         for worker in workers:
+            skills = list(worker.skills.all())
+
             data.append(
                 {
                     "id": worker.id,
@@ -201,9 +211,20 @@ class WorkerVerificationService:
                     "profile_photo": (
                         worker.profile_photo.url if worker.profile_photo else None
                     ),
-                    "skills": [skill.name for skill in worker.skills.all()],
+                    # Skills
+                    "skills": [skill.name for skill in skills],
+                    "primary_skill": (skills[0].name if skills else None),
+                    # Professional information
+                    "years_of_experience": worker.years_of_experience,
+                    # Verification
                     "verification_status": worker.verification_status,
                     "submitted_on": worker.user.date_joined,
+                    # Work statistics
+                    "jobs_completed": (
+                        WorkerVerificationRepository.get_completed_jobs_count(worker)
+                    ),
+                    "average_rating": worker.average_rating,
+                    "total_reviews": worker.total_reviews,
                 }
             )
 
